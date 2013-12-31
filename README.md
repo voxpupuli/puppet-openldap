@@ -1,6 +1,8 @@
 OpenLDAP
 ========
 
+[![Build Status](https://travis-ci.org/mcanevet/puppet-openldap.png?branch=master)](https://travis-ci.org/mcanevet/puppet-openldap)
+
 Overview
 --------
 
