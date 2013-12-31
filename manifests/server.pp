@@ -1,17 +1,18 @@
 class openldap::server(
-  $ssl      = false,
-  $ssl_cert = undef,
-  $ssl_key  = undef,
-  $ssl_ca   = undef,
-
   $package  = $::osfamily ? {
-    Debian => ['slapd', 'ldap-utils',],
+    Debian => 'slapd',
   },
   $service  = $::osfamily ? {
     Debian => 'slapd',
   },
+
   $enable   = true,
   $start    = true,
+
+  $ssl      = false,
+  $ssl_cert = undef,
+  $ssl_key  = undef,
+  $ssl_ca   = undef,
 ) {
   class { 'openldap::server::install': } ->
   class { 'openldap::server::config': } ~>

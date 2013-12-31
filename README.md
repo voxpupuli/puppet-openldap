@@ -86,3 +86,30 @@ Specifies the URI(s) of an LDAP server(s) to which the LDAP library should conne
 ####`tls_cacert`
 Specifies the file that contains certificates for all of the Certificate
 Authorities the client will recognize.
+
+###Class: openldap::server
+
+####`package`
+Name of the package to install. Defaults to `slapd` on Debian.
+
+####`service`
+Name of the service. Defaults to `slapd` on Debian.
+
+####`enable`
+Should the service be enabled during boot time?
+
+####`start`
+Should the service be started by Puppet
+
+####`ssl`
+Should OpenLDAP listen on SSL.
+
+####`ssl_cert`
+Specifies the file that contains the slapd server certificate.
+
+####`ssl_key`
+Specifies the file that contains the slapd server private key.
+
+####`ssl_ca`
+Specifies the file that contains certificates for all of the Certificate
+Authorities that slapd will recognize.
