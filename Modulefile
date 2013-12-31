@@ -1,0 +1,7 @@
+name         'mcanevet-openldap'
+version      '0.0.1'
+dependency   'puppetlabs/stdlib'
+source       'https://github.com/mcanevet/puppet-openldap'
+author       'Mickael Canevet'
+summary      'Puppet OpenLDAP module'
+project_page 'https://github.com/mcanevet/puppet-openldap'
