@@ -43,6 +43,16 @@ class { 'openldap::server':
 }
 ```
 
+###Configuring a database
+
+```puppet
+openldap_database { '{1}hdb':
+  suffix => 'dc=example,dc=com',
+  rootdn => 'cn=admin,dc=example,dc=com',
+}
+```
+
+
 Reference
 ---------
 
@@ -60,6 +70,7 @@ Classes:
 
 Resources:
 
+* [openldap_database](#resource-openldapdatabase)
 * [openldap_global_conf](#resource-openldapglobalconf)
 
 ###Class: openldap
@@ -115,3 +126,31 @@ Specifies the file that contains the slapd server private key.
 ####`ssl_ca`
 Specifies the file that contains certificates for all of the Certificate
 Authorities that slapd will recognize.
+
+###Resource: openldap_hdb_database
+
+This resource allows you to manage OpenLDAP bdb and hdb databases.
+
+####`name`
+Name of the database.
+
+####`index`
+Index of the database.
+
+####`backend`
+Backend of the database. Must be one of `bdb` or `hdb`.
+
+####`directory`
+Specify the directory where the BDB files containing this database and
+associated indexes live. A separate directory must be specified for each
+database. The default is `/var/lib/ldap`.
+
+####`rootdn`
+Specify the distinguished name that is not subject to access control or
+administrative limit restrictions for operations on this database.
+
+####`rootpw`
+Specify a password (or hash of the password) for the rootdn.
+
+####`suffix`
+Specify the DN suffix of queries that will be passed to this backend database.

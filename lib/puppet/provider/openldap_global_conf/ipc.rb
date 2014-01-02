@@ -9,9 +9,11 @@ Puppet::Type.type(:openldap_global_conf).provide(:ipc) do
   commands :ldapsearch => `which ldapsearch`.chomp,
            :ldapmodify => `which ldapmodify`.chomp
 
+  mk_resource_methods
+
   def self.instances
     items = ldapsearch('-LLL', '-Y', 'EXTERNAL', '-H', 'ldapi:///', '-b', 'cn=config', '(objectClass=olcGlobal)')
-    items.split("\n").select{|e| e =~ /^olc/}.map do |line|
+    items.split("\n").select{|e| e =~ /^olc/}.collect do |line|
       name, value = line.split(': ')
       # initialize @property_hash
       new(
@@ -62,10 +64,6 @@ Puppet::Type.type(:openldap_global_conf).provide(:ipc) do
     t.close
     ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
     @property_hash[:value] = value
-  end
-
-  def value
-    @property_hash[:value] || :absent
   end
 
 end

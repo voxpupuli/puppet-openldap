@@ -32,25 +32,8 @@ class openldap::server::config {
         value    => $slapd_services,
       }
     }
-    RedHat: {
-      shellvar { 'SLAPD_LDAP':
-        ensure   => present,
-        target   => '/etc/sysconfig/ldap',
-        variable => 'SLAPD_LDAP',
-        value    => true,
-      }
-      shellvar { 'SLAPD_LDAPS':
-        ensure   => present,
-        target   => '/etc/sysconfig/ldap',
-        variable => 'SLAPD_LDAPS',
-        value    => $::openldap::server::ssl,
-      }
-      shellvar { 'SLAPD_LDAPI':
-        ensure   => present,
-        target   => '/etc/sysconfig/ldap',
-        variable => 'SLAPD_LDAPI',
-        value    => true,
-      }
+    default: {
+      fail "Operating System Family ${::osfamily} not yet supported"
     }
   }
 }
