@@ -5,39 +5,19 @@ Puppet::Type.newtype(:openldap_database) do
   # entry.
   ensurable
 
-  newparam(:name) do
+  newparam(:suffix) do
+    isnamevar
     desc "The default namevar."
   end
 
   newparam(:index) do
     desc "The index of the database."
-    isnamevar
   end
 
   newparam(:backend) do
     desc "The name of the backend."
-    isnamevar
     newvalues('bdb', 'hdb')
     defaultto('hdb')
-  end
-
-  def self.title_patterns
-    [
-      [
-        /^({(\d+)}(bdb|hdb))$/,
-	[
-          [ :name, lambda{|x| x} ],
-          [ :index, lambda{|x| x} ],
-          [ :backend, lambda{|x| x} ],
-	],
-      ],
-      [
-        /(.*)/,
-        [
-           [ :name, lambda{|x| x} ],
-        ],
-      ],
-    ]
   end
 
   newproperty(:directory) do
@@ -47,9 +27,6 @@ Puppet::Type.newtype(:openldap_database) do
   end
 
   newproperty(:rootpw) do
-  end
-
-  newproperty(:suffix) do
   end
 
 end

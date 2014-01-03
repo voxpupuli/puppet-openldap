@@ -46,12 +46,18 @@ class { 'openldap::server':
 ###Configuring a database
 
 ```puppet
-openldap_database { '{1}hdb':
-  suffix => 'dc=example,dc=com',
-  rootdn => 'cn=admin,dc=example,dc=com',
+openldap_database { 'dc=example,dc=com':
+  directory => '/var/lib/ldap',
 }
 ```
 
+Replacing default database
+
+```puppet
+openldap_database { 'dc=example,dc=com':
+  index => 1,
+}
+```
 
 Reference
 ---------
@@ -127,15 +133,15 @@ Specifies the file that contains the slapd server private key.
 Specifies the file that contains certificates for all of the Certificate
 Authorities that slapd will recognize.
 
-###Resource: openldap_hdb_database
+###Resource: openldap_database
 
 This resource allows you to manage OpenLDAP bdb and hdb databases.
 
-####`name`
-Name of the database.
+####`suffix`
+Specify the DN suffix of queries that will be passed to this backend database. This is the namevar.
 
 ####`index`
-Index of the database.
+Index of the database to replace (otherwise create a new one if not exists).
 
 ####`backend`
 Backend of the database. Must be one of `bdb` or `hdb`.
@@ -152,5 +158,3 @@ administrative limit restrictions for operations on this database.
 ####`rootpw`
 Specify a password (or hash of the password) for the rootdn.
 
-####`suffix`
-Specify the DN suffix of queries that will be passed to this backend database.
