@@ -59,6 +59,41 @@ openldap_database { 'dc=example,dc=com':
 }
 ```
 
+###Configuring ACPs/ACLs
+
+Append ACL at the end of list:
+
+```puppet
+openldap_access { 'allow read by all clients':
+  ensure => present,
+  access => 'to * by * read',
+  suffix => 'dc=example,dc=com',
+}
+```
+
+```puppet
+openldap_access { 'Restrict access to password attributes':
+  ensure   => present,
+  access   => 'to attrs=userPassword,shadowLastChange by self write by anonymous auth by dn="cn=admin,dc=example,dc=com" write by * none',
+  suffix   => 'dc=example,dc=com',
+  position => 0,
+}
+
+openldap_access { 'Allow access to dn.base':
+  ensure   => present,
+  access   => 'to dn.base="" by * read',
+  suffix   => 'dc=example,dc=com',
+  position => 1,
+}
+
+openldap_access { 'Give read access to everything else':
+  ensure   => present,
+  access   => 'to * by self write by dn="cn=admin,dc=example,dc=com" write by * read',
+  suffix   => 'dc=example,dc=com',
+  position => 2,
+}
+```
+
 Reference
 ---------
 
@@ -76,6 +111,7 @@ Classes:
 
 Resources:
 
+* [openldap_access](#resource-openldapaccess)
 * [openldap_database](#resource-openldapdatabase)
 * [openldap_global_conf](#resource-openldapglobalconf)
 
@@ -132,6 +168,19 @@ Specifies the file that contains the slapd server private key.
 ####`ssl_ca`
 Specifies the file that contains certificates for all of the Certificate
 Authorities that slapd will recognize.
+
+###Resource: openldap_access
+
+This resource allows you to manage OpenLDAP accesses to a database.
+
+###`access`
+The access rule.
+
+###`suffix`
+Suffix of the database.
+
+###`position`
+Force position. Append if not set.
 
 ###Resource: openldap_database
 
