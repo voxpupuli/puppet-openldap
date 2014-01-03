@@ -1,6 +1,6 @@
 require 'tempfile'
 
-Puppet::Type.type(:openldap_database).provide(:ipc) do
+Puppet::Type.type(:openldap_database).provide(:olc) do
 
   # TODO: Use ruby bindings (can't find one that support IPC)
 
