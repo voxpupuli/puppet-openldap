@@ -1,9 +1,14 @@
 class openldap::server(
   $package  = $::osfamily ? {
     Debian => 'slapd',
+    RedHat => 'openldap-servers',
   },
   $service  = $::osfamily ? {
     Debian => 'slapd',
+    RedHat => $::operatingsystemmajrelease ? {
+      5 => 'ldap',
+      6 => 'slapd',
+    }
   },
 
   $enable   = true,
