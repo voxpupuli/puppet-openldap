@@ -39,7 +39,7 @@ class openldap::server::config {
         variable => 'SLAPD_LDAP',
         value    => true,
       }
-      $slapd_ldaps_ensure = $::openldap::server::ssl {
+      $slapd_ldaps_ensure = $::openldap::server::ssl ? {
         true  => present,
         false => absent,
       }
