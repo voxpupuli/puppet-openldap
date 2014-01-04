@@ -1,0 +1,21 @@
+require 'spec_helper'
+
+describe 'openldap::server::config' do
+
+  let(:facts) {{
+    :osfamily => 'Debian',
+  }}
+
+  context 'with no parameters' do
+    let :pre_condition do
+      "class {'openldap::server':}"
+    end
+    it { should compile.with_all_deps }
+    it { should contain_class('openldap::server::config') }
+    it { should_not contain_openldap_global_conf( 'TLSCertificateFile') }
+    it { should_not contain_openldap_global_conf( 'TLSCertificateKeyFile') }
+    it { should_not contain_openldap_global_conf( 'TLSCACertificateFile') }
+  end
+
+end
+
