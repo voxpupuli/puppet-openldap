@@ -1,13 +1,14 @@
 Puppet::Type.newtype(:openldap_database) do
   @doc = "Manages OpenLDAP BDB and HDB databases."
 
-  # Should it be ensurable as as of OpenLDAP 2.4.31 you cannot delete a Database
-  # entry.
   ensurable
 
   newparam(:suffix) do
     isnamevar
     desc "The default namevar."
+  end
+
+  newparam(:target) do
   end
 
   newparam(:index) do

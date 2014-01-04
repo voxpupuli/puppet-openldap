@@ -5,6 +5,9 @@ Puppet::Type.newtype(:openldap_global_conf) do
   newparam(:name) do
   end
 
+  newparam(:target) do
+  end
+
   newproperty(:value) do
   end
 
