@@ -15,8 +15,10 @@ describe 'openldap::client' do
       :uri        => nil,
       :tls_cacert => nil,
     })}
-    it { should contain_class('openldap::client::install') }
-    it { should contain_class('openldap::client::config') }
+    it { should contain_class('openldap::client::install')
+         .that_comes_before('Class[openldap::client::config]') }
+    it { should contain_class('openldap::client::config')
+         .that_comes_before('Class[openldap::client]') }
   end
 
 end

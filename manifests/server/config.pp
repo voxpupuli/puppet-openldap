@@ -1,3 +1,4 @@
+# See README.md for details.
 class openldap::server::config {
 
   if $::openldap::server::ssl {

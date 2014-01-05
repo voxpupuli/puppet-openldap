@@ -1,3 +1,4 @@
+# See README.md for details.
 class openldap::client(
   $package    = $::osfamily ? {
     Debian => 'libldap-2.4-2',
@@ -17,6 +18,6 @@ class openldap::client(
   $tls_cacert = undef,
 ) {
   class { 'openldap::client::install': } ->
-  class { 'openldap::client::config': } ~>
+  class { 'openldap::client::config': } ->
   Class['openldap::client']
 }

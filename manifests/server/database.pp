@@ -1,12 +1,13 @@
+# See README.md for details.
 define openldap::server::database(
+  $directory,
   $suffix  = $title,
   $backend = undef,
-  $directory,
   $rootdn  = undef,
   $rootpw  = undef,
 ) {
   if $::openldap::server::provider == 'augeas' {
-    Openldap::Server::Access[$title] ~> Class['openldap::service']
+    Openldap::Server::Database[$title] ~> Class['openldap::server::service']
   }
   openldap_database { $title:
     suffix    => $suffix,

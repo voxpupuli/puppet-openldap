@@ -1,3 +1,4 @@
+# See README.md for details.
 class openldap::server::service {
   $ensure = $::openldap::server::start ? {
     true    => running,

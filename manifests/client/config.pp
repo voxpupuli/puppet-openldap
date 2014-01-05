@@ -1,3 +1,4 @@
+# See README.md for details.
 class openldap::client::config {
   Shellvar {
     ensure   => present,
