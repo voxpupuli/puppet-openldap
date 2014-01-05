@@ -7,6 +7,7 @@ Overview
 --------
 
 The openldap module allows you to easily manage OpenLDAP with Puppet.
+By default it will use OLC (cn=config) on OpenLDAP 2.3+ and slapd.conf otherwise.
 
 Usage
 -----
@@ -43,19 +44,19 @@ class { 'openldap::server':
 }
 ```
 
-###Configuring a database
+To force using slapd.conf on OpenLDAP 2.3+:
 
 ```puppet
-openldap_database { 'dc=example,dc=com':
-  directory => '/var/lib/ldap',
+class { 'openldap::server':
+  provider => 'augeas',
 }
 ```
 
-Replacing default database
+###Configuring a database
 
 ```puppet
-openldap_database { 'dc=example,dc=com':
-  index => 1,
+openldap::server::database { 'dc=example,dc=com':
+  directory => '/var/lib/ldap',
 }
 ```
 
@@ -64,29 +65,32 @@ openldap_database { 'dc=example,dc=com':
 Append ACL at the end of list:
 
 ```puppet
-openldap_access { 'allow read by all clients':
+openldap::server::access { 'allow read by all clients':
   ensure => present,
   access => 'to * by * read',
   suffix => 'dc=example,dc=com',
 }
 ```
 
+By default it appends the rule at the end of rule list.
+If you want to insert you have to set a position:
+
 ```puppet
-openldap_access { 'Restrict access to password attributes':
+openldap::server::access { 'Restrict access to password attributes':
   ensure   => present,
   access   => 'to attrs=userPassword,shadowLastChange by self write by anonymous auth by dn="cn=admin,dc=example,dc=com" write by * none',
   suffix   => 'dc=example,dc=com',
   position => 0,
 }
 
-openldap_access { 'Allow access to dn.base':
+openldap::server::access { 'Allow access to dn.base':
   ensure   => present,
   access   => 'to dn.base="" by * read',
   suffix   => 'dc=example,dc=com',
   position => 1,
 }
 
-openldap_access { 'Give read access to everything else':
+openldap::server::access { 'Give read access to everything else':
   ensure   => present,
   access   => 'to * by self write by dn="cn=admin,dc=example,dc=com" write by * read',
   suffix   => 'dc=example,dc=com',
@@ -114,6 +118,9 @@ Resources:
 * [openldap_access](#resource-openldapaccess)
 * [openldap_database](#resource-openldapdatabase)
 * [openldap_global_conf](#resource-openldapglobalconf)
+* [openldap::server::access](#resource-openldapserveraccess)
+* [openldap::server::database](#resource-openldapserverdatabase)
+* [openldap::server::globalconf](#resource-openldapserverglobalconf)
 
 ###Class: openldap
 
@@ -156,6 +163,11 @@ Should the service be enabled during boot time?
 ####`start`
 Should the service be started by Puppet
 
+####`provider`
+The provider to use to manage configuration.
+Can be `olc` to manage configuration via (cn=config) or `augeas` to use slapd.conf.
+Defaults to `olc` on OpenLDAP 2.3+ and augeas otherwise.
+
 ####`ssl`
 Should OpenLDAP listen on SSL.
 
@@ -169,7 +181,7 @@ Specifies the file that contains the slapd server private key.
 Specifies the file that contains certificates for all of the Certificate
 Authorities that slapd will recognize.
 
-###Resource: openldap_access
+###Resource: openldap::server::access
 
 This resource allows you to manage OpenLDAP accesses to a database.
 
@@ -182,7 +194,7 @@ Suffix of the database.
 ###`position`
 Force position. Append if not set.
 
-###Resource: openldap_database
+###Resource: openldap::server::database
 
 This resource allows you to manage OpenLDAP bdb and hdb databases.
 

@@ -12,9 +12,9 @@ describe 'openldap::server::config' do
     end
     it { should compile.with_all_deps }
     it { should contain_class('openldap::server::config') }
-    it { should_not contain_openldap_global_conf( 'TLSCertificateFile') }
-    it { should_not contain_openldap_global_conf( 'TLSCertificateKeyFile') }
-    it { should_not contain_openldap_global_conf( 'TLSCACertificateFile') }
+    it { should_not contain_openldap__globalconf( 'TLSCertificateFile') }
+    it { should_not contain_openldap__globalconf( 'TLSCertificateKeyFile') }
+    it { should_not contain_openldap__globalconf( 'TLSCACertificateFile') }
   end
 
 end

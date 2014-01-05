@@ -3,16 +3,16 @@ class openldap::server::config {
   if $::openldap::server::ssl {
     validate_absolute_path($::openldap::server::ssl_cert)
     validate_absolute_path($::openldap::server::ssl_key)
-    openldap_global_conf { 'TLSCertificateFile':
+    openldap::server::globalconf { 'TLSCertificateFile':
       value => $::openldap::server::ssl_cert,
     }
     ->
-    openldap_global_conf { 'TLSCertificateKeyFile':
+    openldap::server::globalconf { 'TLSCertificateKeyFile':
       value => $::openldap::server::ssl_key,
     }
     if $::openldap::server::ssl_ca {
       validate_absolute_path($::openldap::server::ssl_ca)
-      openldap_global_conf { 'TLSCACertificateFile':
+      openldap::server::globalconf { 'TLSCACertificateFile':
         value => $::openldap::server::ssl_ca,
       }
     }
