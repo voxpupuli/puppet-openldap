@@ -6,7 +6,7 @@ Puppet::Type.type(:openldap_global_conf).provide(:augeas) do
   include AugeasProviders::Provider
 
   default_file {
-    case Facter[:osfamily].value
+    case Facter.value(:osfamily)
     when 'Debian'
       '/etc/ldap/slapd.conf'
     when 'RedHat'
@@ -16,7 +16,7 @@ Puppet::Type.type(:openldap_global_conf).provide(:augeas) do
 
   lens { 'Slapd.lns' }
 
-  openldap23 = Gem::Version.new(Facter[:openldap_server_version].value) >= Gem::Version.new('2.3.0')
+  openldap23 = Gem::Version.new(Facter.value(:openldap_server_version)) >= Gem::Version.new('2.3.0')
 
   defaultfor :openldap23 => false
   confine :feature => :augeas
@@ -33,7 +33,7 @@ Puppet::Type.type(:openldap_global_conf).provide(:augeas) do
           :name   => path_label(aug, hpath),
           :ensure => :present,
           :target => target,
-          :value  => aug.get(hpath),
+          :value  => aug.get(hpath)
 	)
       }
     end

@@ -23,13 +23,13 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
         when /^olcSuffix: /
           suffix = line.split(' ')[1]
 	when /^olcAccess: /
-          position, access = line.match(/^olcAccess: {(\d+)}(.*)$/).captures
+          position, access = line.match(/^olcAccess: \{(\d+)\}(.*)$/).captures
           i << new(
-            :name     => "#{access} on #{suffix}",
+            :name     => "OLC: #{access} on #{suffix}",
             :ensure   => :present,
             :access   => access,
             :suffix   => suffix,
-            :position => position,
+            :position => position
           )
         end
       end

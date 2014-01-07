@@ -4,7 +4,7 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
 
   # TODO: Use ruby bindings (can't find one that support IPC)
 
-  openldap23 = Gem::Version.new(Facter[:openldap_server_version].value) >= Gem::Version.new('2.3.0')
+  openldap23 = Gem::Version.new(Facter.value(:openldap_server_version)) >= Gem::Version.new('2.3.0')
 
   defaultfor :openldap23 => true
   confine :openldap23 => true
