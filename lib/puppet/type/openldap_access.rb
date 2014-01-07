@@ -9,10 +9,16 @@ Puppet::Type.newtype(:openldap_access) do
   newparam(:position) do
   end
 
-  newproperty(:access) do
+  newproperty(:suffix) do
   end
 
-  newproperty(:suffix) do
+  newproperty(:what) do
+  end
+
+  newproperty(:by, :array_matching => :all) do
+  end
+
+  newparam(:target) do
   end
 
 end
