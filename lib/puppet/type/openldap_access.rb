@@ -6,19 +6,29 @@ Puppet::Type.newtype(:openldap_access) do
   newparam(:name) do
   end
 
-  newparam(:position) do
+  newparam(:suffix) do
   end
 
-  newproperty(:suffix) do
-  end
-
-  newproperty(:what) do
-  end
-
-  newproperty(:by, :array_matching => :all) do
+  newparam(:what) do
   end
 
   newparam(:target) do
+  end
+
+  newproperty(:by, :array_matching => :all) do
+    def is_to_s(currentvalue)
+      currentvalue.inspect
+    end
+
+    def should_to_s(newvalue)
+      newvalue.inspect
+    end
+
+    munge do |value|
+      value['access'] ||= nil
+      value['control'] ||= nil
+      value
+    end
   end
 
 end

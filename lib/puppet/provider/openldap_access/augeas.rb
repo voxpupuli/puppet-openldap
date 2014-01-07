@@ -23,27 +23,58 @@ Puppet::Type.type(:openldap_access).provide(:augeas) do
   confine :exists => target
 
   resource_path do |resource|
-    "$target/database[suffix = '#{resource[:suffix]}']/access to[. = '#{resource[:what]}']"
+    "$target/database[suffix='#{resource[:suffix]}']/access to[.='#{resource[:what]}']"
   end
 
   def self.instances
-    resources = []
     augopen do |aug|
-      aug.match('$target/database').each { |dpath|
+      aug.match('$target/database').map { |dpath|
 	suffix = aug.get("#{dpath}/suffix")
-        aug.match("#{dpath}/access to").each { |hpath|
+        aug.match("#{dpath}/access to").map { |hpath|
           what = aug.get(hpath)
-          resources << new(
-            :name      => "#{what} on #{suffix}",
-            :ensure    => :present,
-            :target    => target,
-	    :suffix    => suffix,
-	    :what      => what
+          new(
+            :name   => "#{what} on #{suffix}",
+            :ensure => :present,
+            :target => target,
+	    :suffix => suffix,
+	    :what   => what
           )
 	}
-      }
+      }.flatten
     end
-    resources
+  end
+
+  def set_byes(aug, byes)
+    byes.each do |by|
+      aug.defnode('by', '$resource/by[last()+1]', nil)
+      aug.set('$by/who', by['who'])
+      aug.set('$by/what', by['access']) unless by['access'].nil?
+      aug.set('$by/control', by['control']) unless by['control'].nil?
+    end
+  end
+
+  define_aug_method!(:create) do |aug, resource|
+    aug.defnode('resource', resource_path(resource), resource[:what])
+    set_byes(aug, resource[:by])
+  end
+
+  def by
+    augopen do |aug, resource|
+      aug.match('$resource/by').map do |by|
+        {
+          'who'     => aug.get("#{by}/who"),
+          'access'  => aug.get("#{by}/what"),
+          'control' => aug.get("#{by}/control")
+        }
+      end
+    end
+  end
+
+  def by=(byes)
+    augopen! do |aug, resource|
+      aug.rm('$resource/by')
+      set_byes(aug, byes)
+    end
   end
 
 end
