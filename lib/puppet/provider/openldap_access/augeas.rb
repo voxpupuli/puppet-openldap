@@ -28,19 +28,33 @@ Puppet::Type.type(:openldap_access).provide(:augeas) do
 
   def self.instances
     augopen do |aug|
-      aug.match('$target/database').map { |dpath|
-	suffix = aug.get("#{dpath}/suffix")
+      names = aug.match('$target/database').map { |dpath|
+        suffix = aug.get("#{dpath}/suffix")
         aug.match("#{dpath}/access to").map { |hpath|
           what = aug.get(hpath)
-          new(
-            :name   => "#{what} on #{suffix}",
-            :ensure => :present,
-            :target => target,
-	    :suffix => suffix,
-	    :what   => what
-          )
-	}
-      }.flatten
+          {
+            :suffix => suffix,
+            :what   => what
+          }
+	      }
+      }
+
+      names.flatten.uniq.map { |n|
+        byes = aug.match("$target/database[suffix='#{n[:suffix]}']/access to[.='#{n[:what]}']/by").map { |p|
+          {
+            'who' => aug.get("#{p}/who"),
+            'access' => aug.get("#{p}/what"),
+            'control' => aug.get("#{p}/control")
+          }
+        }
+        new(
+          :name   => "to #{n[:what]} on #{n[:suffix]}",
+          :ensure => :present,
+          :suffix => n[:suffix],
+          :what   => n[:what],
+          :by     => byes
+        )
+      }
     end
   end
 
