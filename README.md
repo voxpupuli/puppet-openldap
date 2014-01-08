@@ -66,11 +66,11 @@ openldap::server::database { 'dc=example,dc=com':
 openldap::server::access {
   'to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" on dc=example,dc=com':
     access => 'write';
-  'to attrs=userPassword,shadowLastChange by anonymous auth write on dc=example,dc=com':
+  'to attrs=userPassword,shadowLastChange by anonymous on dc=example,dc=com':
     access => 'auth';
-  'to attrs=userPassword,shadowLastChange by self auth write on dc=example,dc=com':
+  'to attrs=userPassword,shadowLastChange by self on dc=example,dc=com':
     access => 'write';
-  'to attrs=userPassword,shadowLastChange by * auth write on dc=example,dc=com':
+  'to attrs=userPassword,shadowLastChange by * on dc=example,dc=com':
     access => 'none';
 }
 
