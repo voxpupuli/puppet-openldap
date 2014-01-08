@@ -65,9 +65,14 @@ openldap::server::database { 'dc=example,dc=com':
 Append ACL at the end of list:
 
 ```puppet
-openldap::server::access { 'allow read by all clients':
+openldap::server::access { 'to * on dc=example,dc=com':
   ensure => present,
-  access => 'to * by * read',
+  what   => '*',
+  by        => [
+    { 'who' => 'foo', 'access' => 'self', 'control' => 'continue', },
+    { 'who' => 'bar', 'access' => '*', control => 'stop', },
+    { 'who' => 'baz', 'access' => '*', },
+  ],
   suffix => 'dc=example,dc=com',
 }
 ```
