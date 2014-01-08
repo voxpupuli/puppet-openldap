@@ -14,7 +14,7 @@ define openldap::server::database(
     provider  => $::openldap::server::provider,
     target    => $::openldap::server::file,
     backend   => $backend,
-    direcotry => $directory,
+    directory => $directory,
     rootdn    => $rootdn,
     rootpw    => $rootpw,
   }
