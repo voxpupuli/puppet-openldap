@@ -1,17 +1,21 @@
 # See README.md for details.
 define openldap::server::access(
-  $access   = $title,
+  $ensure   = undef,
   $position = undef,
+  $what     = undef,
   $suffix   = undef,
+  $by       = undef,
 ) {
   if $::openldap::server::provider == 'augeas' {
     Openldap::Server::Access[$title] ~> Class['openldap::server::service']
   }
   openldap_access { $title:
-    access   => $access,
+    ensure   => $ensure,
     provider => $::openldap::server::provider,
     target   => $::openldap::server::file,
     position => $position,
-    $suffix  => $suffix,
+    what     => $what,
+    suffix   => $suffix,
+    by       => $by,
   }
 }
