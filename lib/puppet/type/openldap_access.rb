@@ -1,7 +1,11 @@
+require File.dirname(__FILE__) + '/../../../../../augeasproviders/lib/augeasproviders/type.rb'
+
 Puppet::Type.newtype(:openldap_access) do
   @doc = 'Manages OpenLDAP ACPs/ACLs'
 
-  ensurable
+  include AugeasProviders::Type
+
+  positionable
 
   newparam(:name) do
     desc "The default namevar"
@@ -46,6 +50,13 @@ Puppet::Type.newtype(:openldap_access) do
         ],
       ],
     ]
+  end
+
+  newparam(:position) do
+    desc "Where to place the new entry"
+    validate do |value|
+      raise "Wrong position statement '#{value}'" unless value =~ /^(before|after)/
+    end
   end
 
   newproperty(:by, :array_matching => :all) do
