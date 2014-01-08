@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../../../../../augeasproviders/lib/augeasprov
 Puppet::Type.newtype(:openldap_access) do
   @doc = 'Manages OpenLDAP ACPs/ACLs'
 
-  include AugeasProviders::Type
+  extend AugeasProviders::Type
 
   positionable
 
@@ -15,19 +15,30 @@ Puppet::Type.newtype(:openldap_access) do
     desc "The slapd.conf file"
   end
 
-  newparam(:what) do
+  newparam(:what, :namevar => true) do
     desc "The entries and/or attributes to which the access applies"
-    isnamevar
   end
 
-  newparam(:suffix) do
+  newparam(:suffix, :namevar => true) do
     desc "The suffix to which the access applies"
-    isnamevar
     defaultto(nil)
+  end
+
+  newparam(:by, :namevar => true) do
+    desc "To whom the access applies"
   end
 
   def self.title_patterns
     [
+      [
+        /^(to\s+(\S+)\s+on\s+(.+)\s+by\s+(.+))$/,
+        [
+          [ :name, lambda{|x| x} ],
+          [ :what, lambda{|x| x} ],
+          [ :suffix, lambda{|x| x} ],
+          [ :by, lambda{|x| x} ],
+        ],
+      ],
       [
         /^(to\s+(\S+)\s+on\s+(.+))$/,
         [
@@ -59,21 +70,12 @@ Puppet::Type.newtype(:openldap_access) do
     end
   end
 
-  newproperty(:by, :array_matching => :all) do
-    desc "Array of hashes that specifies the ACL."
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
+  newproperty(:access) do
+    desc "Access rule."
+  end
 
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    munge do |value|
-      value['access'] ||= nil
-      value['control'] ||= nil
-      value
-    end
+  newproperty(:control) do
+    desc "Control rule."
   end
 
 end
