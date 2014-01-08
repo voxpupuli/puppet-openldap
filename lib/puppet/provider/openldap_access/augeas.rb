@@ -22,24 +22,29 @@ Puppet::Type.type(:openldap_access).provide(:augeas) do
   confine :feature => :augeas
   confine :exists => target
 
+  def self.base_path(resource)
+    resource[:suffix].nil? ? '$target' : "$target/database[suffix='#{resource[:suffix]}']"
+  end
+
   resource_path do |resource|
-    "$target/database[suffix='#{resource[:suffix]}']/access to[.='#{resource[:what]}']/by[who='#{resource[:by]}']"
+    "#{base_path(resource)}/access to[.='#{resource[:what]}']/by[who='#{resource[:by]}']"
   end
 
   def self.instances
     augopen do |aug|
-      aug.match('$target/database/access to/by').map { |by|
-        what = aug.get("#{by}/..")
-        by = aug.get("#{by}/who")
-        suffix = aug.get("#{by}/../../suffix")
+      aug.match('$target//access to/by').map { |b|
+        what = aug.get("#{b}/..")
+        suffix = aug.get("#{b}/../../suffix")
+        by = aug.get("#{b}/who")
+        name = suffix.nil? ? "to #{what} by #{by}" : "to #{what} by #{by} on #{suffix}"
         new(
-          :name    => "to #{what} by #{by} on #{suffix}",
+          :name    => name,
           :ensure  => :present,
           :what    => what,
           :by      => by,
           :suffix  => suffix,
-          :access  => aug.get("#{by}/what"),
-          :control => aug.get("#{by}/control"),
+          :access  => aug.get("#{b}/what"),
+          :control => aug.get("#{b}/control"),
           :target  => target
         )
       }
@@ -47,10 +52,10 @@ Puppet::Type.type(:openldap_access).provide(:augeas) do
   end
 
   define_aug_method!(:create) do |aug, resource|
-    if aug.match("$target/database[suffix='#{resource[:suffix]}']").empty?
+    if resource[:suffix] and aug.match(base_path(resource)).empty?
       raise Puppet::Error, "openldap_access: could not find database with suffix #{resource[:suffix]}"
     end
-    aug.defnode('access', "$target/database[suffix='#{resource[:suffix]}']/access to[.='#{resource[:what]}']", resource[:what])
+    aug.defnode('access', "#{base_path(resource)}/access to[.='#{resource[:what]}']", resource[:what])
     aug.defnode('resource', "$access/by/who[.=#{resource[:by]}]/who", resource[:by])
     attr_aug_writer_access(aug, resource[:access])
     attr_aug_writer_control(aug, resource[:control])
