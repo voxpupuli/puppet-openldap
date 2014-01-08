@@ -54,6 +54,9 @@ Puppet::Type.type(:openldap_access).provide(:augeas) do
   end
 
   define_aug_method!(:create) do |aug, resource|
+    if aug.match("$target/database[suffix='#{resource[:suffix]}']").empty?
+      raise Puppet::Error, "openldap_access: could not find database with suffix #{resource[:suffix]}"
+    end
     aug.defnode('resource', resource_path(resource), resource[:what])
     set_byes(aug, resource[:by])
   end
