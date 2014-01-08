@@ -76,6 +76,8 @@ Puppet::Type.type(:openldap_access).provide(:augeas) do
   def by=(byes)
     augopen! do |aug, resource|
       aug.rm('$resource/by')
+      # If there are more than one resource matching, keep only the first one
+      aug.rm('$resource[position()!=1]')
       set_byes(aug, byes)
     end
   end
