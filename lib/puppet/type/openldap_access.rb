@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../../../../augeasproviders/lib/augeasproviders/type.rb'
+require File.dirname(__FILE__) + '/../../../../augeasproviders/lib/augeasproviders/type.rb'
 
 Puppet::Type.newtype(:openldap_access) do
   @doc = 'Manages OpenLDAP ACPs/ACLs'
@@ -21,7 +21,6 @@ Puppet::Type.newtype(:openldap_access) do
 
   newparam(:suffix, :namevar => true) do
     desc "The suffix to which the access applies"
-    defaultto(nil)
   end
 
   newparam(:by, :namevar => true) do
