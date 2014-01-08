@@ -23,47 +23,26 @@ Puppet::Type.type(:openldap_access).provide(:augeas) do
   confine :exists => target
 
   resource_path do |resource|
-    "$target/database[suffix='#{resource[:suffix]}']/access to[.='#{resource[:what]}']"
+    "$target/database[suffix='#{resource[:suffix]}']/access to[.='#{resource[:what]}']/by[who='#{resource[:by]}']"
   end
 
   def self.instances
     augopen do |aug|
-      names = aug.match('$target/database').map { |dpath|
-        suffix = aug.get("#{dpath}/suffix")
-        aug.match("#{dpath}/access to").map { |hpath|
-          what = aug.get(hpath)
-          {
-            :suffix => suffix,
-            :what   => what
-          }
-	      }
-      }
-
-      names.flatten.uniq.map { |n|
-        byes = aug.match("$target/database[suffix='#{n[:suffix]}']/access to[.='#{n[:what]}']/by").map { |p|
-          {
-            'who' => aug.get("#{p}/who"),
-            'access' => aug.get("#{p}/what"),
-            'control' => aug.get("#{p}/control")
-          }
-        }
+      aug.match('$target/database/access to/by').map { |by|
+        suffix = aug.get("#{by}/../../suffix")
+        what = aug.get("#{by}/..")
+        by = aug.get("#{by}/who")
         new(
-          :name   => "to #{n[:what]} on #{n[:suffix]}",
-          :ensure => :present,
-          :suffix => n[:suffix],
-          :what   => n[:what],
-          :by     => byes
+          :name    => "to #{what} on #{suffix} by #{by}",
+          :ensure  => :present,
+          :what    => what,
+          :suffix  => suffix,
+          :by      => by,
+          :access  => aug.get("#{by}/what"),
+          :control => aug.get("#{by}/control"),
+          :target  => target
         )
       }
-    end
-  end
-
-  def set_byes(aug, byes)
-    byes.each do |by|
-      aug.defnode('by', '$resource/by[last()+1]', nil)
-      aug.set('$by/who', by['who'])
-      aug.set('$by/what', by['access']) unless by['access'].nil?
-      aug.set('$by/control', by['control']) unless by['control'].nil?
     end
   end
 
@@ -71,30 +50,13 @@ Puppet::Type.type(:openldap_access).provide(:augeas) do
     if aug.match("$target/database[suffix='#{resource[:suffix]}']").empty?
       raise Puppet::Error, "openldap_access: could not find database with suffix #{resource[:suffix]}"
     end
-    aug.defnode('resource', resource_path(resource), resource[:what])
-    set_byes(aug, resource[:by])
+    aug.defnode('access', "$target/database[suffix='#{resource[:suffix]}']/access to[.='#{resource[:what]}']", resource[:what])
+    aug.defnode('resource', "$access/by/who[.=#{resource[:by]}]/who", resource[:by])
+    attr_aug_writer_access(aug, resource[:access])
+    attr_aug_writer_control(aug, resource[:control])
   end
 
-  def by
-    augopen do |aug, resource|
-      aug.match('$resource/by').map do |by|
-        {
-          'who'     => aug.get("#{by}/who"),
-          'access'  => aug.get("#{by}/what"),
-          'control' => aug.get("#{by}/control")
-        }
-      end
-    end
-  end
-
-  def by=(byes)
-    augopen! do |aug, resource|
-      aug.rm('$resource/by')
-      # If there are more than one resource matching, keep only the first one
-      aug.rm('$resource[position()!=1]')
-      set_byes(aug, byes)
-    end
-  end
-
+  attr_aug_accessor(:access)
+  attr_aug_accessor(:control)
 end
 
