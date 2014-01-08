@@ -56,7 +56,7 @@ Puppet::Type.type(:openldap_access).provide(:augeas) do
     attr_aug_writer_control(aug, resource[:control])
   end
 
-  attr_aug_accessor(:access)
+  attr_aug_accessor(:access, :label => 'what')
   attr_aug_accessor(:control)
 end
 
