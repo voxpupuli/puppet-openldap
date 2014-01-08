@@ -55,13 +55,20 @@ Puppet::Type.type(:openldap_access).provide(:augeas) do
     if resource[:suffix] and aug.match(base_path(resource)).empty?
       raise Puppet::Error, "openldap_access: could not find database with suffix #{resource[:suffix]}"
     end
-    aug.defnode('access', "#{base_path(resource)}/access to[.='#{resource[:what]}']", resource[:what])
-    aug.defnode('resource', "$access/by/who[.=#{resource[:by]}]/who", resource[:by])
+    aug.defnode('access', "#{base_path(resource)}/access to[.='#{resource[:what]}' and by/who='#{resource[:by]}']", resource[:what])
+    aug.defnode('resource', "$access/by[who='#{resource[:by]}']", nil)
+    aug.set('$resource/who', resource[:by])
     attr_aug_writer_access(aug, resource[:access])
     attr_aug_writer_control(aug, resource[:control])
   end
 
-  attr_aug_accessor(:access, :label => 'what')
-  attr_aug_accessor(:control)
+  define_aug_method!(:destroy) do |aug, resource|
+    aug.rm('$resource')
+    # Purge empty access rules
+    aug.rm("#{base_path(resource)}/access to[count(by)=0]")
+  end
+
+  attr_aug_accessor(:access, :label => 'what', :rm_node => true)
+  attr_aug_accessor(:control, :rm_node => true)
 end
 
