@@ -62,44 +62,27 @@ openldap::server::database { 'dc=example,dc=com':
 
 ###Configuring ACPs/ACLs
 
-Append ACL at the end of list:
-
 ```puppet
-openldap::server::access { 'to * on dc=example,dc=com':
-  ensure => present,
-  what   => '*',
-  by        => [
-    { 'who' => 'foo', 'access' => 'self', 'control' => 'continue', },
-    { 'who' => 'bar', 'access' => '*', control => 'stop', },
-    { 'who' => 'baz', 'access' => '*', },
-  ],
-  suffix => 'dc=example,dc=com',
-}
-```
-
-By default it appends the rule at the end of rule list.
-If you want to insert you have to set a position:
-
-```puppet
-openldap::server::access { 'Restrict access to password attributes':
-  ensure   => present,
-  access   => 'to attrs=userPassword,shadowLastChange by self write by anonymous auth by dn="cn=admin,dc=example,dc=com" write by * none',
-  suffix   => 'dc=example,dc=com',
-  position => 0,
+openldap::server::access {
+  'to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" on dc=example,dc=com':
+    access => 'write';
+  'to attrs=userPassword,shadowLastChange by anonymous auth write on dc=example,dc=com':
+    access => 'auth';
+  'to attrs=userPassword,shadowLastChange by self auth write on dc=example,dc=com':
+    access => 'write';
+  'to attrs=userPassword,shadowLastChange by * auth write on dc=example,dc=com':
+    access => 'none';
 }
 
-openldap::server::access { 'Allow access to dn.base':
-  ensure   => present,
-  access   => 'to dn.base="" by * read',
-  suffix   => 'dc=example,dc=com',
-  position => 1,
+openldap::server::access { 'to dn.base="" by * on dc=example,dc=com':
+  access => 'read',
 }
 
-openldap::server::access { 'Give read access to everything else':
-  ensure   => present,
-  access   => 'to * by self write by dn="cn=admin,dc=example,dc=com" write by * read',
-  suffix   => 'dc=example,dc=com',
-  position => 2,
+openldap::server::access {
+  'to * by dn="cn=admin,dc=example,dc=com" on dc=example,dc=com':
+    access => 'write';
+  'to * by * on dc=example,dc=com':
+    access => 'read';
 }
 ```
 
@@ -190,14 +173,23 @@ Authorities that slapd will recognize.
 
 This resource allows you to manage OpenLDAP accesses to a database.
 
+###`ensure`
+Whether or not the resource should be present.
+
+###`what`
+The entries and/or attributes to which the access applies.
+
+###`by`
+Which entities are granted access.
+
+###`suffix`
+On which database the access applies.
+
 ###`access`
 The access rule.
 
-###`suffix`
-Suffix of the database.
-
-###`position`
-Force position. Append if not set.
+###`control`
+Controls the flow of access rule application.
 
 ###Resource: openldap::server::database
 
