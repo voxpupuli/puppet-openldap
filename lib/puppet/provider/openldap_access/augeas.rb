@@ -29,15 +29,15 @@ Puppet::Type.type(:openldap_access).provide(:augeas) do
   def self.instances
     augopen do |aug|
       aug.match('$target/database/access to/by').map { |by|
-        suffix = aug.get("#{by}/../../suffix")
         what = aug.get("#{by}/..")
         by = aug.get("#{by}/who")
+        suffix = aug.get("#{by}/../../suffix")
         new(
-          :name    => "to #{what} on #{suffix} by #{by}",
+          :name    => "to #{what} by #{by} on #{suffix}",
           :ensure  => :present,
           :what    => what,
-          :suffix  => suffix,
           :by      => by,
+          :suffix  => suffix,
           :access  => aug.get("#{by}/what"),
           :control => aug.get("#{by}/control"),
           :target  => target

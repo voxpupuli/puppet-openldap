@@ -19,38 +19,31 @@ Puppet::Type.newtype(:openldap_access) do
     desc "The entries and/or attributes to which the access applies"
   end
 
-  newparam(:suffix, :namevar => true) do
-    desc "The suffix to which the access applies"
-  end
-
   newparam(:by, :namevar => true) do
     desc "To whom the access applies"
+  end
+
+  newparam(:suffix, :namevar => true) do
+    desc "The suffix to which the access applies"
   end
 
   def self.title_patterns
     [
       [
-        /^(to\s+(\S+)\s+on\s+(.+)\s+by\s+(.+))$/,
+        /^(to\s+(\S+)\s+by\s+(.+)\s+on\s+(.+))$/,
         [
           [ :name, lambda{|x| x} ],
           [ :what, lambda{|x| x} ],
-          [ :suffix, lambda{|x| x} ],
           [ :by, lambda{|x| x} ],
-        ],
-      ],
-      [
-        /^(to\s+(\S+)\s+on\s+(.+))$/,
-        [
-          [ :name, lambda{|x| x} ],
-          [ :what, lambda{|x| x} ],
           [ :suffix, lambda{|x| x} ],
         ],
       ],
       [
-        /^(to\s+(\S+))$/,
+        /^(to\s+(\S+)\s+by\s+(.+))$/,
         [
           [ :name, lambda{|x| x} ],
           [ :what, lambda{|x| x} ],
+          [ :by, lambda{|x| x} ],
         ],
       ],
       [
