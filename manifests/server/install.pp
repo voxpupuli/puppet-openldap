@@ -8,6 +8,7 @@ class openldap::server::install {
       owner   => 'root',
       group   => 'root',
       content => template('openldap/preseed.erb'),
+      before  => Package[$::openldap::server::package],
     }
   }
 
