@@ -28,6 +28,19 @@ class openldap::server(
   $ssl_cert = undef,
   $ssl_key  = undef,
   $ssl_ca   = undef,
+
+  $databases = hash(
+    [
+      sprintf(
+        'dc=%s,dc=%s',
+        regsubst($::domain, '^(.*)\.[^\.]+$', '\1'),
+        regsubst($::domain, '^.*\.([^\.]+)$', '\1')
+      ),
+      {
+        directory => '/var/lib/ldap',
+      },
+    ]
+  ),
 ) {
   validate_re(
     $provider,
@@ -38,4 +51,6 @@ class openldap::server(
   class { 'openldap::server::config': } ~>
   class { 'openldap::server::service': } ->
   Class['openldap::server']
+
+  create_resources('openldap::server::database', $databases)
 }
