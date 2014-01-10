@@ -1,0 +1,5 @@
+<% if @databases.length == 1 -%>
+slapd	slapd/domain	string	<%= @databases.keys[0].split(/,?dc=/).reject! { |c| c.empty? }.join('.') -%>
+<% else -%>
+slapd	slapd/no_configuration	boolean	true
+<% end -%>
