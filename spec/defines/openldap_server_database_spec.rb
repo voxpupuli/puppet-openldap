@@ -10,6 +10,22 @@ describe 'openldap::server::database' do
     }
   end
 
+  context 'with an invalid directory' do
+    let(:params) {{ :directory => 'bar' }}
+
+    it { expect { should compile }
+      .to raise_error(Puppet::Error, /\"bar\" is not an absolute path/)
+    }
+  end
+
+  context 'without declaring Class[openldap::server]' do
+    let(:params) {{ :directory => '/foo/bar' }}
+
+    it { expect { should compile }
+      .to raise_error(Puppet::Error, /Could not find resource .* for relationship on .*/)
+    }
+  end
+
   context 'with a valid directory' do
     let(:params) {{ :directory => '/foo/bar' }}
 
