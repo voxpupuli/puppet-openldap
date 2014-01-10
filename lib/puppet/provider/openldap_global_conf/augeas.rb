@@ -16,11 +16,7 @@ Puppet::Type.type(:openldap_global_conf).provide(:augeas) do
 
   lens { 'Slapd.lns' }
 
-  openldap23 = Gem::Version.new(Facter.value(:openldap_server_version)) >= Gem::Version.new('2.3.0')
-
-  defaultfor :openldap23 => false
   confine :feature => :augeas
-  confine :exists => target
 
   resource_path do |resource|
     "$target/#{resource[:name]}"

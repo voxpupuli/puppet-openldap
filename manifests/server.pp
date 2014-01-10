@@ -19,10 +19,7 @@ class openldap::server(
   $enable    = true,
   $start     = true,
 
-  $provider  = versioncmp($::openldap_server_version, '2.3.0') ? {
-    '-1'    => 'augeas',
-    default => 'olc',
-  },
+  $provider  = 'olc',
 
   $ssl       = false,
   $ssl_cert  = undef,

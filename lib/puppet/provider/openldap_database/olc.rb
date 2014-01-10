@@ -4,7 +4,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
 
   # TODO: Use ruby bindings (can't find one that support IPC)
 
-  # TODO: confine to and default for OpenLDAP >= 2.3
+  defaultfor :osfamily => :debian, :osfamily => :redhat
 
   commands :ldapsearch => `which ldapsearch`.chomp,
            :ldapmodify => `which ldapmodify`.chomp

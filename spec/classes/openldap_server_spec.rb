@@ -2,19 +2,32 @@ require 'spec_helper'
 
 describe 'openldap::server' do
 
-  context 'on RedHat4' do
-    let(:facts) {{
-      :domain                    => 'example.com',
-      :osfamily                  => 'RedHat',
-      :operatingsystemmajrelease => 4,
-      :openldap_server_version   => '2.2.13',
-    }}
+  let(:facts) {{
+    :domain                    => 'example.com',
+    :osfamily                  => 'Debian',
+  }}
+
+  context 'with an unknown provider' do
+    let :pre_condition do
+      "class {'openldap::server': provider => 'foo'}"
+    end
+
+    it { expect { should compile }
+      .to raise_error(Puppet::Error, /provider must be one of "olc" or "augeas"/)
+    }
+  end
+
+  context 'with augeas provider' do
 
     context 'with no parameters' do
+      let :pre_condition do
+        "class {'openldap::server': provider => 'augeas'}"
+      end
+
       it { should compile.with_all_deps }
       it { should contain_class('openldap::server').with({
-        :package  => 'openldap-servers',
-        :service  => 'ldap',
+        :package  => 'slapd',
+        :service  => 'slapd',
         :enable   => true,
         :start    => true,
         :provider => 'augeas',
@@ -39,12 +52,7 @@ describe 'openldap::server' do
     end
   end
 
-  context 'on Debian7' do
-    let(:facts) {{
-      :domain                    => 'example.com',
-      :osfamily                  => 'Debian',
-      :openldap_server_version   => '2.4.31',
-    }}
+  context 'with olc provider' do
 
     context 'with no parameters' do
       it { should compile.with_all_deps }
@@ -52,8 +60,8 @@ describe 'openldap::server' do
         :package  => 'slapd',
         :service  => 'slapd',
         :enable   => true,
-        :provider => 'olc',
         :start    => true,
+        :provider => 'olc',
         :ssl      => false,
         :ssl_cert => nil,
         :ssl_key  => nil,
