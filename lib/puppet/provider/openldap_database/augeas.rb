@@ -1,4 +1,8 @@
-require File.dirname(__FILE__) + '/../../../../../augeasproviders/lib/augeasproviders/provider.rb'
+begin
+  require File.dirname(__FILE__) + '/../../../../../augeasproviders/lib/augeasproviders/provider.rb'
+rescue LoadError
+  require File.dirname(__FILE__) + '/../../../../spec/fixtures/modules/augeasproviders/lib/augeasproviders/provider.rb'
+end
 
 Puppet::Type.type(:openldap_database).provide(:augeas) do
   desc "Uses Augeas API to update OpenLDAP databases"
