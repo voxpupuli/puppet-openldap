@@ -1,14 +1,14 @@
 # See README.md for details.
 class openldap::server(
-  $package  = $::osfamily ? {
+  $package   = $::osfamily ? {
     Debian => 'slapd',
     RedHat => 'openldap-servers',
   },
-  $file     = $::osfamily ? {
+  $file      = $::osfamily ? {
     Debian => '/etc/ldap/slapd.conf',
     RedHat => '/etc/openldap/slapd.conf',
   },
-  $service  = $::osfamily ? {
+  $service   = $::osfamily ? {
     Debian => 'slapd',
     RedHat => $::operatingsystemmajrelease ? {
       /(4|5)/ => 'ldap',
@@ -16,18 +16,18 @@ class openldap::server(
     },
   },
 
-  $enable   = true,
-  $start    = true,
+  $enable    = true,
+  $start     = true,
 
-  $provider = versioncmp($::openldap_server_version, '2.3.0') ? {
+  $provider  = versioncmp($::openldap_server_version, '2.3.0') ? {
     '-1'    => 'augeas',
     default => 'olc',
   },
 
-  $ssl      = false,
-  $ssl_cert = undef,
-  $ssl_key  = undef,
-  $ssl_ca   = undef,
+  $ssl       = false,
+  $ssl_cert  = undef,
+  $ssl_key   = undef,
+  $ssl_ca    = undef,
 
   $databases = hash(
     [
