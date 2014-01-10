@@ -3,3 +3,4 @@ slapd	slapd/domain	string	<%= @databases.keys[0].split(/,?dc=/).reject! { |c| c.
 <% else -%>
 slapd	slapd/no_configuration	boolean	true
 <% end -%>
+
