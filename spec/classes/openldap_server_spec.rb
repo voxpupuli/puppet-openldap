@@ -30,12 +30,12 @@ describe 'openldap::server' do
       it { should contain_class('openldap::server::service')
         .that_comes_before('Class[openldap::server]')
       }
-#      it { should have_openldap__server__database_resource_count(1) }
-#      it { should contain_openldap__server__database('dc=example,dc=com')
-#        .with({
-#          :directory => '/var/lib/ldap',
-#        })
-#      }
+      it { should have_openldap__server__database_resource_count(1) }
+      it { should contain_openldap__server__database('dc=example,dc=com')
+        .with({
+          :directory => '/var/lib/ldap',
+        })
+      }
     end
   end
 
@@ -66,12 +66,12 @@ describe 'openldap::server' do
       it { should contain_class('openldap::server::service')
         .that_comes_before('Class[openldap::server]')
       }
-#      it { should have_openldap__server__database_resource_count(1) }
-#      it { should contain_openldap__server__database('dc=example,dc=com')
-#        .with({
-#          :directory => '/var/lib/ldap',
-#        })
-#      }
+      it { should have_openldap__server__database_resource_count(1) }
+      it { should contain_openldap__server__database('dc=example,dc=com')
+        .with({
+          :directory => '/var/lib/ldap',
+        })
+      }
     end
   end
 end

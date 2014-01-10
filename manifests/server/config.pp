@@ -61,4 +61,6 @@ class openldap::server::config {
       fail "Operating System Family ${::osfamily} not yet supported"
     }
   }
+
+  create_resources('openldap::server::database', $::openldap::server::databases)
 }

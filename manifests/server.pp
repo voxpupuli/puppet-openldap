@@ -51,8 +51,4 @@ class openldap::server(
   class { 'openldap::server::config': } ~>
   class { 'openldap::server::service': } ->
   Class['openldap::server']
-
-  # FIXME: This creates a dependency that create a cycle, but I don't know why
-  # Class[Openldap::Server] => Openldap::Server::Database[dc=example,dc=com]
-  #create_resources('openldap::server::database', $databases)
 }
