@@ -60,7 +60,7 @@ openldap::server::database { 'dc=example,dc=com':
 }
 ```
 
-###Configuring ACPs/ACLs
+###Configuring ACPs/ACLs (experimental)
 
 ```puppet
 openldap::server::access {
