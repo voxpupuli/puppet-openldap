@@ -1,6 +1,17 @@
 # See README.md for details.
 class openldap::server::install {
 
+  if $::openldap::server::provider == 'olc' {
+    $utils_pkg = $::osfamily ? {
+      Debian => 'ldap-utils',
+      RedHat => 'openldap-clients',
+    }
+
+    package { $utils_pkg:
+      ensure => present,
+    }
+  }
+
   if $::osfamily == 'Debian' {
     file { '/var/cache/debconf/slapd.preseed':
       ensure  => present,
