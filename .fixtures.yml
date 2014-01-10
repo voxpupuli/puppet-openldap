@@ -2,4 +2,5 @@ fixtures:
   repositories:
     augeasproviders: https://github.com/hercules-team/augeasproviders.git
     stdlib: https://github.com/puppetlabs/puppetlabs-stdlib.git
+  symlinks:
     openldap: "#{source_dir}"
