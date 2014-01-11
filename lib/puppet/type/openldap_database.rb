@@ -3,31 +3,33 @@ Puppet::Type.newtype(:openldap_database) do
 
   ensurable
 
-  newparam(:suffix) do
-    isnamevar
+  newparam(:suffix, :namevar => true) do
     desc "The default namevar."
   end
 
   newparam(:target) do
   end
 
-  newparam(:index) do
+  newproperty(:index) do
     desc "The index of the database."
   end
 
-  newparam(:backend) do
+  newproperty(:backend) do
     desc "The name of the backend."
     newvalues('bdb', 'hdb')
     defaultto('hdb')
   end
 
   newproperty(:directory) do
+    desc "The directory where the BDB files containing this database and associated indexes live."
   end
 
   newproperty(:rootdn) do
+    desc "The distinguished name that is not subject to access control or administrative limit restrictions for operations on this database."
   end
 
   newproperty(:rootpw) do
+    desc "Password (or hash of the password) for the rootdn."
   end
 
 end

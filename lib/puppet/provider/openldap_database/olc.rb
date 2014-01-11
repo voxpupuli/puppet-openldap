@@ -36,11 +36,11 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
         end
       end
       new(
+        :ensure    => :present,
         :name      => suffix,
         :suffix    => suffix,
         :index     => index.to_i,
         :backend   => backend,
-        :ensure    => :present,
         :directory => directory,
         :rootdn    => rootdn,
         :rootpw    => rootpw
