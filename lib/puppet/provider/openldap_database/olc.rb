@@ -6,13 +6,18 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
 
   defaultfor :osfamily => :debian, :osfamily => :redhat
 
-  commands :ldapsearch => `which ldapsearch`.chomp,
-           :ldapmodify => `which ldapmodify`.chomp
+  commands :slapcat => `which slapcat`.chomp,
+           :slapadd => `which slapadd`.chomp
 
   mk_resource_methods
 
   def self.instances
-    databases = ldapsearch('-LLL', '-Y', 'EXTERNAL', '-H', 'ldapi:///', '-b', 'cn=config', '(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)))')
+    databases = slapcat(
+      '-b',
+      'cn=config',
+      '-H',
+      'ldap:///???(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)))'
+    )
     databases.split("\n\n").collect do |paragraph|
       suffix = nil
       index = nil
@@ -24,7 +29,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       paragraph.split("\n").collect do |line|
         case line
         when /^olcDatabase: /
-	  index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb)$/).captures
+          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb)$/).captures
         when /^olcDbDirectory: /
           directory = line.split(' ')[1]
         when /^olcRootDN: /
@@ -83,15 +88,19 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     end
     t.close
     #puts IO.read t.path
-    ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+    slapadd('-b', 'cn=config', '-l', t.path)
     @property_hash[:ensure] = :present
     if resource[:index]
       @property_hash[:index] = resource[:index]
     else
-      ldapsearch('-LLL', '-Y', 'EXTERNAL', '-H', 'ldapi:///', '-b', 'cn=config', "(&(objectClass=olc#{resource[:backend].capitalize}Config)(olcSuffix=#{resource[:suffix]}))").split("\n").collect do |line|
+      slapcat(
+        '-b',
+        'cn=config',
+        '-H',
+        "ldap:///???(&(objectClass=olc#{resource[:backend].capitalize}Config)(olcSuffix=#{resource[:suffix]}))").split("\n").collect do |line|
         if line =~ /^olcDatabase: /
           index = line.match(/^olcDatabase: {(\d+)}#{resource[:backend]}$/).captures[0]
-	  @property_hash[:index] = index
+          @property_hash[:index] = index
         end
       end
     end
@@ -129,7 +138,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       t << "replace: olcSuffix\nolcSuffix: #{resource[:suffix]}\n" if @property_flush[:suffix]
       t.close
       #puts IO.read t.path
-      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+      slapadd('-b', 'cn=config', '-l', t.path)
     end
     @property_hash = resource.to_hash
   end

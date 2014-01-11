@@ -6,15 +6,20 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
 
   defaultfor :osfamily => :debian, :osfamily => :redhat
 
-  commands :ldapsearch => `which ldapsearch`.chomp,
-           :ldapmodify => `which ldapmodify`.chomp
+  commands :slapcat => `which slapcat`.chomp,
+           :slapadd => `which slapadd`.chomp
 
   mk_resource_methods
 
   def self.instances
     # TODO: restict to bdb, hdb and globals
     i = []
-    ldapsearch('-LLL', '-Y', 'EXTERNAL', '-H', 'ldapi:///', '-b', 'cn=config', '(olcAccess=*)', 'olcSuffix', 'olcAccess').split("\n\n").collect do |paragraph|
+    slapcat(
+      '-b',
+      'cn=config',
+      '-H',
+      'ldap:///???(olcAccess=*)'
+    ).split("\n\n").collect do |paragraph|
       access = nil
       suffix = nil
       position = nil
@@ -25,7 +30,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
 	when /^olcAccess: /
           position, access = line.match(/^olcAccess: \{(\d+)\}(.*)$/).captures
           i << new(
-            :name     => "OLC: #{access} on #{suffix}",
+            :name     => "#{access} on #{suffix}",
             :ensure   => :present,
             :access   => access,
             :suffix   => suffix,
@@ -48,7 +53,12 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
   end
 
   def getDn(suffix)
-    ldapsearch('-LLL', '-Y', 'EXTERNAL', '-H', 'ldapi:///', '-b', 'cn=config', "(olcSuffix=#{suffix})", 'dn').split("\n").collect do |line|
+    slapcat(
+      '-b',
+      'cn=config',
+      '-H',
+      "ldap:///???(olcSuffix=#{suffix})"
+    ).split("\n").collect do |line|
       if line =~ /^dn: /
         return line.split(' ')[1]
       end
@@ -67,7 +77,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
     t << "olcAccess: #{position}#{resource[:access]}\n"
     t.close
     #puts IO.read t.path
-    ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+    slapadd('-b', 'cn=config', '-l', t.path)
   end
 
   def destroy
@@ -78,7 +88,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
     t << "olcAccess: {#{@property_hash[:position]}}\n"
     t.close
     #puts IO.read t.path
-    ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+    slapdd('-b', 'cn=config', '-l', t.path)
   end
 
   def access=(value)
@@ -92,7 +102,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
     t << "olcAccess: {#{@property_hash[:position]}}#{resource[:access]}\n"
     t.close
     #puts IO.read t.path
-    ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+    slapadd('-b', 'cn=config', '-l', t.path)
   end
 
 end

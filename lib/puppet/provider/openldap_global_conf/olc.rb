@@ -6,13 +6,18 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
 
   defaultfor :osfamily => :debian, :osfamily => :redhat
 
-  commands :ldapsearch => `which ldapsearch`.chomp,
-           :ldapmodify => `which ldapmodify`.chomp
+  commands :slapcat => `which slapcat`.chomp,
+           :slapadd => `which slapadd`.chomp
 
   mk_resource_methods
 
   def self.instances
-    items = ldapsearch('-LLL', '-Y', 'EXTERNAL', '-H', 'ldapi:///', '-b', 'cn=config', '(objectClass=olcGlobal)')
+    items = slapcat(
+      '-b',
+      'cn=config',
+      '-H',
+      'ldap:///???(objectClass=olcGlobal)'
+    )
     items.split("\n").select{|e| e =~ /^olc/}.collect do |line|
       name, value = line.split(': ')
       # initialize @property_hash
@@ -43,7 +48,7 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
     t << "add: olc#{name}"
     t << "olc#{name}: #{value}"
     t.close
-    ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+    slapadd('-b', 'cn=config', '-l', t.path)
     @property_hash[:ensure] = :present
   end
 
@@ -52,7 +57,7 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
     t << "dn: cn=config"
     t << "delete: olc#{name}"
     t.close
-    ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+    slapadd('-b', 'cn=config', '-l', t.path)
     @property_hash.clear
   end
 
@@ -62,7 +67,7 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
     t << "replace: olc#{name}\n"
     t << "olc#{name}: #{value}\n"
     t.close
-    ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+    slapadd('-b', 'cn=config', '-l', t.path)
     @property_hash[:value] = value
   end
 
