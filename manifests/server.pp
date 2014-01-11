@@ -39,13 +39,25 @@ class openldap::server(
     ]
   ),
 ) {
-  validate_re(
-    $provider,
-    ['olc', 'augeas'],
-    'provider must be one of "olc" or "augeas"')
+  class { 'openldap::server::install': }
+  class { 'openldap::server::config': }
+  class { 'openldap::server::service': }
 
-  class { 'openldap::server::install': } ->
-  class { 'openldap::server::config': } ~>
-  class { 'openldap::server::service': } ->
-  Class['openldap::server']
+  case $provider {
+    augeas: {
+      Class['openldap::server::install'] ->
+      Class['openldap::server::config'] ~>
+      Class['openldap::server::service'] ->
+      Class['openldap::server']
+    }
+    olc: {
+      Class['openldap::server::install'] ->
+      Class['openldap::server::service'] ->
+      Class['openldap::server::config'] ->
+      Class['openldap::server']
+    }
+    default: {
+      fail 'provider must be one of "olc" or "augeas"'
+    }
+  }
 }

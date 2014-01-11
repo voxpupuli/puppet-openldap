@@ -68,10 +68,10 @@ describe 'openldap::server' do
         :ssl_ca   => nil,
       })}
       it { should contain_class('openldap::server::install')
+        .that_comes_before('Class[openldap::server::service]') }
+      it { should contain_class('openldap::server::service')
         .that_comes_before('Class[openldap::server::config]') }
       it { should contain_class('openldap::server::config')
-        .that_notifies('Class[openldap::server::service]') }
-      it { should contain_class('openldap::server::service')
         .that_comes_before('Class[openldap::server]')
       }
       it { should have_openldap__server__database_resource_count(1) }
