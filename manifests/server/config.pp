@@ -1,6 +1,15 @@
 # See README.md for details.
 class openldap::server::config {
 
+  if $::openldap::server::provider == 'augeas' {
+    file { $::openldap::server::file:
+      ensure => present,
+      owner  => 'root',
+      group  => 'root',
+      mode   => '0640',
+    }
+  }
+
   if $::openldap::server::ssl {
     validate_absolute_path($::openldap::server::ssl_cert)
     validate_absolute_path($::openldap::server::ssl_key)
