@@ -22,8 +22,8 @@ class openldap::server::config {
   case $::osfamily {
     Debian: {
       $slapd_services = $::openldap::server::ssl ? {
-        true  => 'ldap://127.0.0.1:389/ ldaps:/// ldapi:///',
-        false => 'ldap://127.0.0.1:389/ ldapi:///',
+        true  => 'ldap:/// ldaps:/// ldapi:///',
+        false => 'ldap:/// ldapi:///',
       }
 
       shellvar { 'slapd':
