@@ -23,7 +23,7 @@ For a more customized configuration:
 ```puppet
 class { 'openldap::client':
   base       => 'dc=example,dc=com',
-  uri        => 'ldap://ldap.example.com ldap://ldap-master.example.com:666',
+  uri        => ['ldap://ldap.example.com', 'ldap://ldap-master.example.com:666'],
   tls_cacert => '/etc/ssl/certs/ca-certificates.crt',
 }
 ```
@@ -44,7 +44,7 @@ class { 'openldap::server':
 }
 ```
 
-To force using slapd.conf on OpenLDAP 2.3+:
+To force using slapd.conf on OpenLDAP 2.3+ (not working yet):
 
 ```puppet
 class { 'openldap::server':

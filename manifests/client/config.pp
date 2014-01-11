@@ -4,19 +4,20 @@ class openldap::client::config {
     ensure   => present,
     target   => $::openldap::client::file,
   }
-  if $::openldap::client::base{
+  if $::openldap::client::base != undef {
     shellvar { 'ldap.conf+base':
       variable => 'BASE',
       value    => $::openldap::client::base,
     }
   }
-  if $::openldap::client::uri {
+  if $::openldap::client::uri != undef {
     shellvar { 'ldap.conf+uri':
       variable => 'URI',
-      value    => $::openldap::client::uri,
+      value    => join(flatten([$::openldap::client::uri]), ' '),
     }
   }
-  if $::openldap::client::tls_cacert {
+  if $::openldap::client::tls_cacert != undef {
+    validate_absolute_path($::openldap::client::tls_cacert)
     shellvar { 'ldap.conf+tls_cacert':
       variable => 'TLS_CACERT',
       value    => $::openldap::client::tls_cacert,
