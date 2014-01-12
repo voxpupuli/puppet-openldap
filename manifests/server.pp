@@ -15,6 +15,14 @@ class openldap::server(
       6 => 'slapd',
     },
   },
+  $owner     = $::osfamily ? {
+    Debian => 'openldap',
+    RedHat => 'ldap',
+  },
+  $group     = $::osfamily ? {
+    Debian => 'openldap',
+    RedHat => 'ldap',
+  },
 
   $enable    = true,
   $start     = true,

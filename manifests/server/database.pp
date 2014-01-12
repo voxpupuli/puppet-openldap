@@ -18,6 +18,12 @@ define openldap::server::database(
     Class['openldap::server']
   }
 
+  file { $directory:
+    ensure => directory,
+    owner  => $::openldap::server::owner,
+    group  => $::openldap::server::group,
+  }
+  ->
   openldap_database { $title:
     suffix    => $suffix,
     provider  => $::openldap::server::provider,
