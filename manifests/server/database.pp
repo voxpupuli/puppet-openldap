@@ -1,6 +1,7 @@
 # See README.md for details.
 define openldap::server::database(
   $directory,
+  $ensure  = undef,
   $suffix  = $title,
   $backend = undef,
   $rootdn  = undef,
@@ -25,6 +26,7 @@ define openldap::server::database(
   }
   ->
   openldap_database { $title:
+    ensure    => $ensure,
     suffix    => $suffix,
     provider  => $::openldap::server::provider,
     target    => $::openldap::server::file,
