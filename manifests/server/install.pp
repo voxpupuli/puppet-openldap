@@ -2,6 +2,10 @@
 class openldap::server::install {
 
   if $::osfamily == 'Debian' {
+    $suffix =  size(keys($::openldap::server::databases)) ? {
+      1       => join(keys($::openldap::server::databases), ''),
+      default => $::openldap::server::default_database,
+    }
     file { '/var/cache/debconf/slapd.preseed':
       ensure  => present,
       mode    => '0644',

@@ -38,6 +38,7 @@ class openldap::server(
       },
     ]
   ),
+  $default_database = undef,
 ) {
   class { 'openldap::server::install': }
   class { 'openldap::server::config': }
