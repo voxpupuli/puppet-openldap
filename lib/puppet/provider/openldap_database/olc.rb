@@ -65,6 +65,32 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     @property_hash[:ensure] == :present
   end
 
+  def destroy
+    default_confdir = Facter.value(:osfamily) == 'Debian' ? '/etc/ldap/slapd.d' : Facter.value(:osfamily) == 'RedHat' ? '/etc/openldap/slapd.d' : nil
+
+    `service slapd stop`
+    File.delete("#{default_confdir}/cn=config/olcDatabase={#{@property_hash[:index]}}#{resource[:backend]}.ldif")
+    slapcat(
+      '-b',
+      'cn=config',
+      '-H',
+      "ldap:///???(objectClass=olc#{resource[:backend].capitalize}Config)")
+      .split("\n")
+      .select { |line| line =~ /^dn: / }
+      .select { |dn| dn.match(/^dn: olcDatabase={(\d+)}#{resource[:backend]},cn=config$/).captures[0].to_i > @property_hash[:index] }
+      .each { |dn|
+      index = dn[/\d+/].to_i
+      old_filename = "#{default_confdir}/cn=config/olcDatabase={#{index}}#{resource[:backend]}.ldif"
+      new_filename = "#{default_confdir}/cn=config/olcDatabase={#{index - 1}}#{resource[:backend]}.ldif"
+      File.rename(old_filename, new_filename)
+      text = File.read(new_filename)
+      replace = text.gsub!("{#{index}}#{resource[:backend]}", "{#{index - 1}}#{resource[:backend]}")
+      File.open(new_filename, "w") { |file| file.puts replace }
+    }
+    `service slapd start`
+    @property_hash.clear
+  end
+
   def create
     t = Tempfile.new('openldap_database')
     if resource[:index]
@@ -127,7 +153,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
   end
 
   def flush
-    if @property_flush
+    if not @property_flush.empty?
       t = Tempfile.new('openldap_database')
       t << "dn: olcDatabase={#{@property_hash[:index]}}#{resource[:backend]},cn=config\n"
       t << "changetype: modify\n"
