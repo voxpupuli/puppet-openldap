@@ -6,8 +6,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
 
   defaultfor :osfamily => :debian, :osfamily => :redhat
 
-  commands :slapcat => `which slapcat`.chomp,
-           :slapadd => `which slapadd`.chomp
+  commands :slapcat => 'slapcat', :slapadd => 'slapadd'
 
   mk_resource_methods
 
