@@ -57,6 +57,7 @@ class { 'openldap::server':
 ```puppet
 openldap::server::database { 'dc=example,dc=com':
   directory => '/var/lib/ldap',
+  rootpw    => openldap_password('mySuperSecretPassword'),
 }
 ```
 
