@@ -6,7 +6,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
 
   defaultfor :osfamily => :debian, :osfamily => :redhat
 
-  commands :slapcat => 'slapcat', :slapadd => 'slapadd'
+  commands :slapcat => 'slapcat', :ldapmodify => 'ldapmodify'
 
   mk_resource_methods
 
@@ -87,7 +87,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     end
     t.close
     #puts IO.read t.path
-    slapadd('-b', 'cn=config', '-l', t.path)
+    ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
     @property_hash[:ensure] = :present
     if resource[:index]
       @property_hash[:index] = resource[:index]
@@ -137,7 +137,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       t << "replace: olcSuffix\nolcSuffix: #{resource[:suffix]}\n" if @property_flush[:suffix]
       t.close
       #puts IO.read t.path
-      slapadd('-b', 'cn=config', '-l', t.path)
+      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
     end
     @property_hash = resource.to_hash
   end

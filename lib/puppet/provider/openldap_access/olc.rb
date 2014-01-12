@@ -6,7 +6,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
 
   defaultfor :osfamily => :debian, :osfamily => :redhat
 
-  commands :slapcat => 'slapcat', :slapadd => 'slapadd'
+  commands :slapcat => 'slapcat', :ldapmodify => 'ldapmodify'
 
   mk_resource_methods
 
@@ -76,7 +76,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
     t << "olcAccess: #{position}#{resource[:access]}\n"
     t.close
     #puts IO.read t.path
-    slapadd('-b', 'cn=config', '-l', t.path)
+    ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
   end
 
   def destroy
@@ -101,7 +101,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
     t << "olcAccess: {#{@property_hash[:position]}}#{resource[:access]}\n"
     t.close
     #puts IO.read t.path
-    slapadd('-b', 'cn=config', '-l', t.path)
+    ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
   end
 
 end
