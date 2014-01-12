@@ -44,6 +44,36 @@ class { 'openldap::server':
 }
 ```
 
+Configure the default database:
+
+```puppet
+class { 'openldap::server':
+  databases => {
+    'dc=example,dc=com' => {
+      directory => '/var/lib/ldap',
+    },
+  },
+}
+```
+
+If only one database is passed to `openldap::server` then it is used to during installation.
+
+If you need multiple databases, you have to set the default one:
+
+```puppet
+class { 'openldap::server':
+  databases        => {
+    'dc=foo,dc=example,dc=com' => {
+      directory => '/var/lib/ldap/foo',
+    },
+    'dc=bar,dc=example,dc=com' => {
+      directory => '/var/lib/ldap/bar',
+    },
+  },
+  default_database => 'dc=bar,dc=example,dc=com',
+}
+```
+
 To force using slapd.conf on OpenLDAP 2.3+ (not working yet):
 
 ```puppet
