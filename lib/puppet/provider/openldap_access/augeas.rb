@@ -51,11 +51,50 @@ Puppet::Type.type(:openldap_access).provide(:augeas) do
     end
   end
 
+  def self.parse_position(position)
+    position.match(/(before|after)\s+access\s+to\s+(\S+)\s+by\s+(\S+)/).captures
+  end
+
+  def self.access_path(what, by)
+    "access to[.='#{what}' and by/who='#{by}']"
+  end
+
+  def self.position_path(resource)
+    pos_before, pos_what, pos_by = self.parse_position(resource[:position])
+
+    sibling_pos = (pos_before == 'before') ? 'following-sibling' : 'preceding-sibling'
+    parent_level = "$resource[parent::access to[#{sibling_pos}::#{access_path(pos_what, pos_by)}]]"
+    if pos_what == resource[:what]
+      same_level = "$resource[#{sibling_pos}::by[who='#{pos_by}']]"
+      "#{same_level}|#{parent_level}"
+    else
+      parent_level
+    end
+  end
+
+  def in_position?
+    unless resource[:position].nil?
+      mpath = self.class.position_path(resource)
+      augopen do |aug|
+        !aug.match(mpath).empty?
+      end
+    end
+  end
+
   define_aug_method!(:create) do |aug, resource|
     if resource[:suffix] and aug.match(base_path(resource)).empty?
       raise Puppet::Error, "openldap_access: could not find database with suffix #{resource[:suffix]}"
     end
-    aug.defnode('access', "#{base_path(resource)}/access to[.='#{resource[:what]}' and by/who='#{resource[:by]}']", resource[:what])
+
+    if resource[:position].nil?
+      aug.defnode('access', "#{base_path(resource)}/#{self.access_path(resource[:what], resource[:by])}", resource[:what])
+    else
+      pos_before, pos_what, pos_by = self.parse_position(resource[:position])
+      aug.insert("#{base_path(resource)}/#{self.access_path(pos_what, pos_by)}", 'access to', pos_before == 'before')
+      aug.defvar('access', '$target//access to[count(by)=0]')
+      aug.set('$access', resource[:what])
+    end
+
     aug.defnode('resource', "$access/by[who='#{resource[:by]}']", nil)
     aug.set('$resource/who', resource[:by])
     attr_aug_writer_access(aug, resource[:access])
@@ -71,4 +110,3 @@ Puppet::Type.type(:openldap_access).provide(:augeas) do
   attr_aug_accessor(:access, :label => 'what', :rm_node => true)
   attr_aug_accessor(:control, :rm_node => true)
 end
-
