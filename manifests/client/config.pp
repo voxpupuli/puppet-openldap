@@ -12,8 +12,9 @@ class openldap::client::config {
   }
   if $::openldap::client::uri != undef {
     shellvar { 'ldap.conf+uri':
-      variable => 'URI',
-      value    => join(flatten([$::openldap::client::uri]), ' '),
+      variable   => 'URI',
+      array_type => 'string',
+      value      => $::openldap::client::uri,
     }
   }
   if $::openldap::client::tls_cacert != undef {
