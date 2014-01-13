@@ -205,7 +205,21 @@ Authorities that slapd will recognize.
 This resource allows you to manage OpenLDAP accesses to a database.
 
 ###`ensure`
-Whether or not the resource should be present.
+Whether or not the resource should be present, or if its position should be forced.
+
+Possible values are: `present`, `absent` and `positioned`.
+
+###`position`
+The position where the entry should be created. If omitted, it will be appended to the end of the file.
+
+The position is of the form `<before|after> access to <what> by <whom>`, for example:
+
+ - `before access to * by *`
+ - `after access to dn="cn=admin,dc=nodomain" by self`
+
+If `ensure` is set to `present`, the position will only be used when creating the entry.
+
+If `ensure` is set to `positioned`, the entry will be destroyed and created again in the right position if it was not properly positioned. Beware of ordering between you resources!
 
 ###`what`
 The entries and/or attributes to which the access applies.
