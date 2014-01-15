@@ -71,7 +71,7 @@ describe 'openldap::client::config' do
           :ensure   => :present,
 	  :target   => '/etc/ldap/ldap.conf',
 	  :variable => 'URI',
-	  :value    => 'ldap://ldap1.example.com ldap://ldap2.example.com',
+	  :value    => ['ldap://ldap1.example.com', 'ldap://ldap2.example.com'],
 	})
       }
       it { should_not contain_shellvar('ldap.conf+tls_cacert') }
