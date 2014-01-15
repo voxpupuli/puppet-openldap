@@ -1,6 +1,7 @@
 # See README.md for details.
 define openldap::server::access(
   $ensure   = undef,
+  $position = undef,
   $what     = undef,
   $by       = undef,
   $suffix   = undef,
@@ -12,6 +13,7 @@ define openldap::server::access(
   }
   openldap_access { $title:
     ensure   => $ensure,
+    position => $position,
     provider => $::openldap::server::provider,
     target   => $::openldap::server::file,
     what     => $what,
