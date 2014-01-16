@@ -30,8 +30,8 @@ class openldap::server(
   $provider  = 'olc',
 
   $ssl       = false,
-  $ssl_cert  = undef,
   $ssl_key   = undef,
+  $ssl_cert  = undef,
   $ssl_ca    = undef,
 
   $databases = hash(

@@ -43,19 +43,21 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
 
   def create
     t = Tempfile.new('openldap_global_conf')
-    t << "dn: cn=config"
-    t << "add: olc#{name}"
-    t << "olc#{name}: #{value}"
+    t << "dn: cn=config\n"
+    t << "add: olc#{resource[:name]}\n"
+    t << "olc#{resource[:name]}: #{resource[:value]}\n"
     t.close
+    #puts IO.read t.path
     ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
     @property_hash[:ensure] = :present
   end
 
   def destroy
     t = Tempfile.new('openldap_global_conf')
-    t << "dn: cn=config"
-    t << "delete: olc#{name}"
+    t << "dn: cn=config\n"
+    t << "delete: olc#{name}\n"
     t.close
+    #puts IO.read t.path
     ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
     @property_hash.clear
   end
@@ -66,6 +68,7 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
     t << "replace: olc#{name}\n"
     t << "olc#{name}: #{value}\n"
     t.close
+    #puts IO.read t.path
     ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
     @property_hash[:value] = value
   end
