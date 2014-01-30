@@ -1,5 +1,5 @@
 name         'mcanevet-openldap'
-version      '0.0.4'
+version      '0.0.5'
 dependency   'puppetlabs/stdlib'
 dependency   'domcleal/augeasproviders'
 source       'https://github.com/mcanevet/puppet-openldap'
