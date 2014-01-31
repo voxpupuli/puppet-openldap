@@ -9,24 +9,24 @@ describe 'openldap::server::database' do
    }}
 
   context 'without directory' do
-    it { expect { should compile }
-      .to raise_error(Puppet::Error, /Must pass directory to Openldap::Server::Database\[foo\]/)
+    it { expect { should compile }.
+         to raise_error(Puppet::Error, /Must pass directory to Openldap::Server::Database\[foo\]/)
     }
   end
 
   context 'with an invalid directory' do
     let(:params) {{ :directory => 'bar' }}
 
-    it { expect { should compile }
-      .to raise_error(Puppet::Error, /\"bar\" is not an absolute path/)
+    it { expect { should compile }.
+         to raise_error(Puppet::Error, /\"bar\" is not an absolute path/)
     }
   end
 
   context 'without declaring Class[openldap::server]' do
     let(:params) {{ :directory => '/foo/bar' }}
 
-    it { expect { should compile }
-      .to raise_error(Puppet::Error, /Could not find resource .* for relationship on .*/)
+    it { expect { should compile }.
+         to raise_error(Puppet::Error, /Could not find resource .* for relationship on .*/)
     }
   end
 
@@ -41,11 +41,10 @@ describe 'openldap::server::database' do
         end
 
         it { should compile.with_all_deps }
-        it { should contain_openldap__server__database('foo')
-          .with({
+        it { should contain_openldap__server__database('foo').with({
             :directory => '/foo/bar',
-          })
-          .that_notifies('Class[openldap::server::service]') }
+          }).
+          that_notifies('Class[openldap::server::service]') }
       end
     end
 
@@ -57,8 +56,7 @@ describe 'openldap::server::database' do
         end
 
         it { should compile.with_all_deps }
-        it { should contain_openldap__server__database('foo')
-          .with({
+        it { should contain_openldap__server__database('foo').with({
             :directory => '/foo/bar',
           })
         }

@@ -10,8 +10,8 @@ describe 'openldap::server::globalconf' do
   }}
 
   context 'without value' do
-    it { expect { should compile }
-      .to raise_error(Puppet::Error, /Must pass value to Openldap::Server::Globalconf\[foo\]/)
+    it { expect { should compile }.
+         to raise_error(Puppet::Error, /Must pass value to Openldap::Server::Globalconf\[foo\]/)
     }
   end
 
@@ -25,9 +25,9 @@ describe 'openldap::server::globalconf' do
         end
 
         it { should compile.with_all_deps }
-        it { should contain_openldap__server__globalconf('foo')
-          .with({:value => 'bar',})
-          .that_notifies('Class[openldap::server::service]') }
+        it { should contain_openldap__server__globalconf('foo').
+          with({:value => 'bar',}).
+          that_notifies('Class[openldap::server::service]') }
       end
     end
 
@@ -38,8 +38,7 @@ describe 'openldap::server::globalconf' do
         end
 
         it { should compile.with_all_deps }
-        it { should contain_openldap__server__globalconf('foo')
-          .with({
+        it { should contain_openldap__server__globalconf('foo').with({
             :value => 'bar',
           })
         }
