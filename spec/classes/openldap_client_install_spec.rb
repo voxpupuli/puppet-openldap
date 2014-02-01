@@ -14,8 +14,7 @@ describe 'openldap::client::install' do
 
       it { should compile.with_all_deps }
       it { should contain_class('openldap::client::install') }
-      it { should contain_package('libldap-2.4-2')
-        .with({
+      it { should contain_package('libldap-2.4-2').with({
           :ensure => :present,
         })
       }
@@ -28,8 +27,7 @@ describe 'openldap::client::install' do
 
       it { should compile.with_all_deps }
       it { should contain_class('openldap::client::install') }
-      it { should contain_package('foo')
-        .with({
+      it { should contain_package('foo').with({
           :ensure => :present,
         })
       }
@@ -48,8 +46,7 @@ describe 'openldap::client::install' do
 
       it { should compile.with_all_deps }
       it { should contain_class('openldap::client::install') }
-      it { should contain_package('openldap')
-        .with({
+      it { should contain_package('openldap').with({
           :ensure => :present,
         })
       }

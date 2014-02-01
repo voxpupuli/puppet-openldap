@@ -27,8 +27,7 @@ describe 'openldap::client::config' do
 
       it { should compile.with_all_deps }
       it { should contain_class('openldap::client::config') }
-      it { should contain_shellvar('ldap.conf+base')
-        .with({
+      it { should contain_shellvar('ldap.conf+base').with({
           :ensure   => :present,
 	  :target   => '/etc/ldap/ldap.conf',
 	  :variable => 'BASE',
@@ -47,8 +46,7 @@ describe 'openldap::client::config' do
       it { should compile.with_all_deps }
       it { should contain_class('openldap::client::config') }
       it { should_not contain_shellvar('ldap.conf+base') }
-      it { should contain_shellvar('ldap.conf+uri')
-        .with({
+      it { should contain_shellvar('ldap.conf+uri').with({
           :ensure   => :present,
 	  :target   => '/etc/ldap/ldap.conf',
 	  :variable => 'URI',
@@ -66,8 +64,7 @@ describe 'openldap::client::config' do
       it { should compile.with_all_deps }
       it { should contain_class('openldap::client::config') }
       it { should_not contain_shellvar('ldap.conf+base') }
-      it { should contain_shellvar('ldap.conf+uri')
-        .with({
+      it { should contain_shellvar('ldap.conf+uri').with({
           :ensure   => :present,
 	  :target   => '/etc/ldap/ldap.conf',
 	  :variable => 'URI',
@@ -82,9 +79,7 @@ describe 'openldap::client::config' do
         "class {'openldap::client': tls_cacert => 'foo', }"
       end
 
-      it { expect { should compile }
-        .to raise_error(Puppet::Error, /\"foo\" is not an absolute path/)
-      }
+      it { expect { should compile }.to raise_error(Puppet::Error, /\"foo\" is not an absolute path/) }
     end
 
     context 'with a valid tls_cacert set' do
@@ -96,8 +91,7 @@ describe 'openldap::client::config' do
       it { should contain_class('openldap::client::config') }
       it { should_not contain_shellvar('ldap.conf+base') }
       it { should_not contain_shellvar('ldap.conf+uri') }
-      it { should contain_shellvar('ldap.conf+tls_cacert')
-        .with({
+      it { should contain_shellvar('ldap.conf+tls_cacert').with({
           :ensure   => :present,
 	  :target   => '/etc/ldap/ldap.conf',
 	  :variable => 'TLS_CACERT',
