@@ -36,11 +36,7 @@ class openldap::server(
 
   $databases = hash(
     [
-      sprintf(
-        'dc=%s,dc=%s',
-        regsubst($::domain, '^(.*)\.[^\.]+$', '\1'),
-        regsubst($::domain, '^.*\.([^\.]+)$', '\1')
-      ),
+      sprintf('dc=%s', regsubst($::domain, '\.', ',dc=', 'G')),
       {
         directory => '/var/lib/ldap',
       },
