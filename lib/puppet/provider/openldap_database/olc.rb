@@ -74,7 +74,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       '-b',
       'cn=config',
       '-H',
-      "ldap:///???(objectClass=olc#{resource[:backend].capitalize}Config)"
+      "ldap:///???(objectClass=olc#{resource[:backend].to_s.capitalize}Config)"
     ).split("\n").select { |line| line =~ /^dn: / }.select { |dn| dn.match(/^dn: olcDatabase={(\d+)}#{resource[:backend]},cn=config$/).captures[0].to_i > @property_hash[:index] }.each { |dn|
       index = dn[/\d+/].to_i
       old_filename = "#{default_confdir}/cn=config/olcDatabase={#{index}}#{resource[:backend]}.ldif"
@@ -101,7 +101,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       t << "dn: olcDatabase=#{resource[:backend]},cn=config\n"
       t << "changetype: add\n"
       t << "objectClass: olcDatabaseConfig\n"
-      t << "objectClass: olc#{resource[:backend].capitalize}Config\n"
+      t << "objectClass: olc#{resource[:backend].to_s.capitalize}Config\n"
       t << "olcDatabase: #{resource[:backend]}\n"
       t << "olcDbDirectory: #{resource[:directory]}\n" if resource[:directory]
       t << "olcRootDN: #{resource[:rootdn]}\n" if resource[:rootdn]
@@ -119,7 +119,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
         '-b',
         'cn=config',
         '-H',
-        "ldap:///???(&(objectClass=olc#{resource[:backend].capitalize}Config)(olcSuffix=#{resource[:suffix]}))").split("\n").collect do |line|
+        "ldap:///???(&(objectClass=olc#{resource[:backend].to_s.capitalize}Config)(olcSuffix=#{resource[:suffix]}))").split("\n").collect do |line|
         if line =~ /^olcDatabase: /
           index = line.match(/^olcDatabase: {(\d+)}#{resource[:backend]}$/).captures[0]
           @property_hash[:index] = index
