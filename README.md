@@ -91,6 +91,14 @@ openldap::server::database { 'dc=example,dc=com':
 }
 ```
 
+###Configuring modules
+
+```puppet
+openldap::server::module { 'memberof':
+  ensure => present,
+}
+```
+
 ###Configuring ACPs/ACLs (experimental)
 
 ```puppet
