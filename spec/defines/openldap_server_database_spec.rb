@@ -6,7 +6,7 @@ describe 'openldap::server::database' do
 
   let(:facts) {{
      :osfamily => 'Debian',
-   }}
+  }}
 
   context 'without directory' do
     it { expect { should compile }.to raise_error(Puppet::Error, /Must pass directory to Openldap::Server::Database\[foo\]/) }
