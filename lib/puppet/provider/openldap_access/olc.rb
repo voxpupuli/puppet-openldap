@@ -70,7 +70,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
 
   def create
     position = "{#{resource[:position]}}" if resource[:position]
-    t = Tempfile.new('openldap_database')
+    t = Tempfile.new('openldap_access')
     t << "dn: #{getDn(resource[:suffix])}\n"
     t << "add: olcAccess\n"
     t << "olcAccess: #{position}#{resource[:access]}\n"
@@ -80,7 +80,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
   end
 
   def destroy
-    t = Tempfile.new('openldap_database')
+    t = Tempfile.new('openldap_access')
     t << "dn: #{getDn(@property_hash[:suffix])}\n"
     t << "changetype: modify\n"
     t << "delete: olcAccess\n"
@@ -91,7 +91,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
   end
 
   def access=(value)
-    t = Tempfile.new('openldap_database')
+    t = Tempfile.new('openldap_access')
     t << "dn: #{getDn(@property_hash[:suffix])}\n"
     t << "changetype: modify\n"
     t << "delete: olcAccess\n"
