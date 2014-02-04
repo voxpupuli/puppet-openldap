@@ -24,7 +24,7 @@ Puppet::Type.type(:openldap_module).provide(:olc) do
         when /^olcModuleLoad: /
           i << new(
             :ensure => :present,
-            :name   => line.match(/^olcModuleLoad: \{\d+\}(\S+)$/).captures[0]
+            :name   => line.match(/^olcModuleLoad: \{\d+\}([^\.]+).*$/).captures[0]
           )
 	end
       end
