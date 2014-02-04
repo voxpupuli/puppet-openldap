@@ -99,6 +99,14 @@ openldap::server::module { 'memberof':
 }
 ```
 
+###Configuring overlays
+
+```puppet
+openldap::server::overlay { 'memberof on dc=example,dc=com':
+  ensure => present,
+}
+```
+
 ###Configuring ACPs/ACLs (experimental)
 
 ```puppet
