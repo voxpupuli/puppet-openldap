@@ -7,7 +7,7 @@ Overview
 --------
 
 The openldap module allows you to easily manage OpenLDAP with Puppet.
-By default it will use OLC (cn=config) on OpenLDAP 2.3+ and slapd.conf otherwise.
+By default it will use OLC (cn=config).
 
 Usage
 -----
@@ -74,7 +74,7 @@ class { 'openldap::server':
 }
 ```
 
-To force using slapd.conf on OpenLDAP 2.3+ (not working yet):
+To force using slapd.conf (not working yet):
 
 ```puppet
 class { 'openldap::server':
@@ -87,6 +87,7 @@ class { 'openldap::server':
 ```puppet
 openldap::server::database { 'dc=example,dc=com':
   directory => '/var/lib/ldap',
+  rootdn    => 'cn=admin,dc=example,dc=com',
   rootpw    => openldap_password('mySuperSecretPassword'),
 }
 ```
@@ -138,44 +139,32 @@ Reference
 
 Classes:
 
-* [openldap](#class-openldap)
 * [openldap::client](#class-openldapclient)
-* [openldap::client::config](#class-openldapclientconfig)
-* [openldap::client::install](#class-openldapclientinstall)
-* [openldap::client::service](#class-openldapclientservice)
 * [openldap::server](#class-openldapserver)
-* [openldap::server::config](#class-openldapserverconfig)
-* [openldap::server::install](#class-openldapserver::install)
-* [openldap::server::service](#class-openldapserver::service)
 
 Resources:
 
-* [openldap_access](#resource-openldapaccess)
-* [openldap_database](#resource-openldapdatabase)
-* [openldap_global_conf](#resource-openldapglobalconf)
 * [openldap::server::access](#resource-openldapserveraccess)
 * [openldap::server::database](#resource-openldapserverdatabase)
 * [openldap::server::globalconf](#resource-openldapserverglobalconf)
+* [openldap::server::module](#resource-openldapservermodule)
+* [openldap::server::overlay](#resource-openldapserveroverlay)
+* [openldap::server::schema](#resource-openldapserverschema)
 
-###Class: openldap
+Functions:
 
-####`client`
-Whether or not manage the OpenLDAP client.
-
-####`server`
-whether or not manage the OpenLDAP server.
+* [openldap\_password](#function-openldappassword)
 
 ###Class: openldap::client
 
 ####`package`
-Name of the package to install. Defaults to `libldap-2.4-2` on Debian.
+Name of the package to install. Defaults to `libldap-2.4-2` on Debian and `openldap` on RedHat.
 
 ####`file`
-Name of the configuration file. Defaults to `/etc/ldap/ldap.conf` on Debian.
+Name of the configuration file. Defaults to `/etc/ldap/ldap.conf` on Debian and `/etc/openldap/ldap.conf` on RedHat.
 
 ####`base`
 Specifies the default base DN to use when performing ldap operations.
-
 
 ####`uri`
 Specifies the URI(s) of an LDAP server(s) to which the LDAP library should connect.
@@ -187,24 +176,33 @@ Authorities the client will recognize.
 ###Class: openldap::server
 
 ####`package`
-Name of the package to install. Defaults to `slapd` on Debian.
+Name of the package to install. Defaults to `slapd` on Debian and 'openldap-servers` on RedHat.
+
+####`file`
+Name of the `slapd.conf` file to use with augeas provider. Defaults to `/etc/ldap/slapd.conf` on Debian and `/etc/openldap/slapd.conf` on RedHat.
 
 ####`service`
-Name of the service. Defaults to `slapd` on Debian.
+Name of the service. Defaults to `slapd` on Debian and RedHat 6 ; and `ldap` on RedHat 5.
+
+####`owner`
+The uid of the database folder. Defaults to `openldap` on Debian and `ldap` on RedHat.
+
+####`group`
+The gid of the database folder. Defaults to `openldap` on Debian and `ldap` on RedHat.
 
 ####`enable`
-Should the service be enabled during boot time?
+Should the service be enabled during boot time ?
 
 ####`start`
-Should the service be started by Puppet
+Should the service be started by Puppet ?
 
 ####`provider`
 The provider to use to manage configuration.
-Can be `olc` to manage configuration via (cn=config) or `augeas` to use slapd.conf.
-Defaults to `olc` on OpenLDAP 2.3+ and augeas otherwise.
+Can be `olc` to manage configuration via (cn=config) or `augeas` to use slapd.conf (not working yet).
+Defaults to `olc`.
 
 ####`ssl`
-Should OpenLDAP listen on SSL.
+Should OpenLDAP listen on SSL ?
 
 ####`ssl_cert`
 Specifies the file that contains the slapd server certificate.
@@ -215,6 +213,13 @@ Specifies the file that contains the slapd server private key.
 ####`ssl_ca`
 Specifies the file that contains certificates for all of the Certificate
 Authorities that slapd will recognize.
+
+####`databases`
+A hash containing the databases to create. Default to a single database with `$::domain` as suffix and `/var/lib/ldap` as directory.
+
+####`default_database`
+The default database to use during installation (Debian only).
+If you specify more than one database in the `databases` parameter, you have to specify which one will be used in the preseed file for package installation.
 
 ###Resource: openldap::server::access
 
@@ -277,3 +282,19 @@ administrative limit restrictions for operations on this database.
 ####`rootpw`
 Specify a password (or hash of the password) for the rootdn.
 
+###Resource: openldap::server::global_conf
+
+###Resource: openldap::server::module
+
+###Resource: openldap::server::overlay
+
+###Resource: openldap::server::schema
+
+###Function: openldap_password
+
+Contributors
+------------
+
+ * Bill ONeill
+ * Mickaël Canévet
+ * Raphaël Pinson
