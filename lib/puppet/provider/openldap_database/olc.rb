@@ -1,3 +1,4 @@
+require 'base64'
 require 'tempfile'
 
 Puppet::Type.type(:openldap_database).provide(:olc) do
@@ -33,8 +34,8 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
           directory = line.split(' ')[1]
         when /^olcRootDN: /
           rootdn = line.split(' ')[1]
-        when /^olcRootPW: /
-          rootpw = line.split(' ')[1]
+        when /^olcRootPW:: /
+          rootpw = Base64.decode64(line.split(' ')[1])
         when /^olcSuffix: /
           suffix = line.split(' ')[1]
         end
