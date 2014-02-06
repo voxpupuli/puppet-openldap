@@ -7,7 +7,7 @@ class openldap::server::install {
       RedHat => 'openldap-clients',
     }
 
-    ensure_packages($utils_pkg)
+    ensure_packages([$utils_pkg])
   }
 
   if $::osfamily == 'Debian' {
