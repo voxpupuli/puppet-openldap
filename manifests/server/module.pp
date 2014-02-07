@@ -1,3 +1,4 @@
+# See README.md for details.
 define openldap::server::module(
   $ensure = undef,
 ) {

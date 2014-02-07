@@ -1,3 +1,4 @@
+# See README.md for details.
 define openldap::server::overlay(
   $ensure  = undef,
   $overlay = regsubst($title, '^(\S+)\s+on\s+(\S+)$', '\1'),
