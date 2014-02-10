@@ -46,13 +46,12 @@ Puppet::Type.type(:openldap_module).provide(:olc) do
   end
 
   def create
-    puts 'In openldap_module create'
     t = Tempfile.new('openldap_module')
     t << "dn: cn=module{0},cn=config\n"
     t << "add: olcModuleLoad\n"
     t << "olcModuleLoad: #{resource[:name]}.la\n"
     t.close
-    puts IO.read t.path
+    #puts IO.read t.path
     ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
     @property_hash[:ensure] = :present
   end

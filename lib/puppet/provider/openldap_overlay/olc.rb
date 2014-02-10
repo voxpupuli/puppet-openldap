@@ -49,7 +49,6 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
   end
 
   def create
-    puts "In create"
     t = Tempfile.new('openldap_overlay')
     t << "dn: olcOverlay=#{resource[:overlay]},#{getDn(resource[:suffix])}\n"
     t << "changetype: add\n"
@@ -58,7 +57,7 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
     t << "objectClass: olcOverlayConfig\n"
     t << "olcOverlay: #{resource[:overlay]}\n"
     t.close
-    puts IO.read t.path
+    #puts IO.read t.path
     ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
   end
 
