@@ -4,8 +4,8 @@ class openldap::server::config {
   if $::openldap::server::provider == 'augeas' {
     file { $::openldap::server::file:
       ensure => present,
-      owner  => 'root',
-      group  => 'root',
+      owner  => $::openldap::server::owner,
+      group  => $::openldap::server::group,
       mode   => '0640',
     }
   }
