@@ -29,7 +29,7 @@ Puppet::Type.type(:openldap_database).provide(:augeas) do
   confine :feature => :augeas
 
   resource_path do |resource|
-    "$target/database[suffix = '\"#{resource[:suffix]}\"']"
+    "$target/database[suffix = '#{resource[:suffix]}']"
   end
 
   def self.instances
