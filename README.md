@@ -9,8 +9,8 @@ Overview
 The openldap module allows you to easily manage OpenLDAP with Puppet.
 By default it will use OLC (cn=config).
 
-Features supported by provider
-------------------------------
+Features supported per provider
+-------------------------------
 
 Object      | olc (slapd.d) | augeas (slapd.conf)
 ------------|---------------|-----------
