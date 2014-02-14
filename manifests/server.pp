@@ -15,6 +15,13 @@ class openldap::server(
       6 => 'slapd',
     },
   },
+  $service_hasstatus = $::osfamily ? {
+    Debian => $::operatingsystemmajrelease ? {
+      5       => false,
+      default => true,
+    },
+    RedHat => true,
+  },
   $owner     = $::osfamily ? {
     Debian => 'openldap',
     RedHat => 'ldap',

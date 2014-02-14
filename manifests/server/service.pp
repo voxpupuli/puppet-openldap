@@ -6,7 +6,8 @@ class openldap::server::service {
   }
 
   service { $::openldap::server::service:
-    ensure => $ensure,
-    enable => $::openldap::server::enable,
+    ensure    => $ensure,
+    enable    => $::openldap::server::enable,
+    hasstatus => $::openldap::server::service_hasstatus,
   }
 }
