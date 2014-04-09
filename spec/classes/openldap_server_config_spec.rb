@@ -3,7 +3,8 @@ require 'spec_helper'
 describe 'openldap::server::config' do
 
   let(:facts) {{
-    :osfamily => 'Debian',
+    :osfamily                  => 'Debian',
+    :operatingsystemmajrelease => '7',
   }}
 
   context 'with no parameters' do

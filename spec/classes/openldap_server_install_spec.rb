@@ -7,7 +7,8 @@ describe 'openldap::server::install' do
   end
 
   let(:facts) {{
-    :osfamily => 'Debian',
+    :osfamily                  => 'Debian',
+    :operatingsystemmajrelease => '7',
   }}
 
   context 'with no parameters' do

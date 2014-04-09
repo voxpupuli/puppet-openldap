@@ -5,7 +5,8 @@ describe 'openldap::server::database' do
   let(:title) { 'foo' }
 
   let(:facts) {{
-     :osfamily => 'Debian',
+    :osfamily                  => 'Debian',
+    :operatingsystemmajrelease => '7',
   }}
 
   context 'without directory' do
@@ -21,7 +22,7 @@ describe 'openldap::server::database' do
   context 'without declaring Class[openldap::server]' do
     let(:params) {{ :directory => '/foo/bar' }}
 
-    it { expect { should compile }.to raise_error(Puppet::Error, /Could not find resource .* for relationship on .*/) }
+    it { expect { should compile }.to raise_error(Puppet::Error) }
   end
 
   context 'with a valid directory' do

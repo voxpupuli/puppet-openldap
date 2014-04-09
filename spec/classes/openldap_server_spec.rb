@@ -5,6 +5,7 @@ describe 'openldap::server' do
   let(:facts) {{
     :domain                    => 'example.com',
     :osfamily                  => 'Debian',
+    :operatingsystemmajrelease => '7',
   }}
 
   context 'with an unknown provider' do

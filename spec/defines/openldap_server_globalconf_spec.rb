@@ -7,6 +7,7 @@ describe 'openldap::server::globalconf' do
   let(:facts) {{
     :domain                    => 'example.com',
     :osfamily                  => 'Debian',
+    :operatingsystemmajrelease => '7',
   }}
 
   context 'without value' do
