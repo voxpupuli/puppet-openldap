@@ -1,5 +1,5 @@
 name         'camptocamp-openldap'
-version      '0.1.0'
+version      '0.1.1'
 dependency   'puppetlabs/stdlib'
 dependency   'domcleal/augeasproviders'
 source       'https://github.com/camptocamp/puppet-openldap'
