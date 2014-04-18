@@ -10,12 +10,11 @@ rvm:
   - 2.1.0
 env:
   - PUPPET_GEM_VERSION="~> 2.7.0"
-  - PUPPET_GEM_VERSION="~> 3.0.0"
   - PUPPET_GEM_VERSION="~> 3.1.0"
   - PUPPET_GEM_VERSION="~> 3.2.0"
   - PUPPET_GEM_VERSION="~> 3.3.0"
   - PUPPET_GEM_VERSION="~> 3.4.0"
-  - PUPPET_GEM_VERSION="~> 3.5.0.rc3" STRICT_VARIABLES="yes"
+  - PUPPET_GEM_VERSION="~> 3.5.0" STRICT_VARIABLES="yes"
 matrix:
   fast_finish: true
   exclude:
@@ -30,13 +29,9 @@ matrix:
     - rvm: 2.0.0
       env: PUPPET_GEM_VERSION="~> 2.7.0"
     - rvm: 2.0.0
-      env: PUPPET_GEM_VERSION="~> 3.0.0"
-    - rvm: 2.0.0
       env: PUPPET_GEM_VERSION="~> 3.1.0"
     - rvm: 2.1.0
       env: PUPPET_GEM_VERSION="~> 2.7.0"
-    - rvm: 2.1.0
-      env: PUPPET_GEM_VERSION="~> 3.0.0"
     - rvm: 2.1.0
       env: PUPPET_GEM_VERSION="~> 3.1.0"
     - rvm: 2.1.0
@@ -45,5 +40,3 @@ matrix:
       env: PUPPET_GEM_VERSION="~> 3.3.0"
     - rvm: 2.1.0
       env: PUPPET_GEM_VERSION="~> 3.4.0"
-  allow_failures:
-    - env: PUPPET_GEM_VERSION="~> 3.0.0"
