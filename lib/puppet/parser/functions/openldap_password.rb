@@ -11,6 +11,6 @@ module Puppet::Parser::Functions
     scheme = args[1] if args[1]
     command << ['-h', scheme] if scheme
 
-    Puppet::Util::Execution.execute(command.flatten)
+    Puppet::Util::Execution.execute(command.flatten).strip
   end
 end
