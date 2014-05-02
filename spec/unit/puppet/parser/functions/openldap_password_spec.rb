@@ -17,19 +17,19 @@ describe Puppet::Parser::Functions.function(:openldap_password) do
 
   context 'when given only a secret' do
     it 'should execute slappasswd on it' do
-      Puppet::Util::Execution.expects(:execute).with([
+      Puppet::Util::Execution.stubs(:execute).with([
         'slappasswd', '-s', 'foo'
-        ])
-      scope.function_openldap_password(['foo'])
+      ]).returns("{SSHA}kKSBVuPOwlHp5HfcR3LBKyB7smTnbq9Y\n")
+      scope.function_openldap_password(['foo']).should == '{SSHA}kKSBVuPOwlHp5HfcR3LBKyB7smTnbq9Y'
     end
   end
 
   context 'when given a secret and a scheme' do
     it 'should execute slappasswd on them' do
-      Puppet::Util::Execution.expects(:execute).with([
-        'slappasswd', '-s', 'foo', '-h', 'bar'
-        ])
-      scope.function_openldap_password(['foo', 'bar'])
+      Puppet::Util::Execution.stubs(:execute).with([
+        'slappasswd', '-s', 'foo', '-h', '{MD5}'
+      ]).returns("{MD5}rL0Y20zC+Fzt72VPzMSk2A==\n")
+      scope.function_openldap_password(['foo', '{MD5}']).should == '{MD5}rL0Y20zC+Fzt72VPzMSk2A=='
     end
   end
 end
