@@ -1,11 +1,7 @@
-require File.dirname(__FILE__) + '/../../../../augeasproviders/lib/augeasproviders/type.rb'
-
 Puppet::Type.newtype(:openldap_access) do
   @doc = 'Manages OpenLDAP ACPs/ACLs'
 
-  extend AugeasProviders::Type
-
-  positionable
+  ensurable
 
   newparam(:name) do
     desc "The default namevar"

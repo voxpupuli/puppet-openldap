@@ -1,5 +1,5 @@
 name         'camptocamp-openldap'
-version      '0.1.3'
+version      '0.1.4'
 source       'https://github.com/camptocamp/puppet-openldap'
 author       'Camptocamp'
 summary      'Puppet OpenLDAP module'
