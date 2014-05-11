@@ -6,10 +6,30 @@ describe 'openldap::server class' do
       pp = <<-EOS
         class { 'openldap::server':
           databases => {
-            'dc=foo,dc=bar' => {
+            'dc=foo,dc=example,dc=org' => {
               directory => '/var/lib/ldap',
             },
           },
+        }
+      EOS
+
+      # Run it twice and test for idempotency
+      apply_manifest(pp, :catch_failures => true)
+      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+    end
+
+    it 'should create 2 databases' do
+      pp = <<-EOS
+        class { 'openldap::server':
+          databases        => {
+            'dc=foo,dc=example,dc=org' => {
+              directory => '/var/lib/ldap/foo',
+            },
+            'dc=bar,dc=example,dc=org' => {
+              directory => '/var/lib/ldap/bar',
+            },
+          },
+          default_database => 'dc=foo,dc=example,dc=org',
         }
       EOS
 
