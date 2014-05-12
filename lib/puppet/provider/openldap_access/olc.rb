@@ -26,15 +26,21 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
         case line
         when /^olcSuffix: /
           suffix = line.split(' ')[1]
-	when /^olcAccess: /
-          position, access = line.match(/^olcAccess: \{(\d+)\}(.*)$/).captures
-          i << new(
-            :name     => "#{access} on #{suffix}",
-            :ensure   => :present,
-            :access   => access,
-            :suffix   => suffix,
-            :position => position
-          )
+        when /^olcAccess: /
+          position, what, bys = line.match(/^olcAccess: \{(\d+)\}to (\S+)( by .*)+$/).captures
+          bys.split(' by ')[1..-1].each { |b|
+            by, access, control = b.match(/^(\S+) (\S+)( \S+)?$/).captures
+            i << new(
+              :name     => "to #{what} by #{by} on #{suffix}",
+              :ensure   => :present,
+              :position => position,
+              :what     => what,
+              :by       => by,
+              :suffix   => suffix,
+              :access   => access,
+              :control  => control,
+            )
+          }
         end
       end
     end
