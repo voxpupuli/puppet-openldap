@@ -4,6 +4,11 @@ define openldap::server::overlay(
   $overlay = regsubst($title, '^(\S+)\s+on\s+(\S+)$', '\1'),
   $suffix  = regsubst($title, '^(\S+)\s+on\s+(\S+)$', '\2'),
 ) {
+
+  if ! defined(Class['openldap::server']) {
+    fail 'class ::openldap::server has not been evaluated'
+  }
+
   if $::openldap::server::provider == 'augeas' {
     Class['openldap::server::install'] ->
     Openldap::Server::Overlay[$title] ~>

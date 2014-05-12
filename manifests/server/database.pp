@@ -7,6 +7,11 @@ define openldap::server::database(
   $rootdn  = undef,
   $rootpw  = undef,
 ) {
+
+  if ! defined(Class['openldap::server']) {
+    fail 'class ::openldap::server has not been evaluated'
+  }
+
   validate_absolute_path($directory)
 
   if $::openldap::server::provider == 'augeas' {

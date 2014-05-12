@@ -16,7 +16,7 @@ describe 'openldap::server::database' do
   context 'with an invalid directory' do
     let(:params) {{ :directory => 'bar' }}
 
-    it { expect { should compile }.to raise_error(Puppet::Error, /\"bar\" is not an absolute path/) }
+    it { expect { should compile }.to raise_error(Puppet::Error, /class ::openldap::server has not been evaluated/) }
   end
 
   context 'without declaring Class[openldap::server]' do

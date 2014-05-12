@@ -1,6 +1,11 @@
 # See README.md for details.
 class openldap::server::install {
 
+
+  if ! defined(Class['openldap::server']) {
+    fail 'class ::openldap::server has not been evaluated'
+  }
+
   if $::openldap::server::provider == 'olc' {
     $utils_pkg = $::osfamily ? {
       Debian => 'ldap-utils',

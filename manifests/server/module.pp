@@ -2,6 +2,11 @@
 define openldap::server::module(
   $ensure = undef,
 ) {
+
+  if ! defined(Class['openldap::server']) {
+    fail 'class ::openldap::server has not been evaluated'
+  }
+
   if $::openldap::server::provider == 'augeas' {
     Class['openldap::server::install'] ->
     Openldap::Server::Module[$title] ~>
