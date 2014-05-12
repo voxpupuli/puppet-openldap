@@ -14,8 +14,15 @@ define openldap::server::access(
   }
 
   if $::openldap::server::provider == 'augeas' {
-    Openldap::Server::Access[$title] ~> Class['openldap::server::service']
+    Class['openldap::server::install'] ->
+    Openldap::Server::Access[$title] ~>
+    Class['openldap::server::service']
+  } else {
+    Class['openldap::server::service'] ->
+    Openldap::Server::Access[$title] ->
+    Class['openldap::server']
   }
+
   openldap_access { $title:
     ensure   => $ensure,
     position => $position,
