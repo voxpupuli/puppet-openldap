@@ -53,9 +53,6 @@ Puppet::Type.newtype(:openldap_access) do
 
   newparam(:position) do
     desc "Where to place the new entry"
-    validate do |value|
-      raise "Wrong position statement '#{value}'" unless value =~ /^(before|after)/
-    end
   end
 
   newproperty(:access) do

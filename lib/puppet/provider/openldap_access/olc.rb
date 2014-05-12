@@ -73,7 +73,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
     t = Tempfile.new('openldap_access')
     t << "dn: #{getDn(resource[:suffix])}\n"
     t << "add: olcAccess\n"
-    t << "olcAccess: #{position}#{resource[:access]}\n"
+    t << "olcAccess: #{position}to #{resource[:what]} by #{resource[:by]} #{resource[:access]}\n"
     t.close
     #puts IO.read t.path
     ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
