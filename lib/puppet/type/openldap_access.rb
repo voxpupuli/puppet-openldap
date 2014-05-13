@@ -63,4 +63,8 @@ Puppet::Type.newtype(:openldap_access) do
     desc "Control rule."
   end
 
+  autorequire(:openldap_database) do
+    [ value(:suffix) ]
+  end
+
 end

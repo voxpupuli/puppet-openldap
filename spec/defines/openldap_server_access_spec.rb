@@ -5,6 +5,7 @@ describe 'openldap::server::access' do
   let(:title) { 'foo' }
 
   let(:facts) {{
+    :domain                    => 'example.com',
     :osfamily                  => 'Debian',
     :operatingsystemmajrelease => '7',
   }}
@@ -20,9 +21,10 @@ describe 'openldap::server::access' do
 
   context 'with composite namevar' do
     let(:title) {
-     'to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=ccmteam,dc=com" on dc=ccmteam,dc=com'
+     'to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" on dc=example,dc=com'
     }
     it { should compile.with_all_deps }
+    it { pending('Should work') { should contain_openldap_access('to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" on dc=example,dc=com').that_requires('Openldap_database[dc=example,dc=com]') } }
   end
 
 end
