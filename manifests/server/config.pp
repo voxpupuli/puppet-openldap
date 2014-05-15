@@ -6,15 +6,19 @@ class openldap::server::config {
   }
 
   if $::openldap::server::provider == 'augeas' {
+    $ensure = $::openldap::server::ensure ? {
+      present => present,
+      default => absent,
+    }
     file { $::openldap::server::file:
-      ensure => present,
+      ensure => $ensure,
       owner  => $::openldap::server::owner,
       group  => $::openldap::server::group,
       mode   => '0640',
     }
   }
 
-  if $::openldap::server::ssl {
+  if ($::openldap::server::ssl) and ($::openldap::server::ensure == present) {
     validate_absolute_path($::openldap::server::ssl_cert)
     validate_absolute_path($::openldap::server::ssl_key)
     openldap::server::globalconf { 'TLSCertificateFile':

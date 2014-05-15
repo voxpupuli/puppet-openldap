@@ -10,6 +10,8 @@ class openldap::client(
     RedHat => '/etc/openldap/ldap.conf',
   },
 
+  $ensure     = present,
+
   # Options
   $base       = undef,
   $uri        = undef,
@@ -17,6 +19,8 @@ class openldap::client(
   # TLS Options
   $tls_cacert = undef,
 ) {
+  validate_re($ensure, ['^present', '^absent'])
+
   class { 'openldap::client::install': } ->
   class { 'openldap::client::config': } ->
   Class['openldap::client']

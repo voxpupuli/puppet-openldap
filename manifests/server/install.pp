@@ -1,9 +1,14 @@
 # See README.md for details.
 class openldap::server::install {
 
-
   if ! defined(Class['openldap::server']) {
     fail 'class ::openldap::server has not been evaluated'
+  }
+
+  if ($::openldap::server::ensure == present) or (defined(Class['openldap::client']) and ($::openldap::client::ensure == present)) {
+    $pkg_ensure = present
+  } else {
+    $pkg_ensure = purged
   }
 
   if $::openldap::server::provider == 'olc' {
@@ -12,7 +17,9 @@ class openldap::server::install {
       RedHat => 'openldap-clients',
     }
 
-    ensure_packages([$utils_pkg])
+    package { [$utils_pkg]:
+      ensure => $pkg_ensure,
+    }
   }
 
   if $::osfamily == 'Debian' {
@@ -20,8 +27,12 @@ class openldap::server::install {
       1       => join(keys($::openldap::server::databases), ''),
       default => $::openldap::server::default_database,
     }
+    $ensure = $::openldap::server::ensure ? {
+      present => present,
+      default => absent
+    }
     file { '/var/cache/debconf/slapd.preseed':
-      ensure  => present,
+      ensure  => $ensure,
       mode    => '0644',
       owner   => 'root',
       group   => 'root',
@@ -36,7 +47,7 @@ class openldap::server::install {
   }
 
   package { $::openldap::server::package:
-    ensure       => present,
+    ensure       => $::openldap::server::ensure,
     responsefile => $responsefile,
   }
 }

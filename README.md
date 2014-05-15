@@ -202,6 +202,11 @@ The uid of the database folder. Defaults to `openldap` on Debian and `ldap` on R
 ####`group`
 The gid of the database folder. Defaults to `openldap` on Debian and `ldap` on RedHat.
 
+####`ensure`
+State of the openldap package. Valid values are:
+- `present` to ensure package is present
+- `absent` to ensure packages are all related resources are absent
+
 ####`enable`
 Should the service be enabled during boot time ?
 
