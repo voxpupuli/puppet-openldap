@@ -6,12 +6,12 @@ describe 'openldap::server::access define' do
       pp = <<-EOS
         class { 'openldap::server':
           databases => {
-            'dc=foo,dc=example,dc=org' => {
+            'dc=foo,dc=example,dc=com' => {
               directory => '/var/lib/ldap/foo',
             },
           },
         }
-        openldap::server::access { 'to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=foo,dc=example,dc=org" on dc=foo,dc=example,dc=org':
+        openldap::server::access { 'to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=foo,dc=example,dc=com" on dc=foo,dc=example,dc=com':
 	  access => 'write',
         }
       EOS
