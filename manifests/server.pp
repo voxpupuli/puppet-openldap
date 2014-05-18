@@ -31,6 +31,7 @@ class openldap::server(
     RedHat => 'ldap',
   },
 
+  $ensure    = present,
   $enable    = true,
   $start     = true,
 
@@ -51,6 +52,8 @@ class openldap::server(
   ),
   $default_database = undef,
 ) {
+  validate_re($ensure, ['^present', '^absent'])
+
   class { 'openldap::server::install': }
   class { 'openldap::server::config': }
   class { 'openldap::server::service': }
