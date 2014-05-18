@@ -36,15 +36,15 @@ describe 'openldap::server class' do
 
   describe 'when setting ensure to absent' do
     it 'should uninstall server' do
-      pending('not implemented yet') {
-        pp = <<-EOS
-          class { 'openldap::server': ensure => absent }
-        EOS
+      pp = <<-EOS
+        class { 'openldap::server':
+          ensure => absent,
+        }
+      EOS
 
-        # Run it twice and test for idempotency
-        apply_manifest(pp, :catch_failures => true)
-        expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
-      }
+      # Run it twice and test for idempotency
+      apply_manifest(pp, :catch_failures => true)
+      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
     end
   end
 

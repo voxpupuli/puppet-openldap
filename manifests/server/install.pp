@@ -14,16 +14,16 @@ class openldap::server::install {
       1       => join(keys($::openldap::server::databases), ''),
       default => $::openldap::server::default_database,
     }
-    $ensure = $::openldap::server::ensure ? {
-      present => present,
-      default => absent
+    $content = $::openldap::server::ensure ? {
+      present => template('openldap/preseed.erb'),
+      default => undef,
     }
     file { '/var/cache/debconf/slapd.preseed':
-      ensure  => $ensure,
+      ensure  => $::openldap::server::ensure,
       mode    => '0644',
       owner   => 'root',
       group   => 'root',
-      content => template('openldap/preseed.erb'),
+      content => $content,
       before  => Package[$::openldap::server::package],
     }
   }
@@ -33,8 +33,13 @@ class openldap::server::install {
     RedHat => undef,
   }
 
+  $ensure = $::openldap::server::ensure ? {
+    present => present,
+    default => purged,
+  }
+
   package { $::openldap::server::package:
-    ensure       => $::openldap::server::ensure,
+    ensure       => $ensure,
     responsefile => $responsefile,
   }
 }

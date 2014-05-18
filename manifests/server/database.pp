@@ -44,7 +44,7 @@ define openldap::server::database(
   } else {
     file { $directory:
       ensure => absent,
-      force => true,
+      force  => true,
     }
   }
 }
