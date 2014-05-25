@@ -57,7 +57,7 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
     t << "objectClass: olcOverlayConfig\n"
     t << "olcOverlay: #{resource[:overlay]}\n"
     t.close
-    #puts IO.read t.path
+    Puppet.debug(IO.read t.path)
     ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
   end
 

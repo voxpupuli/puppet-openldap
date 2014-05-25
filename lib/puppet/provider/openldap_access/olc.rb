@@ -81,7 +81,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
     t << "add: olcAccess\n"
     t << "olcAccess: #{position}to #{resource[:what]} by #{resource[:by]} #{resource[:access]}\n"
     t.close
-    #puts IO.read t.path
+    Puppet.debug(IO.read t.path)
     ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
   end
 
@@ -92,7 +92,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
     t << "delete: olcAccess\n"
     t << "olcAccess: {#{@property_hash[:position]}}\n"
     t.close
-    #puts IO.read t.path
+    Puppet.debug(IO.read t.path)
     slapdd('-b', 'cn=config', '-l', t.path)
   end
 
@@ -106,7 +106,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
     t << "add: olcAccess\n"
     t << "olcAccess: {#{@property_hash[:position]}}#{resource[:access]}\n"
     t.close
-    #puts IO.read t.path
+    Puppet.debug(IO.read t.path)
     ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
   end
 

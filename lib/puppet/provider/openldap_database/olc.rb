@@ -110,7 +110,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
     end
     t.close
-    #puts IO.read t.path
+    Puppet.debug(IO.read t.path)
     ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
     @property_hash[:ensure] = :present
     if resource[:index]
@@ -160,7 +160,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       t << "replace: olcRootPW\nolcRootPW: #{resource[:rootpw]}\n" if @property_flush[:rootpw]
       t << "replace: olcSuffix\nolcSuffix: #{resource[:suffix]}\n" if @property_flush[:suffix]
       t.close
-      #puts IO.read t.path
+      Puppet.debug(IO.read t.path)
       ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
     end
     @property_hash = resource.to_hash

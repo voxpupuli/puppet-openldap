@@ -51,7 +51,7 @@ Puppet::Type.type(:openldap_module).provide(:olc) do
     t << "add: olcModuleLoad\n"
     t << "olcModuleLoad: #{resource[:name]}.la\n"
     t.close
-    #puts IO.read t.path
+    Puppet.debug(IO.read t.path)
     ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
     @property_hash[:ensure] = :present
   end
