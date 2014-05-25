@@ -1,8 +1,9 @@
 require 'spec_helper_acceptance'
 
 describe 'openldap::client class' do
-  describe 'running puppet code' do
-    it 'should work with no errors' do
+
+  describe 'without parameter' do
+    it 'should install client' do
       pp = <<-EOS
         class { 'openldap::client': }
       EOS
@@ -12,5 +13,6 @@ describe 'openldap::client class' do
       expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
     end
   end
+
 end
 
