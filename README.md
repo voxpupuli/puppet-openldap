@@ -15,10 +15,11 @@ Features supported per provider
 Object      | olc (slapd.d) | augeas (slapd.conf)
 ------------|---------------|-----------
 global_conf | Y             | N
-database    | Y             | Y
+database    | Y             | N (temporarily disabled)
 module      | Y             | N
 overlay     | Y             | N
 access      | Y             | N
+index       | N             | N
 schema      | N             | N
 
 Usage
@@ -56,19 +57,13 @@ class { 'openldap::server':
 }
 ```
 
-Configure the default database:
+Configure the suffix:
 
 ```puppet
 class { 'openldap::server':
-  databases => {
-    'dc=example,dc=com' => {
-      directory => '/var/lib/ldap',
-    },
-  },
+  suffix => 'dc=example,dc=com',
 }
 ```
-
-If only one database is passed to `openldap::server` then it is used to during installation.
 
 If you need multiple databases, you have to set the default one:
 
@@ -82,7 +77,7 @@ class { 'openldap::server':
       directory => '/var/lib/ldap/bar',
     },
   },
-  default_database => 'dc=bar,dc=example,dc=com',
+  suffix => 'dc=bar,dc=example,dc=com',
 }
 ```
 
@@ -120,7 +115,7 @@ openldap::server::overlay { 'memberof on dc=example,dc=com':
 }
 ```
 
-###Configuring ACPs/ACLs (experimental)
+###Configuring ACPs/ACLs
 
 ```puppet
 openldap::server::access {

@@ -10,10 +10,6 @@ class openldap::server::install {
   }
 
   if $::osfamily == 'Debian' {
-    $suffix =  size(keys($::openldap::server::databases)) ? {
-      1       => join(keys($::openldap::server::databases), ''),
-      default => $::openldap::server::default_database,
-    }
     $content = $::openldap::server::ensure ? {
       present => template('openldap/preseed.erb'),
       default => undef,

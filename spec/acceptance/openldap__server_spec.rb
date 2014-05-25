@@ -4,27 +4,21 @@ describe 'openldap::server class' do
 
   describe 'without parameter' do
     it 'should install server' do
-      pending('no domain and fqdn facts in vagrant box') {
-        pp = <<-EOS
-          class { 'openldap::server': }
-        EOS
+      pp = <<-EOS
+        class { 'openldap::server': }
+      EOS
 
-        # Run it twice and test for idempotency
-        apply_manifest(pp, :catch_failures => true)
-        expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
-      }
+      # Run it twice and test for idempotency
+      apply_manifest(pp, :catch_failures => true)
+      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
     end
   end
 
   describe 'when creating 1 database' do
-    it 'should work with no errors' do
+    it 'should install server with specified suffix' do
       pp = <<-EOS
         class { 'openldap::server':
-          databases => {
-            'dc=foo,dc=example,dc=com' => {
-              directory => '/var/lib/ldap',
-            },
-          },
+          suffix => 'dc=foo,dc=example,dc=com',
         }
       EOS
 
@@ -64,7 +58,7 @@ describe 'openldap::server class' do
               directory => '/var/lib/ldap/bar',
             },
           },
-          default_database => 'dc=foo,dc=example,dc=com',
+          suffix => 'dc=foo,dc=example,dc=com',
         }
       EOS
 
@@ -82,12 +76,7 @@ describe 'openldap::server class' do
     it 'enable => false:' do
       pp = <<-EOS
         class { 'openldap::server':
-          enable    => false,
-          databases => {
-            'dc=foo,dc=bar' => {
-              directory => '/var/lib/ldap',
-            },
-          },
+          enable => false,
         }
       EOS
 
@@ -105,12 +94,7 @@ describe 'openldap::server class' do
     it 'start => false:' do
       pp = <<-EOS
         class { 'openldap::server':
-          start     => false,
-          databases => {
-            'dc=foo,dc=bar' => {
-              directory => '/var/lib/ldap',
-            },
-          },
+          start  => false,
         }
       EOS
 

@@ -50,7 +50,7 @@ class openldap::server(
       },
     ]
   ),
-  $default_database = undef,
+  $suffix = sprintf('dc=%s', regsubst($::domain, '\.', ',dc=', 'G')),
 ) {
   validate_re($ensure, ['^present', '^absent'])
 

@@ -9,11 +9,7 @@ describe 'openldap::server::database define' do
     it 'should work with no errors' do
       pp = <<-EOS
         class { 'openldap::server':
-          databases => {
-            'dc=foo,dc=example,dc=com' => {
-              directory => '/var/lib/ldap/foo',
-            },
-          },
+          suffix => 'dc=foo,dc=example,dc=com',
         }
         openldap::server::database { 'dc=bar,dc=example,dc=com':
           directory => '/var/lib/ldap/bar',

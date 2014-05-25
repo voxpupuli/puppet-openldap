@@ -10,11 +10,7 @@ describe 'openldap::server::access define' do
     it 'should work with no errors' do
       pp = <<-EOS
         class { 'openldap::server':
-          databases => {
-            'dc=foo,dc=example,dc=com' => {
-              directory => '/var/lib/ldap/foo',
-            },
-          },
+          suffix => 'dc=foo,dc=example,dc=com',
         }
         openldap::server::access { 'to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=foo,dc=example,dc=com" on dc=foo,dc=example,dc=com':
 	  access => 'write',
