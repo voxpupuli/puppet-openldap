@@ -1,6 +1,8 @@
 require 'beaker-rspec'
 
 hosts.each do |host|
+  # Hack /etc/hosts so that fact fqdn works
+  on host, "sed -i 's/^#{host['ip'].to_s}\t#{host[:vmhostname] || host.name}$/#{host['ip'].to_s}\t#{host[:vmhostname] || host.name}.example.com #{host[:vmhostname] || host.name}/' /etc/hosts"
   # Install Puppet
   install_package host, 'rubygems'
   on host, 'gem install puppet --no-ri --no-rdoc'
