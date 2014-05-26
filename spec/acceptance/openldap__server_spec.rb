@@ -12,6 +12,11 @@ describe 'openldap::server class' do
       apply_manifest(pp, :catch_failures => true)
       expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
     end
+
+    describe port(389) do
+      it { should be_listening }
+    end
+
   end
 
   describe 'when setting ensure to absent' do
@@ -44,6 +49,11 @@ describe 'openldap::server class' do
       apply_manifest(pp, :catch_failures => true)
       expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
     end
+
+    describe port(389) do
+      it { should be_listening }
+    end
+
   end
 
   describe 'when creating 2 databases' do
@@ -70,6 +80,11 @@ describe 'openldap::server class' do
       apply_manifest(pp, :catch_failures => true)
       expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
     end
+
+    describe port(389) do
+      it { should be_listening }
+    end
+
   end
 
   describe 'when disabling service' do
@@ -88,6 +103,11 @@ describe 'openldap::server class' do
       apply_manifest(pp, :catch_failures => true)
       expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
     end
+
+    describe port(389) do
+      it { should be_listening }
+    end
+
   end
 
   describe 'when stopping service' do
@@ -106,6 +126,11 @@ describe 'openldap::server class' do
       apply_manifest(pp, :catch_failures => true)
       expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
     end
+
+    describe port(389) do
+      it { should_not be_listening }
+    end
+
   end
 
 end
