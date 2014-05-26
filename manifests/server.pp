@@ -54,22 +54,24 @@ class openldap::server(
 ) {
   validate_re($ensure, ['^present', '^absent'])
 
-  class { 'openldap::server::install': }
-  class { 'openldap::server::config': }
+  class { 'openldap::server::install': } ->
+  class { 'openldap::server::config': } ~>
   class { 'openldap::server::service': }
+
+  class { 'openldap::server::slapdconf': }
 
   case $provider {
     augeas: {
       fail 'Augeas provider is temporarily disable as it does not work with latest version of augeasproviders'
+
       Class['openldap::server::install'] ->
-      Class['openldap::server::config'] ~>
+      Class['openldap::server::slapdconf'] ~>
       Class['openldap::server::service'] ->
       Class['openldap::server']
     }
     olc: {
-      Class['openldap::server::install'] ->
       Class['openldap::server::service'] ->
-      Class['openldap::server::config'] ->
+      Class['openldap::server::slapdconf'] ->
       Class['openldap::server']
     }
     default: {

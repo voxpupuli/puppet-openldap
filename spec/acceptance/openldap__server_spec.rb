@@ -33,6 +33,90 @@ describe 'openldap::server class' do
     end
   end
 
+  describe 'with SSL' do
+    it 'should install server' do
+      pp = <<-EOS
+        $ssldir = '/etc/puppet/ssl'
+        Exec {
+          path => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
+        }
+        exec { "puppet cert generate ${::fqdn}":
+          creates => [
+            "${ssldir}/private_keys/${::fqdn}.pem",
+            "${ssldir}/certs/${::fqdn}.pem",
+          ],
+        }
+        file { '/etc/ldap/ssl':
+          ensure => directory,
+        }
+        if $::osfamily == 'Debian' {
+          # OpenLDAP is linked towards GnuTLS on Debian so we have to convert the key
+          package { 'gnutls-bin':
+            ensure => present,
+          }
+          ->
+          exec { "certtool -k < ${ssldir}/private_keys/${::fqdn}.pem > /etc/ldap/ssl/${::fqdn}.key":
+            creates => "/etc/ldap/ssl/${::fqdn}.key",
+            require => [
+              File['/etc/ldap/ssl'],
+              Exec["puppet cert generate ${::fqdn}"],
+            ],
+            before  => File["/etc/ldap/ssl/${::fqdn}.key"],
+          }
+        } else {
+          File <| title == "/etc/ldap/ssl/${::fqdn}.key" |> {
+            source => "${ssldir}/private_keys/${::fqdn}.pem",
+          }
+        }
+        file { "/etc/ldap/ssl/${::fqdn}.key":
+          ensure  => file,
+          owner   => 'openldap',
+          group   => 'openldap',
+          mode    => '0600',
+          require => Class['openldap::server::install'],
+          before  => Class['openldap::server::slapdconf'],
+        }
+        file { "/etc/ldap/ssl/${::fqdn}.crt":
+          ensure  => file,
+          owner   => 'openldap',
+          group   => 'openldap',
+          mode    => '0644',
+          source  => "${ssldir}/certs/${::fqdn}.pem",
+          require => Class['openldap::server::install'],
+          before  => Class['openldap::server::slapdconf'],
+        }
+        file { '/etc/ldap/ssl/ca.pem':
+          ensure  => file,
+          owner   => 'openldap',
+          group   => 'openldap',
+          mode    => '0644',
+          source  => "${ssldir}/certs/ca.pem",
+          require => Class['openldap::server::install'],
+          before  => Class['openldap::server::slapdconf'],
+        }
+        class { '::openldap::server':
+          ssl      => true,
+          ssl_key  => "/etc/ldap/ssl/${::fqdn}.key",
+          ssl_cert => "/etc/ldap/ssl/${::fqdn}.crt",
+          ssl_ca   => '/etc/ldap/ssl/ca.pem',
+        }
+      EOS
+
+      # Run it twice and test for idempotency
+      apply_manifest(pp, :catch_failures => true)
+      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+    end
+
+    describe port(389) do
+      it { should be_listening }
+    end
+
+    describe port(636) do
+      it { should be_listening }
+    end
+
+  end
+
   describe 'when creating 1 database' do
     after :all do
       apply_manifest("class { 'openldap::server': ensure => absent }", :catch_failures => true)
