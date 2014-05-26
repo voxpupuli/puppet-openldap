@@ -14,11 +14,11 @@ describe 'openldap::server class' do
     end
   end
 
-  describe 'when creating 1 database' do
-    it 'should install server with specified suffix' do
+  describe 'when setting ensure to absent' do
+    it 'should uninstall server' do
       pp = <<-EOS
         class { 'openldap::server':
-          suffix => 'dc=foo,dc=example,dc=com',
+          ensure => absent,
         }
       EOS
 
@@ -28,11 +28,15 @@ describe 'openldap::server class' do
     end
   end
 
-  describe 'when setting ensure to absent' do
-    it 'should uninstall server' do
+  describe 'when creating 1 database' do
+    after :all do
+      apply_manifest("class { 'openldap::server': ensure => absent }", :catch_failures => true)
+    end
+
+    it 'should install server with specified suffix' do
       pp = <<-EOS
         class { 'openldap::server':
-          ensure => absent,
+          suffix => 'dc=foo,dc=example,dc=com',
         }
       EOS
 
