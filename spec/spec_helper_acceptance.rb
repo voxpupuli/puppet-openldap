@@ -4,7 +4,12 @@ hosts.each do |host|
   # Hack /etc/hosts so that fact fqdn works
   on host, "sed -i 's/^#{host['ip'].to_s}\t#{host[:vmhostname] || host.name}$/#{host['ip'].to_s}\t#{host[:vmhostname] || host.name}.example.com #{host[:vmhostname] || host.name}/' /etc/hosts"
   # Install Puppet
-  install_package host, 'rubygems'
+  on host, "ruby --version | cut -f2 -d ' ' | cut -f1 -d 'p'" do |version|
+    version = version.stdout.strip
+    if Gem::Version.new(version) < Gem::Version.new('1.9')
+      install_package host, 'rubygems'
+    end
+  end
   on host, 'gem install puppet --no-ri --no-rdoc'
   on host, "mkdir -p #{host['distmoduledir']}"
   # Install ruby-augeas
