@@ -24,11 +24,15 @@ class openldap::server::config {
         ensure   => present,
         target   => '/etc/sysconfig/ldap',
         variable => 'SLAPD_LDAP',
-        value    => true,
+        value    => 'yes',
       }
       $slapd_ldaps_ensure = $::openldap::server::ssl ? {
         true  => present,
         false => absent,
+      }
+      $ldaps = $::openldap::server::ssl ? {
+        true  => 'yes',
+        false => 'no',
       }
       shellvar { 'SLAPD_LDAPS':
         ensure   => $slapd_ldaps_ensure,
@@ -40,7 +44,7 @@ class openldap::server::config {
         ensure   => present,
         target   => '/etc/sysconfig/ldap',
         variable => 'SLAPD_LDAPI',
-        value    => true,
+        value    => 'yes',
       }
     }
     default: {
