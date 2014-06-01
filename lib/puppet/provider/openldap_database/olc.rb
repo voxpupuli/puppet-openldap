@@ -111,7 +111,11 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     end
     t.close
     Puppet.debug(IO.read t.path)
-    ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+    begin
+      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+    rescue Exception => e
+      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+    end
     @property_hash[:ensure] = :present
     if resource[:index]
       @property_hash[:index] = resource[:index]
@@ -161,7 +165,11 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       t << "replace: olcSuffix\nolcSuffix: #{resource[:suffix]}\n" if @property_flush[:suffix]
       t.close
       Puppet.debug(IO.read t.path)
-      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+      begin
+        ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+      rescue Exception => e
+        raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+      end
     end
     @property_hash = resource.to_hash
   end

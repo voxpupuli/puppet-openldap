@@ -82,7 +82,11 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
     t << "olcAccess: #{position}to #{resource[:what]} by #{resource[:by]} #{resource[:access]}\n"
     t.close
     Puppet.debug(IO.read t.path)
-    ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+    begin
+      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+    rescue Exception => e
+      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+    end
   end
 
   def destroy
@@ -107,7 +111,11 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
     t << "olcAccess: {#{@property_hash[:position]}}#{resource[:access]}\n"
     t.close
     Puppet.debug(IO.read t.path)
-    ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+    begin
+      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+    rescue Exception => e
+      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+    end
   end
 
 end
