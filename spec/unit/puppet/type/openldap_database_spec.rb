@@ -12,9 +12,8 @@ describe Puppet::Type.type(:openldap_database) do
       described_class.key_attributes.should == [:suffix]
     end
     it "should not invalid suffixes" do
-      pending('must implement validation') do
-        expect { described_class.new(:name => 'foo bar') }.to raise_error(Puppet::Error, /Invalid value/)
-      end
+      pending('must implement validation')
+      expect { described_class.new(:name => 'foo bar') }.to raise_error(Puppet::Error, /Invalid value/)
       expect { described_class.new(:name => 'cn=admin,dc=example,dc=com') }.to raise_error(Puppet::Error, /Invalid value/)
       expect { described_class.new(:name => 'dc=example, dc=com') }.to raise_error(Puppet::Error, /Invalid value/)
     end
@@ -68,9 +67,8 @@ describe Puppet::Type.type(:openldap_database) do
         expect { described_class.new(:name => 'foo', :directory => '/bar/baz') }.to_not raise_error
       end
       it "should not support other values" do
-        pending('Must implement validation') do
-          expect { described_class.new(:name => 'foo', :directory => 'bar/baz') }.to raise_error(Puppet::Error, /kjsflkjdsflk/)
-        end
+        pending('Must implement validation')
+        expect { described_class.new(:name => 'foo', :directory => 'bar/baz') }.to raise_error(Puppet::Error, /kjsflkjdsflk/)
       end
     end
 
