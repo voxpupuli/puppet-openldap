@@ -24,7 +24,10 @@ describe 'openldap::server::access' do
      'to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" on dc=example,dc=com'
     }
     it { should compile.with_all_deps }
-    it { pending('Should work') { should contain_openldap_access('to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" on dc=example,dc=com').that_requires('Openldap_database[dc=example,dc=com]') } }
+    it {
+      pending('Should work')
+      should contain_openldap_access('to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" on dc=example,dc=com').that_requires('Openldap_database[dc=example,dc=com]')
+    }
   end
 
 end
