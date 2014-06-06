@@ -11,7 +11,7 @@ class openldap::client::config {
     }
   }
   if $::openldap::client::uri != undef {
-    $_uri = join(any2array($::openldap::client::uri), ' ')
+    $_uri = join(flatten([$::openldap::client::uri]), ' ')
     augeas { 'ldap.conf+uri':
       changes => "set URI '${_uri}'",
     }
