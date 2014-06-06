@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
  
 group :development, :test do
-  gem 'beaker-rspec',           :require => false
+  gem 'beaker-rspec', '> 2.0',  :require => false
   gem 'puppetlabs_spec_helper', :require => false
   gem 'puppet-lint',            :require => false
 end
