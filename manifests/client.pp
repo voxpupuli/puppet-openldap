@@ -1,5 +1,6 @@
 # See README.md for details.
 class openldap::client(
+  $ensure     = present,
   $package    = $openldap::params::client_package,
   $file       = $openldap::params::client_conffile,
 

@@ -18,6 +18,7 @@ describe 'openldap::client::config' do
         it { is_expected.not_to contain_augeas('ldap.conf+base') }
         it { is_expected.not_to contain_augeas('ldap.conf+uri') }
         it { is_expected.not_to contain_augeas('ldap.conf+cacert') }
+        it { should_not contain_augeas('ldap.conf+tls_cacert') }
       end
 
       context 'with base set' do
