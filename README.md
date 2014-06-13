@@ -233,6 +233,18 @@ A hash containing the databases to create. Default to a single database with `$:
 The default database to use during installation (Debian only).
 If you specify more than one database in the `databases` parameter, you have to specify which one will be used in the preseed file for package installation.
 
+####`ldap_ifs`
+Array of 'interface'/'interface:port' values to serve unsecured requests. Defaults to ['/'] which means all ifaces, port 389.
+Set to an empty array to disable interface.
+
+####`ldaps_ifs`
+Array of 'interface'/'interface:port' values to serve secured requests. Defaults to ['/'] which means all ifaces, port 636.
+Set to an empty array to disable interface.
+
+####`ldapi_ifs`
+Array of 'interface'/'interface:port' values to serve IPC requests. Defaults to ['/'].
+Set to an empty array to disable interface.
+
 ###Resource: openldap::server::access
 
 This resource allows you to manage OpenLDAP accesses to a database.

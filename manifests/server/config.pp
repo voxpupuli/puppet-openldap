@@ -5,51 +5,69 @@ class openldap::server::config {
     fail 'class ::openldap::server has not been evaluated'
   }
 
+  $slapd_ldap_ifs = empty($::openldap::server::ldap_ifs) ? {
+    false => join(prefix($::openldap::server::ldap_ifs, 'ldap://'), ' '),
+    true  => '',
+  }
+  $slapd_ldapi_ifs = empty($::openldap::server::ldapi_ifs) ? {
+    false => join(prefix($::openldap::server::ldapi_ifs, 'ldapi://'), ' '),
+    true  => '',
+  }
+  $slapd_ldaps_ifs = $::openldap::server::ssl ? {
+    true  => join(prefix($::openldap::server::ldaps_ifs, 'ldaps://'), ' '),
+    false => '',
+  }
+  $slapd_ldap_urls = "${slapd_ldap_ifs} ${slapd_ldapi_ifs} ${slapd_ldaps_ifs}"
+
   case $::osfamily {
     Debian: {
-      $slapd_services = $::openldap::server::ssl ? {
-        true  => 'ldap:/// ldaps:/// ldapi:///',
-        false => 'ldap:/// ldapi:///',
-      }
-
       shellvar { 'slapd':
         ensure   => present,
         target   => '/etc/default/slapd',
         variable => 'SLAPD_SERVICES',
-        value    => $slapd_services,
+        value    => $slapd_ldap_urls,
       }
     }
     RedHat: {
+      $ldap = empty($::openldap::server::ldap_ifs) ? {
+        false => 'yes',
+        true  => 'no',
+      }
       shellvar { 'SLAPD_LDAP':
         ensure   => present,
         target   => '/etc/sysconfig/ldap',
         variable => 'SLAPD_LDAP',
-        value    => 'yes',
-      }
-      $slapd_ldaps_ensure = $::openldap::server::ssl ? {
-        true  => present,
-        false => absent,
+        value    => $ldap,
       }
       $ldaps = $::openldap::server::ssl ? {
         true  => 'yes',
         false => 'no',
       }
       shellvar { 'SLAPD_LDAPS':
-        ensure   => $slapd_ldaps_ensure,
+        ensure   => present,
         target   => '/etc/sysconfig/ldap',
         variable => 'SLAPD_LDAPS',
         value    => $ldaps,
+      }
+      $ldapi = empty($::openldap::server::ldapi_ifs) ? {
+        false => 'yes',
+        true  => 'no',
       }
       shellvar { 'SLAPD_LDAPI':
         ensure   => present,
         target   => '/etc/sysconfig/ldap',
         variable => 'SLAPD_LDAPI',
-        value    => 'yes',
+        value    => $ldapi,
+      }
+      shellvar { 'SLAPD_URLS':
+        ensure   => present,
+        target   => '/etc/sysconfig/ldap',
+        variable => 'SLAPD_URLS',
+        value    => $slapd_ldap_urls
       }
     }
     default: {
       fail "Operating System Family ${::osfamily} not yet supported"
     }
   }
-
 }

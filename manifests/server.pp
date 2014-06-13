@@ -53,6 +53,9 @@ class openldap::server(
 
   $databases = {},
 
+  $ldap_ifs  = ['/'],
+  $ldaps_ifs = ['/'],
+  $ldapi_ifs = ['/'],
 ) {
   validate_re($ensure, ['^present', '^absent'])
   validate_hash($databases)
