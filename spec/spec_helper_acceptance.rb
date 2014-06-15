@@ -20,10 +20,6 @@ hosts.each do |host|
     install_package host, 'ruby-devel'
     install_package host, 'augeas-devel'
     on host, 'gem install ruby-augeas --no-ri --no-rdoc'
-  when 'Suse'
-    install_package host, 'ruby-devel'
-    install_package host, 'augeas-devel'
-    on host, 'gem install ruby-augeas --no-ri --no-rdoc'
   else
     puts 'Sorry, this osfamily is not supported.'
     exit
