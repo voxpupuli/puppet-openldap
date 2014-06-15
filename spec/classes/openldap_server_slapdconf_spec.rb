@@ -34,14 +34,10 @@ describe 'openldap::server::slapdconf' do
       end
       it { should compile.with_all_deps }
       it { should contain_class('openldap::server::slapdconf') }
-      it { should contain_openldap__server__database('dc=my-domain,dc=com')
-        .with(
-          {
-            :ensure    => :present,
-            :directory => '/var/lib/ldap',
-          }
-        )
-      }
+      it { should contain_openldap__server__database('dc=my-domain,dc=com').with({
+        :ensure    => :present,
+        :directory => '/var/lib/ldap',
+      })}
     end
 
     context 'with suffix set to dc=example,dc=com' do
