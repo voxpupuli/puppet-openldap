@@ -36,6 +36,14 @@ describe 'openldap::server class' do
   describe 'with SSL' do
     it 'should install server' do
       pp = <<-EOS
+        $owner     = $::osfamily ? {
+          Debian => 'openldap',
+          RedHat => 'ldap',
+        }
+        $group     = $::osfamily ? {
+          Debian => 'openldap',
+          RedHat => 'ldap',
+        }
         $ssldir = '/etc/puppet/ssl'
         Exec {
           path => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
@@ -45,6 +53,9 @@ describe 'openldap::server class' do
             "${ssldir}/private_keys/${::fqdn}.pem",
             "${ssldir}/certs/${::fqdn}.pem",
           ],
+        }
+        file { '/etc/ldap':
+          ensure => directory,
         }
         file { '/etc/ldap/ssl':
           ensure => directory,
@@ -70,16 +81,16 @@ describe 'openldap::server class' do
         }
         file { "/etc/ldap/ssl/${::fqdn}.key":
           ensure  => file,
-          owner   => 'openldap',
-          group   => 'openldap',
+          owner   => $owner,
+          group   => $group,
           mode    => '0600',
           require => Class['openldap::server::install'],
           before  => Class['openldap::server::slapdconf'],
         }
         file { "/etc/ldap/ssl/${::fqdn}.crt":
           ensure  => file,
-          owner   => 'openldap',
-          group   => 'openldap',
+          owner   => $owner,
+          group   => $group,
           mode    => '0644',
           source  => "${ssldir}/certs/${::fqdn}.pem",
           require => Class['openldap::server::install'],
@@ -87,8 +98,8 @@ describe 'openldap::server class' do
         }
         file { '/etc/ldap/ssl/ca.pem':
           ensure  => file,
-          owner   => 'openldap',
-          group   => 'openldap',
+          owner   => $owner,
+          group   => $group,
           mode    => '0644',
           source  => "${ssldir}/certs/ca.pem",
           require => Class['openldap::server::install'],
