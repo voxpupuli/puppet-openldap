@@ -47,10 +47,11 @@ class openldap::server(
     RedHat => 'dc=my-domain,dc=com',
   },
 
-  $databases = undef,
+  $databases = {},
 
 ) {
   validate_re($ensure, ['^present', '^absent'])
+  validate_hash($databases)
 
   class { 'openldap::server::install': } ->
   class { 'openldap::server::config': } ~>

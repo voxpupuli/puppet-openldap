@@ -45,10 +45,12 @@ class openldap::server::slapdconf {
     }
   }
 
-  $databases = pick(
-    $::openldap::server::databases,
-    hash( [ $::openldap::server::suffix, { directory => '/var/lib/ldap', }, ] )
-  )
+  if empty($::openldap::server::databases) {
+    $databases = hash(
+      [ $::openldap::server::suffix, { directory => '/var/lib/ldap', }, ] )
+  } else {
+    $databases = $::openldap::server::databases
+  }
 
   create_resources('openldap::server::database', $databases)
 
