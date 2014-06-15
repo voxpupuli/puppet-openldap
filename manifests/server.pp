@@ -42,15 +42,22 @@ class openldap::server(
   $ssl_cert  = undef,
   $ssl_ca    = undef,
 
+  $suffix    = $::osfamily ? {
+    Debian => sprintf('dc=%s', regsubst($::domain, '\.', ',dc=', 'G')),
+    RedHat => 'dc=my-domain,dc=com',
+  },
+
   $databases = hash(
     [
-      sprintf('dc=%s', regsubst($::domain, '\.', ',dc=', 'G')),
+      $::osfamily ? {
+        Debian => sprintf('dc=%s', regsubst($::domain, '\.', ',dc=', 'G')),
+        RedHat => 'dc=my-domain,dc=com',
+      },
       {
         directory => '/var/lib/ldap',
       },
     ]
   ),
-  $suffix = sprintf('dc=%s', regsubst($::domain, '\.', ',dc=', 'G')),
 ) {
   validate_re($ensure, ['^present', '^absent'])
 
