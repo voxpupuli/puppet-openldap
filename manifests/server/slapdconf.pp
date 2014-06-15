@@ -36,6 +36,13 @@ class openldap::server::slapdconf {
     }
   }
 
+  if $::osfamily == 'RedHat' and $::openldap::server::suffix != 'dc=my-domain,dc=com' {
+    openldap::server::database { 'dc=my-domain,dc=com':
+      ensure    => absent,
+      directory => '/var/lib/ldap',
+    }
+  }
+
   create_resources('openldap::server::database', $::openldap::server::databases)
 
 }
