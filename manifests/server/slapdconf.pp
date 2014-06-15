@@ -45,6 +45,10 @@ class openldap::server::slapdconf {
     }
   }
 
+  if !empty($::openldap::server::databases) and !member(keys($::openldap::server::databases), $::openldap::server::suffix) {
+    fail "'${::openldap::server::suffix} should be a key of \$::openldap::server::databases hash"
+  }
+
   if empty($::openldap::server::databases) {
     $databases = hash(
       [ $::openldap::server::suffix, { directory => '/var/lib/ldap', }, ] )
