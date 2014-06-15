@@ -47,17 +47,8 @@ class openldap::server(
     RedHat => 'dc=my-domain,dc=com',
   },
 
-  $databases = hash(
-    [
-      $::osfamily ? {
-        Debian => sprintf('dc=%s', regsubst($::domain, '\.', ',dc=', 'G')),
-        RedHat => 'dc=my-domain,dc=com',
-      },
-      {
-        directory => '/var/lib/ldap',
-      },
-    ]
-  ),
+  $databases = undef,
+
 ) {
   validate_re($ensure, ['^present', '^absent'])
 
