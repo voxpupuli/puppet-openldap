@@ -1,11 +1,11 @@
 # See README.md for details.
 define openldap::server::database(
-  $directory,
-  $ensure  = undef,
-  $suffix  = $title,
-  $backend = undef,
-  $rootdn  = undef,
-  $rootpw  = undef,
+  $ensure    = $::openldap::server::ensure,
+  $directory = undef,
+  $suffix    = $title,
+  $backend   = undef,
+  $rootdn    = undef,
+  $rootpw    = undef,
 ) {
 
   if ! defined(Class['openldap::server']) {
@@ -13,8 +13,6 @@ define openldap::server::database(
   }
 
   if $::openldap::server::ensure == present {
-    validate_absolute_path($directory)
-
     if $::openldap::server::provider == 'augeas' {
       Class['openldap::server::install'] ->
       Openldap::Server::Database[$title] ~>
@@ -24,27 +22,27 @@ define openldap::server::database(
       Openldap::Server::Database[$title] ->
       Class['openldap::server']
     }
+  }
 
+  if $ensure == present {
+    validate_absolute_path($directory)
     file { $directory:
       ensure => directory,
       owner  => $::openldap::server::owner,
       group  => $::openldap::server::group,
-    }
-    ->
-    openldap_database { $title:
-      ensure    => $ensure,
-      suffix    => $suffix,
-      provider  => $::openldap::server::provider,
-      target    => $::openldap::server::file,
-      backend   => $backend,
-      directory => $directory,
-      rootdn    => $rootdn,
-      rootpw    => $rootpw,
-    }
-  } else {
-    file { $directory:
-      ensure => absent,
-      force  => true,
+      before => Openldap_database[$title],
     }
   }
+
+  openldap_database { $title:
+    ensure    => $ensure,
+    suffix    => $suffix,
+    provider  => $::openldap::server::provider,
+    target    => $::openldap::server::file,
+    backend   => $backend,
+    directory => $directory,
+    rootdn    => $rootdn,
+    rootpw    => $rootpw,
+  }
+
 }
