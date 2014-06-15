@@ -36,7 +36,9 @@ class openldap::server::slapdconf {
     }
   }
 
-  if $::osfamily == 'RedHat' and $::openldap::server::suffix != 'dc=my-domain,dc=com' {
+  if $::osfamily == 'RedHat'
+    and $::openldap::server::suffix != 'dc=my-domain,dc=com'
+    and !member(keys($::openldap::server::databases), 'dc=my-domain,dc=com') {
     openldap::server::database { 'dc=my-domain,dc=com':
       ensure    => absent,
       directory => '/var/lib/ldap',
