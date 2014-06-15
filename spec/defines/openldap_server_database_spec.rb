@@ -9,10 +9,6 @@ describe 'openldap::server::database' do
     :operatingsystemmajrelease => '7',
   }}
 
-  context 'without directory' do
-    it { expect { should compile }.to raise_error(Puppet::Error, /Must pass directory to Openldap::Server::Database\[foo\]/) }
-  end
-
   context 'with an invalid directory' do
     let(:params) {{ :directory => 'bar' }}
 
