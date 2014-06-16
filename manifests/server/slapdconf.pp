@@ -5,16 +5,31 @@ class openldap::server::slapdconf {
     fail 'class ::openldap::server has not been evaluated'
   }
 
-  if $::openldap::server::provider == 'augeas' {
-    $ensure = $::openldap::server::ensure ? {
-      present => present,
-      default => absent,
+  case $::openldap::server::provider {
+    augeas: {
+      $ensure = $::openldap::server::ensure ? {
+        present => present,
+        default => absent,
+      }
+      file { $::openldap::server::file:
+        ensure => $ensure,
+        owner  => $::openldap::server::owner,
+        group  => $::openldap::server::group,
+        mode   => '0640',
+      }
     }
-    file { $::openldap::server::file:
-      ensure => $ensure,
-      owner  => $::openldap::server::owner,
-      group  => $::openldap::server::group,
-      mode   => '0640',
+    olc: {
+      $ensure = $::openldap::server::ensure ? {
+        present => directory,
+        default => absent,
+      }
+      file { $::openldap::server::confdir:
+        ensure => $ensure,
+        owner  => $::openldap::server::owner,
+        group  => $::openldap::server::group,
+        mode   => '0750',
+        force  => true,
+      }
     }
   }
 
