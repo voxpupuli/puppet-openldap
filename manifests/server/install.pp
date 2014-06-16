@@ -31,7 +31,10 @@ class openldap::server::install {
 
   $ensure = $::openldap::server::ensure ? {
     present => present,
-    default => purged,
+    default => $::osfamily ? {
+      Debian => purged,
+      RedHat => absent,
+    },
   }
 
   package { $::openldap::server::package:
