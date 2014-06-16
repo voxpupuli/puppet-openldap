@@ -38,7 +38,7 @@ define openldap::server::database(
     ensure    => $ensure,
     suffix    => $suffix,
     provider  => $::openldap::server::provider,
-    target    => $::openldap::server::file,
+    target    => $::openldap::server::conffile,
     backend   => $backend,
     directory => $directory,
     rootdn    => $rootdn,

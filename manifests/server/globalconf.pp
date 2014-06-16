@@ -12,7 +12,7 @@ define openldap::server::globalconf(
   }
   openldap_global_conf { $name:
     provider => $::openldap::server::provider,
-    target   => $::openldap::server::file,
+    target   => $::openldap::server::conffile,
     value    => $value,
   }
 }

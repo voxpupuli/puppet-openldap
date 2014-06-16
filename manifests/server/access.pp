@@ -28,7 +28,7 @@ define openldap::server::access(
       ensure   => $ensure,
       position => $position,
       provider => $::openldap::server::provider,
-      target   => $::openldap::server::file,
+      target   => $::openldap::server::conffile,
       what     => $what,
       by       => $by,
       suffix   => $suffix,

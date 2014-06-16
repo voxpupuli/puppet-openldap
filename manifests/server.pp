@@ -8,7 +8,7 @@ class openldap::server(
     Debian => '/etc/ldap/slapd.d',
     RedHat => '/etc/openldap/slapd.d',
   },
-  $file      = $::osfamily ? {
+  $conffile  = $::osfamily ? {
     Debian => '/etc/ldap/slapd.conf',
     RedHat => '/etc/openldap/slapd.conf',
   },

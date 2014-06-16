@@ -11,7 +11,7 @@ class openldap::server::slapdconf {
         present => present,
         default => absent,
       }
-      file { $::openldap::server::file:
+      file { $::openldap::server::conffile:
         ensure => $ensure,
         owner  => $::openldap::server::owner,
         group  => $::openldap::server::group,
