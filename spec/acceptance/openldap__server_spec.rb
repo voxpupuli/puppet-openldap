@@ -31,6 +31,23 @@ describe 'openldap::server class' do
       apply_manifest(pp, :catch_failures => true)
       expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
     end
+
+    describe file('/etc/ldap/slapd.d') do
+      it { should_not be_directory }
+    end
+
+    describe file('/etc/ldap/slapd.conf') do
+      it { should_not be_file }
+    end
+
+    describe file('/etc/openldap/slapd.d') do
+      it { should_not be_directory }
+    end
+
+    describe file('/etc/openldap/slapd.conf') do
+      it { should_not be_file }
+    end
+
   end
 
   describe 'with SSL' do
