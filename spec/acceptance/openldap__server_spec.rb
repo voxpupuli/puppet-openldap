@@ -34,6 +34,10 @@ describe 'openldap::server class' do
   end
 
   describe 'with SSL' do
+    after :all do
+      apply_manifest("class { 'openldap::server': ensure => absent }", :catch_failures => true)
+    end
+
     it 'should install server' do
       pp = <<-EOS
         $owner     = $::osfamily ? {
