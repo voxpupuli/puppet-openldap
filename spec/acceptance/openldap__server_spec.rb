@@ -17,6 +17,10 @@ describe 'openldap::server class' do
       it { should be_listening }
     end
 
+    describe port(636) do
+      it { should_not be_listening }
+    end
+
   end
 
   describe 'when setting ensure to absent' do
@@ -46,6 +50,14 @@ describe 'openldap::server class' do
 
     describe file('/etc/openldap/slapd.conf') do
       it { should_not be_file }
+    end
+
+    describe port(389) do
+      it { should_not be_listening }
+    end
+
+    describe port(636) do
+      it { should_not be_listening }
     end
 
   end
@@ -170,6 +182,10 @@ describe 'openldap::server class' do
       it { should be_listening }
     end
 
+    describe port(636) do
+      it { should_not be_listening }
+    end
+
   end
 
   describe 'when creating 2 databases' do
@@ -201,6 +217,10 @@ describe 'openldap::server class' do
       it { should be_listening }
     end
 
+    describe port(636) do
+      it { should_not be_listening }
+    end
+
   end
 
   describe 'when disabling service' do
@@ -224,6 +244,10 @@ describe 'openldap::server class' do
       it { should be_listening }
     end
 
+    describe port(636) do
+      it { should_not be_listening }
+    end
+
   end
 
   describe 'when stopping service' do
@@ -244,6 +268,10 @@ describe 'openldap::server class' do
     end
 
     describe port(389) do
+      it { should_not be_listening }
+    end
+
+    describe port(636) do
       it { should_not be_listening }
     end
 
