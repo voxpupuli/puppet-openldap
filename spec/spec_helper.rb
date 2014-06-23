@@ -17,6 +17,9 @@ RSpec.configure do |c|
     if Gem::Version.new(`puppet --version`) >= Gem::Version.new('3.5')
       Puppet.settings[:strict_variables]=true
     end
+    if ENV['PARSER']
+      Puppet.settings[:parser]=ENV['PARSER']
+    end
   end
 
   c.after :each do
