@@ -19,7 +19,7 @@ database    | Y             | N (temporarily disabled)
 module      | Y             | N
 overlay     | Y             | N
 access      | Y             | N
-index       | N             | N
+index       | Y             | N
 schema      | N             | N
 
 Usage
@@ -51,9 +51,9 @@ For a more customized configuration:
 
 ```puppet
 class { 'openldap::server':
-  ssl      => true,
-  ssl_cert => '/etc/ldap/ssl/slapd.pem',
-  ssl_key  => '/etc/ldap/ssl/slapd.key',
+  ldaps_ifs => ['/'],
+  ssl_cert  => '/etc/ldap/ssl/slapd.pem',
+  ssl_key   => '/etc/ldap/ssl/slapd.key',
 }
 ```
 
@@ -212,9 +212,6 @@ Should the service be started by Puppet ?
 The provider to use to manage configuration.
 Can be `olc` to manage configuration via (cn=config) or `augeas` to use slapd.conf (not working yet).
 Defaults to `olc`.
-
-####`ssl`
-Should OpenLDAP listen on SSL ?
 
 ####`ssl_cert`
 Specifies the file that contains the slapd server certificate.

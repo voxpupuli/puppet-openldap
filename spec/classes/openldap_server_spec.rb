@@ -26,7 +26,6 @@ describe 'openldap::server' do
         :enable   => true,
         :start    => true,
         :provider => 'olc',
-        :ssl      => false,
         :ssl_cert => nil,
         :ssl_key  => nil,
         :ssl_ca   => nil,

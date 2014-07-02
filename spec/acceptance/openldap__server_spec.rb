@@ -139,10 +139,10 @@ describe 'openldap::server class' do
           before  => Class['openldap::server::slapdconf'],
         }
         class { '::openldap::server':
-          ssl      => true,
-          ssl_key  => "/etc/ldap/ssl/${::fqdn}.key",
-          ssl_cert => "/etc/ldap/ssl/${::fqdn}.crt",
-          ssl_ca   => '/etc/ldap/ssl/ca.pem',
+          ldaps_ifs => ['/'],
+          ssl_key   => "/etc/ldap/ssl/${::fqdn}.key",
+          ssl_cert  => "/etc/ldap/ssl/${::fqdn}.crt",
+          ssl_ca    => '/etc/ldap/ssl/ca.pem',
         }
       EOS
 

@@ -41,7 +41,6 @@ class openldap::server(
 
   $provider  = 'olc',
 
-  $ssl       = false,
   $ssl_key   = undef,
   $ssl_cert  = undef,
   $ssl_ca    = undef,
@@ -54,7 +53,7 @@ class openldap::server(
   $databases = {},
 
   $ldap_ifs  = ['/'],
-  $ldaps_ifs = ['/'],
+  $ldaps_ifs = [],
   $ldapi_ifs = ['/'],
 ) {
   validate_re($ensure, ['^present', '^absent'])

@@ -13,9 +13,9 @@ class openldap::server::config {
     false => join(prefix($::openldap::server::ldapi_ifs, 'ldapi://'), ' '),
     true  => '',
   }
-  $slapd_ldaps_ifs = $::openldap::server::ssl ? {
-    true  => join(prefix($::openldap::server::ldaps_ifs, 'ldaps://'), ' '),
-    false => '',
+  $slapd_ldaps_ifs = empty($::openldap::server::ldaps_ifs) ? {
+    false  => join(prefix($::openldap::server::ldaps_ifs, 'ldaps://'), ' '),
+    true => '',
   }
   $slapd_ldap_urls = "${slapd_ldap_ifs} ${slapd_ldapi_ifs} ${slapd_ldaps_ifs}"
 
@@ -39,9 +39,9 @@ class openldap::server::config {
         variable => 'SLAPD_LDAP',
         value    => $ldap,
       }
-      $ldaps = $::openldap::server::ssl ? {
-        true  => 'yes',
-        false => 'no',
+      $ldaps = empty($::openldap::server::ldaps_ifs) ? {
+        false => 'yes',
+        true  => 'no',
       }
       shellvar { 'SLAPD_LDAPS':
         ensure   => present,
