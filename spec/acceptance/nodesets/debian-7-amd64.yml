@@ -1,0 +1,10 @@
+HOSTS:
+  debian-7-amd64:
+    roles:
+      - master
+    platform: debian-7-amd64
+    box : debian-7.4-64-nocm
+    box_url : https://vagrantcloud.com/puppetlabs/debian-7.4-64-nocm/version/2/provider/virtualbox.box
+    hypervisor : vagrant
+CONFIG:
+  type: foss
