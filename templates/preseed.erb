@@ -1,2 +1,2 @@
-slapd	slapd/domain	string	<%= @suffix.split(/,?dc=/).reject! { |c| c.empty? }.join('.') -%>
+slapd	slapd/domain	string	<%= @suffix.split(/,?dc=/).delete_if { |c| c.empty? }.join('.') -%>
 
