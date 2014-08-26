@@ -1,3 +1,7 @@
+## 2014-08-26 Release 0.5.0
+###Summary
+User augeasproviders 2.0.0 and re-enable augeas provider.
+
 ## 2014-07-02 Release 0.4.0
 ###Summary
 
