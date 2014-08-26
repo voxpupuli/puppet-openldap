@@ -15,7 +15,7 @@ Features supported per provider
 Object      | olc (slapd.d) | augeas (slapd.conf)
 ------------|---------------|-----------
 global_conf | Y             | N
-database    | Y             | N (temporarily disabled)
+database    | Y             | Y
 module      | Y             | N
 overlay     | Y             | N
 access      | Y             | N
@@ -81,7 +81,7 @@ class { 'openldap::server':
 }
 ```
 
-To force using slapd.conf (not working yet):
+To force using slapd.conf:
 
 ```puppet
 class { 'openldap::server':
