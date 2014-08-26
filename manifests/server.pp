@@ -67,8 +67,6 @@ class openldap::server(
 
   case $provider {
     augeas: {
-      fail 'Augeas provider is temporarily disable as it does not work with latest version of augeasproviders'
-
       Class['openldap::server::install'] ->
       Class['openldap::server::slapdconf'] ~>
       Class['openldap::server::service'] ->
