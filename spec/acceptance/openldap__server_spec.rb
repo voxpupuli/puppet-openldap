@@ -62,6 +62,27 @@ describe 'openldap::server class' do
 
   end
 
+  describe 'when using augeas provider' do
+    it 'should install server' do
+      pp = <<-EOS
+        class { 'openldap::server': provider => 'augeas' }
+      EOS
+
+      # Run it twice and test for idempotency
+      apply_manifest(pp, :catch_failures => true)
+      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+    end
+
+    describe port(389) do
+      it { should be_listening }
+    end
+
+    describe port(636) do
+      it { should_not be_listening }
+    end
+
+  end
+
   describe 'with SSL' do
     after :all do
       apply_manifest("class { 'openldap::server': ensure => absent }", :catch_failures => true)
