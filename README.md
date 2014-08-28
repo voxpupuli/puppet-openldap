@@ -317,6 +317,8 @@ Contributors
 ------------
 
  * Bill ONeill
+ * Christian Kaenzig
  * Ilya Kulakov
+ * Mathieu Parent
  * Mickaël Canévet
  * Raphaël Pinson
