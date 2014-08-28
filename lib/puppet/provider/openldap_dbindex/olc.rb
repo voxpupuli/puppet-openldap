@@ -35,7 +35,7 @@ Puppet::Type.type(:openldap_dbindex).provide(:olc) do
               :ensure    => :present,
               :attribute => attribute,
               :suffix    => suffix,
-              :indices   => indices,
+              :indices   => indices
             )
           }
         end
