@@ -13,13 +13,12 @@ describe 'openldap::server::access define' do
           suffix => 'dc=foo,dc=example,dc=com',
         }
         openldap::server::access { 'to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=foo,dc=example,dc=com" on dc=foo,dc=example,dc=com':
-	  access => 'write',
+          access => 'write',
         }
       EOS
 
-      # Run it twice and test for idempotency
       apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+      apply_manifest(pp, :catch_changes => true)
     end
   end
 

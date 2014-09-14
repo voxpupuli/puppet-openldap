@@ -13,13 +13,12 @@ describe 'openldap::server::dbindex define' do
           suffix => 'dc=foo,dc=example,dc=com',
         }
         openldap::server::dbindex { 'description on dc=foo,dc=example,dc=com':
-	  indices => 'eq',
+          indices => 'eq',
         }
       EOS
 
-      # Run it twice and test for idempotency
       apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+      apply_manifest(pp, :catch_changes => true)
     end
   end
 

@@ -8,9 +8,8 @@ describe 'openldap::server class' do
         class { 'openldap::server': }
       EOS
 
-      # Run it twice and test for idempotency
       apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+      apply_manifest(pp, :catch_changes => true)
     end
 
     describe port(389) do
@@ -31,9 +30,8 @@ describe 'openldap::server class' do
         }
       EOS
 
-      # Run it twice and test for idempotency
       apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+      apply_manifest(pp, :catch_changes => true)
     end
 
     describe file('/etc/ldap/slapd.d') do
@@ -68,9 +66,8 @@ describe 'openldap::server class' do
         class { 'openldap::server': provider => 'augeas' }
       EOS
 
-      # Run it twice and test for idempotency
       apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+      apply_manifest(pp, :catch_changes => true)
     end
 
     describe port(389) do
@@ -167,9 +164,8 @@ describe 'openldap::server class' do
         }
       EOS
 
-      # Run it twice and test for idempotency
       apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+      apply_manifest(pp, :catch_changes => true)
     end
 
     describe port(389) do
@@ -194,9 +190,8 @@ describe 'openldap::server class' do
         }
       EOS
 
-      # Run it twice and test for idempotency
       apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+      apply_manifest(pp, :catch_changes => true)
     end
 
     describe port(389) do
@@ -229,9 +224,8 @@ describe 'openldap::server class' do
         }
       EOS
 
-      # Run it twice and test for idempotency
       apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+      apply_manifest(pp, :catch_changes => true)
     end
 
     describe port(389) do
@@ -256,9 +250,8 @@ describe 'openldap::server class' do
         }
       EOS
 
-      # Run it twice and test for idempotency
       apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+      apply_manifest(pp, :catch_changes => true)
     end
 
     describe port(389) do
@@ -283,9 +276,8 @@ describe 'openldap::server class' do
         }
       EOS
 
-      # Run it twice and test for idempotency
       apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+      apply_manifest(pp, :catch_changes => true)
     end
 
     describe port(389) do
