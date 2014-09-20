@@ -322,3 +322,4 @@ Contributors
  * Mathieu Parent
  * Mickaël Canévet
  * Raphaël Pinson
+ * Ronny Srnka
