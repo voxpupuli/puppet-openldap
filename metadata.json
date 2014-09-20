@@ -13,11 +13,11 @@
       "version_requirement": ">=3.2.0 <5.0.0"
     },
     {
-      "name": "domcleal/augeasproviders_core",
+      "name": "herculesteam/augeasproviders_core",
       "version_requirement": ">=2.0.0"
     },
     {
-      "name": "domcleal/augeasproviders_shellvar",
+      "name": "herculesteam/augeasproviders_shellvar",
       "version_requirement": ">=2.0.0"
     }
   ],
