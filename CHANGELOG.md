@@ -1,3 +1,8 @@
+## 2014-09-23 Release 0.5.2
+###Summary
+Updated dependencies for augeasproviders
+Acceptance tests refactoring
+
 ## 2014-09-05 Release 0.5.1
 ###Summary
 Fix for ruby 1.8.7
