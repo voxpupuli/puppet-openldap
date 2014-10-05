@@ -5,16 +5,14 @@ class openldap::server::service {
     fail 'class ::openldap::server has not been evaluated'
   }
 
-  if $::openldap::server::ensure == present {
-    $ensure = $::openldap::server::start ? {
-      true    => running,
-      default => stopped,
-    }
+  $ensure = $::openldap::server::start ? {
+    true    => running,
+    default => stopped,
+  }
 
-    service { $::openldap::server::service:
-      ensure    => $ensure,
-      enable    => $::openldap::server::enable,
-      hasstatus => $::openldap::server::service_hasstatus,
-    }
+  service { $::openldap::server::service:
+    ensure    => $ensure,
+    enable    => $::openldap::server::enable,
+    hasstatus => $::openldap::server::service_hasstatus,
   }
 }
