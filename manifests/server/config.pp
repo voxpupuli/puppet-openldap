@@ -59,12 +59,6 @@ class openldap::server::config {
         variable => 'SLAPD_LDAPI',
         value    => $ldapi,
       }
-      shellvar { 'SLAPD_URLS':
-        ensure   => present,
-        target   => '/etc/sysconfig/ldap',
-        variable => 'SLAPD_URLS',
-        value    => $slapd_ldap_urls
-      }
     }
     default: {
       fail "Operating System Family ${::osfamily} not yet supported"
