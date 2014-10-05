@@ -1,3 +1,7 @@
+## 2014-10-05 Release 0.5.3
+###Summary
+Fix service startup on RedHat
+
 ## 2014-09-23 Release 0.5.2
 ###Summary
 Updated dependencies for augeasproviders
@@ -16,6 +20,5 @@ User augeasproviders 2.0.0 and re-enable augeas provider.
 
 ## 2014-07-02 Release 0.4.0
 ###Summary
-
 This release add ability to specify ldap* interfaces and thus removes openldap::server::ssl parameter. It also add a new type/provider/define to manage dbindex.
 
