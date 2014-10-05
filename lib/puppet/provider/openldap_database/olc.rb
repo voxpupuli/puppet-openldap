@@ -89,26 +89,61 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     @property_hash.clear
   end
 
+  def initdb
+    t = Tempfile.new('openldap_database')
+    t << "dn: #{resource[:suffix]}\n"
+    t << "changetype: add\n"
+    t << "objectClass: top\n"
+    t << "objectClass: dcObject\n"
+    t << "objectClass: organization\n"
+    t << "dc: #{resource[:suffix].split(/,?dc=/).delete_if { |c| c.empty? }[0]}\n"
+    t << "o: #{resource[:suffix].split(/,?dc=/).delete_if { |c| c.empty? }.join('.')}\n"
+    t << "\n"
+    t << "dn: cn=admin,#{resource[:suffix]}\n"
+    t << "objectClass: simpleSecurityObject\n" if resource[:rootpw]
+    t << "objectClass: organizationalRole\n"
+    t << "cn: admin\n"
+    t << "description: LDAP administrator\n"
+    t << "userPassword: #{resource[:rootpw]}\n" if resource[:rootpw]
+    t.close
+    Puppet.debug(IO.read t.path)
+    begin
+      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-a', '-f', t.path)
+    rescue Exception => e
+      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+    end
+    t.delete
+  end
+
   def create
     t = Tempfile.new('openldap_database')
-    if resource[:index]
-      t << "dn: olcDatabase={#{resource[:index]}}#{resource[:backend]},cn=config\n"
-      t << "changetype: modify\n"
-      t << "replace: olcDbDirectory\nolcDbDirectory: #{resource[:directory]}\n" if resource[:directory]
-      t << "replace: olcRootDN\nolcRootDN: #{resource[:rootdn]}\n" if resource[:rootdn]
-      t << "replace: olcRootPW\nolcRootPW: #{resource[:rootpw]}\n" if resource[:rootpw]
-      t << "replace: olcSuffix\nolcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
-    else
-      t << "dn: olcDatabase=#{resource[:backend]},cn=config\n"
-      t << "changetype: add\n"
-      t << "objectClass: olcDatabaseConfig\n"
-      t << "objectClass: olc#{resource[:backend].to_s.capitalize}Config\n"
-      t << "olcDatabase: #{resource[:backend]}\n"
-      t << "olcDbDirectory: #{resource[:directory]}\n" if resource[:directory]
-      t << "olcRootDN: #{resource[:rootdn]}\n" if resource[:rootdn]
-      t << "olcRootPW: #{resource[:rootpw]}\n" if resource[:rootpw]
-      t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
-    end
+    t << "dn: olcDatabase=#{resource[:backend]},cn=config\n"
+    t << "changetype: add\n"
+    t << "objectClass: olcDatabaseConfig\n"
+    t << "objectClass: olc#{resource[:backend].to_s.capitalize}Config\n"
+    t << "olcDatabase: #{resource[:backend]}\n"
+    t << "olcDbCheckpoint: 512 30\n"
+    t << "olcDbConfig: set_cachesize 0 2097152 0\n"
+    t << "olcDbConfig: set_lk_max_objects 1500\n"
+    t << "olcDbConfig: set_lk_max_locks 1500\n"
+    t << "olcDbConfig: set_lk_max_lockers 1500\n"
+    t << "olcLastMod: TRUE\n"
+    t << "olcDbDirectory: #{resource[:directory]}\n" if resource[:directory]
+    t << "olcRootDN: #{resource[:rootdn]}\n" if resource[:rootdn]
+    t << "olcRootPW: #{resource[:rootpw]}\n" if resource[:rootpw]
+    t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
+    t << "olcDbIndex: objectClass eq\n"
+    t << "olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break\n"
+    t << "olcAccess: to attrs=userPassword,shadowLastChange\n"
+    t << "  by self write\n"
+    t << "  by anonymous auth\n"
+    t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
+    t << "  by * none\n"
+    t << "olcAccess: to dn.base=\"\" by * read\n"
+    t << "olcAccess: to *\n"
+    t << "  by self write\n"
+    t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
+    t << "  by * read\n"
     t.close
     Puppet.debug(IO.read t.path)
     begin
@@ -116,19 +151,16 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end
+    t.delete
+    initdb
     @property_hash[:ensure] = :present
-    if resource[:index]
-      @property_hash[:index] = resource[:index]
-    else
-      slapcat(
-        '-b',
-        'cn=config',
-        '-H',
-        "ldap:///???(&(objectClass=olc#{resource[:backend].to_s.capitalize}Config)(olcSuffix=#{resource[:suffix]}))").split("\n").collect do |line|
-        if line =~ /^olcDatabase: /
-          index = line.match(/^olcDatabase: {(\d+)}#{resource[:backend]}$/).captures[0]
-          @property_hash[:index] = index
-        end
+    slapcat(
+      '-b',
+      'cn=config',
+      '-H',
+      "ldap:///???(&(objectClass=olc#{resource[:backend].to_s.capitalize}Config)(olcSuffix=#{resource[:suffix]}))").split("\n").collect do |line|
+      if line =~ /^olcDatabase: /
+        @property_hash[:index] = line.match(/^olcDatabase: {(\d+)}#{resource[:backend]}$/).captures[0]
       end
     end
   end
@@ -170,6 +202,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       rescue Exception => e
         raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
       end
+      initdb if @property_flush[:directory]
     end
     @property_hash = resource.to_hash
   end
