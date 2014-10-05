@@ -1,7 +1,7 @@
 # See README.md for details.
 define openldap::server::database(
   $ensure    = present,
-  $directory = undef,
+  $directory = '/var/lib/ldap',
   $suffix    = $title,
   $backend   = undef,
   $rootdn    = undef,
