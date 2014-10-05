@@ -1,6 +1,6 @@
 # See README.md for details.
 define openldap::server::database(
-  $ensure    = $::openldap::server::ensure,
+  $ensure    = present,
   $directory = undef,
   $suffix    = $title,
   $backend   = undef,
@@ -12,16 +12,14 @@ define openldap::server::database(
     fail 'class ::openldap::server has not been evaluated'
   }
 
-  if $::openldap::server::ensure == present {
-    if $::openldap::server::provider == 'augeas' {
-      Class['openldap::server::install'] ->
-      Openldap::Server::Database[$title] ~>
-      Class['openldap::server::service']
-    } else {
-      Class['openldap::server::service'] ->
-      Openldap::Server::Database[$title] ->
-      Class['openldap::server']
-    }
+  if $::openldap::server::provider == 'augeas' {
+    Class['openldap::server::install'] ->
+    Openldap::Server::Database[$title] ~>
+    Class['openldap::server::service']
+  } else {
+    Class['openldap::server::service'] ->
+    Openldap::Server::Database[$title] ->
+    Class['openldap::server']
   }
 
   if $ensure == present {

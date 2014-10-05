@@ -10,16 +10,12 @@ class openldap::server::install {
   }
 
   if $::osfamily == 'Debian' {
-    $content = $::openldap::server::ensure ? {
-      present => template('openldap/preseed.erb'),
-      default => undef,
-    }
     file { '/var/cache/debconf/slapd.preseed':
-      ensure  => $::openldap::server::ensure,
+      ensure  => present,
       mode    => '0644',
       owner   => 'root',
       group   => 'root',
-      content => $content,
+      content => template('openldap/preseed.erb'),
       before  => Package[$::openldap::server::package],
     }
   }
@@ -29,16 +25,8 @@ class openldap::server::install {
     RedHat => undef,
   }
 
-  $ensure = $::openldap::server::ensure ? {
-    present => present,
-    default => $::osfamily ? {
-      Debian => purged,
-      RedHat => absent,
-    },
-  }
-
   package { $::openldap::server::package:
-    ensure       => $ensure,
+    ensure       => present,
     responsefile => $responsefile,
   }
 }
