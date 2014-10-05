@@ -15,7 +15,7 @@ class openldap::server::install {
       mode    => '0644',
       owner   => 'root',
       group   => 'root',
-      content => template('openldap/preseed.erb'),
+      content => "slapd slapd/domain\tstring\tmy-domain.com\n",
       before  => Package[$::openldap::server::package],
     }
   }

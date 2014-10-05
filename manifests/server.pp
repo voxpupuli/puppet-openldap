@@ -44,11 +44,6 @@ class openldap::server(
   $ssl_cert  = undef,
   $ssl_ca    = undef,
 
-  $suffix    = $::osfamily ? {
-    Debian => sprintf('dc=%s', regsubst($::domain, '\.', ',dc=', 'G')),
-    RedHat => 'dc=my-domain,dc=com',
-  },
-
   $databases = {},
 
   $ldap_ifs  = ['/'],

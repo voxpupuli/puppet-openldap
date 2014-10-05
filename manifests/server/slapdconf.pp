@@ -23,6 +23,9 @@ class openldap::server::slapdconf {
         force  => true,
       }
     }
+    default: {
+      fail 'provider must be one of "olc" or "augeas"'
+    }
   }
 
   if $::openldap::server::ssl_cert {
@@ -48,26 +51,10 @@ class openldap::server::slapdconf {
     fail 'You must specify a ssl_cert'
   }
 
-  if $::osfamily == 'RedHat'
-    and $::openldap::server::suffix != 'dc=my-domain,dc=com'
-    and !member(keys($::openldap::server::databases), 'dc=my-domain,dc=com') {
-    openldap::server::database { 'dc=my-domain,dc=com':
-      ensure    => absent,
-    }
+  openldap::server::database { 'dc=my-domain,dc=com':
+    ensure => absent,
   }
 
-  if !empty($::openldap::server::databases)
-    and !member(keys($::openldap::server::databases), $::openldap::server::suffix) {
-    fail "'${::openldap::server::suffix} should be a key of \$::openldap::server::databases hash"
-  }
-
-  if empty($::openldap::server::databases) {
-    $databases = hash(
-      [ $::openldap::server::suffix, { directory => '/var/lib/ldap', }, ] )
-  } else {
-    $databases = $::openldap::server::databases
-  }
-
-  create_resources('openldap::server::database', $databases)
+  create_resources('openldap::server::database', $::openldap::server::databases)
 
 }
