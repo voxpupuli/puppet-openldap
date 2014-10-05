@@ -191,10 +191,10 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       t = Tempfile.new('openldap_database')
       t << "dn: olcDatabase={#{@property_hash[:index]}}#{resource[:backend]},cn=config\n"
       t << "changetype: modify\n"
-      t << "replace: olcDbDirectory\nolcDbDirectory: #{resource[:directory]}\n" if @property_flush[:directory]
-      t << "replace: olcRootDN\nolcRootDN: #{resource[:rootdn]}\n" if @property_flush[:rootdn]
-      t << "replace: olcRootPW\nolcRootPW: #{resource[:rootpw]}\n" if @property_flush[:rootpw]
-      t << "replace: olcSuffix\nolcSuffix: #{resource[:suffix]}\n" if @property_flush[:suffix]
+      t << "replace: olcDbDirectory\nolcDbDirectory: #{resource[:directory]}\n-\n" if @property_flush[:directory]
+      t << "replace: olcRootDN\nolcRootDN: #{resource[:rootdn]}\n-\n" if @property_flush[:rootdn]
+      t << "replace: olcRootPW\nolcRootPW: #{resource[:rootpw]}\n-\n" if @property_flush[:rootpw]
+      t << "replace: olcSuffix\nolcSuffix: #{resource[:suffix]}\n-\n" if @property_flush[:suffix]
       t.close
       Puppet.debug(IO.read t.path)
       begin
