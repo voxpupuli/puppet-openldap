@@ -35,7 +35,6 @@ class openldap::server(
     RedHat => 'ldap',
   },
 
-  $ensure    = present,
   $enable    = true,
   $start     = true,
 
@@ -56,7 +55,6 @@ class openldap::server(
   $ldaps_ifs = [],
   $ldapi_ifs = ['/'],
 ) {
-  validate_re($ensure, ['^present', '^absent'])
   validate_hash($databases)
 
   class { 'openldap::server::install': } ->
