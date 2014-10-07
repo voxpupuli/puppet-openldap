@@ -35,7 +35,6 @@ class openldap::server(
     RedHat => 'ldap',
   },
 
-  $ensure    = present,
   $enable    = true,
   $start     = true,
 
@@ -45,18 +44,12 @@ class openldap::server(
   $ssl_cert  = undef,
   $ssl_ca    = undef,
 
-  $suffix    = $::osfamily ? {
-    Debian => sprintf('dc=%s', regsubst($::domain, '\.', ',dc=', 'G')),
-    RedHat => 'dc=my-domain,dc=com',
-  },
-
   $databases = {},
 
   $ldap_ifs  = ['/'],
   $ldaps_ifs = [],
   $ldapi_ifs = ['/'],
 ) {
-  validate_re($ensure, ['^present', '^absent'])
   validate_hash($databases)
 
   class { 'openldap::server::install': } ->

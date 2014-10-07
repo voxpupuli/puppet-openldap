@@ -29,6 +29,7 @@ Puppet::Type.newtype(:openldap_database) do
 
   newproperty(:directory) do
     desc "The directory where the BDB files containing this database and associated indexes live."
+    defaultto '/var/lib/ldap'
   end
 
   newproperty(:rootdn) do

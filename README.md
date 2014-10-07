@@ -45,6 +45,9 @@ class { 'openldap::client':
 
 ```puppet
 class { 'openldap::server': }
+openldap::server::database { 'dc=foo,dc=example.com':
+  ensure => present,
+}
 ```
 
 For a more customized configuration:
@@ -57,19 +60,11 @@ class { 'openldap::server':
 }
 ```
 
-Configure the suffix:
+If you need multiple databases:
 
 ```puppet
 class { 'openldap::server':
-  suffix => 'dc=example,dc=com',
-}
-```
-
-If you need multiple databases, you have to set the default one:
-
-```puppet
-class { 'openldap::server':
-  databases        => {
+  databases => {
     'dc=foo,dc=example,dc=com' => {
       directory => '/var/lib/ldap/foo',
     },
@@ -77,7 +72,6 @@ class { 'openldap::server':
       directory => '/var/lib/ldap/bar',
     },
   },
-  suffix => 'dc=bar,dc=example,dc=com',
 }
 ```
 
@@ -197,11 +191,6 @@ The uid of the database folder. Defaults to `openldap` on Debian and `ldap` on R
 ####`group`
 The gid of the database folder. Defaults to `openldap` on Debian and `ldap` on RedHat.
 
-####`ensure`
-State of the openldap package. Valid values are:
-- `present` to ensure package is present
-- `absent` to ensure packages are all related resources are absent
-
 ####`enable`
 Should the service be enabled during boot time ?
 
@@ -225,10 +214,6 @@ Authorities that slapd will recognize.
 
 ####`databases`
 A hash containing the databases to create. Default to a single database with `$::domain` as suffix and `/var/lib/ldap` as directory.
-
-####`default_database`
-The default database to use during installation (Debian only).
-If you specify more than one database in the `databases` parameter, you have to specify which one will be used in the preseed file for package installation.
 
 ####`ldap_ifs`
 Array of 'interface'/'interface:port' values to serve unsecured requests. Defaults to ['/'] which means all ifaces, port 389.

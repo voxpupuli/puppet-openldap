@@ -10,22 +10,20 @@ define openldap::server::dbindex(
     fail 'class ::openldap::server has not been evaluated'
   }
 
-  if $::openldap::server::ensure == present {
-    if $::openldap::server::provider == 'augeas' {
-      Class['openldap::server::install'] ->
-      Openldap::Server::Dbindex[$title] ~>
-      Class['openldap::server::service']
-    } else {
-      Class['openldap::server::service'] ->
-      Openldap::Server::Dbindex[$title] ->
-      Class['openldap::server']
-    }
+  if $::openldap::server::provider == 'augeas' {
+    Class['openldap::server::install'] ->
+    Openldap::Server::Dbindex[$title] ~>
+    Class['openldap::server::service']
+  } else {
+    Class['openldap::server::service'] ->
+    Openldap::Server::Dbindex[$title] ->
+    Class['openldap::server']
+  }
 
-    openldap_dbindex { $title:
-      ensure    => $ensure,
-      suffix    => $suffix,
-      attribute => $attribute,
-      indices   => $indices,
-    }
+  openldap_dbindex { $title:
+    ensure    => $ensure,
+    suffix    => $suffix,
+    attribute => $attribute,
+    indices   => $indices,
   }
 }

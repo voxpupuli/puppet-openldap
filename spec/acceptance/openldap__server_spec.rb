@@ -20,11 +20,6 @@ describe 'openldap::server' do
       it { should_not be_listening }
     end
 
-    it 'can connect with ldapsearch' do
-      ldapsearch('-LLL -x -b dc=example,dc=com') do |r|
-        expect(r.stdout).to match(/dn: dc=example,dc=com/)
-      end
-    end
   end
 
   context 'when adding certificates' do
@@ -84,34 +79,6 @@ describe 'openldap::server' do
       pending
       ldapsearch('-LLL -x -b dc=example,dc=com -H ldaps:///') do |r|
         expect(r.stdout).to match(/dn: dc=example,dc=com/)
-      end
-    end
-  end
-
-  context 'when updating suffix' do
-    it 'should idempotently run' do
-      pp = <<-EOS
-        class { 'openldap::server':
-          suffix => 'dc=foo,dc=com',
-        }
-      EOS
-
-      apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
-    end
-
-    describe port(389) do
-      it { is_expected.to be_listening }
-    end
-
-    describe port(636) do
-      it { should_not be_listening }
-    end
-
-    it 'can connect with ldapsearch' do
-      pending
-      ldapsearch('-LLL -x -b dc=foo,dc=com') do |r|
-        expect(r.stdout).to match(/dn: dc=foo,dc=com/)
       end
     end
   end

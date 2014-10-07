@@ -18,10 +18,4 @@ describe 'openldap::server::install' do
     })}
   end
 
-  context 'with suffix' do
-    let :pre_condition do
-      "class {'openldap::server': suffix => 'cn=admin,dc=example,dc=com', }"
-    end
-    it { should compile.with_all_deps }
-  end
 end

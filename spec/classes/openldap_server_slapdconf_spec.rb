@@ -16,7 +16,7 @@ describe 'openldap::server::slapdconf' do
       end
       it { should compile.with_all_deps }
       it { should contain_class('openldap::server::slapdconf') }
-      it { should contain_openldap__server__database('dc=example,dc=com') }
+      it { should contain_openldap__server__database('dc=my-domain,dc=com').with({:ensure => :absent,})}
     end
 
   end
@@ -34,27 +34,7 @@ describe 'openldap::server::slapdconf' do
       end
       it { should compile.with_all_deps }
       it { should contain_class('openldap::server::slapdconf') }
-      it { should contain_openldap__server__database('dc=my-domain,dc=com').with({
-        :ensure    => :present,
-        :directory => '/var/lib/ldap',
-      })}
-    end
-
-    context 'with suffix set to dc=example,dc=com' do
-      let :pre_condition do
-        "class {'openldap::server':
-           suffix => 'dc=example,dc=com',
-         }"
-      end
-      it { should compile.with_all_deps }
-      it { should contain_class('openldap::server::slapdconf') }
-      it { should contain_openldap__server__database('dc=my-domain,dc=com').with({
-        :ensure => :absent,
-      })}
-      it { should contain_openldap__server__database('dc=example,dc=com').with({
-        :ensure    => :present,
-        :directory => '/var/lib/ldap',
-      })}
+      it { should contain_openldap__server__database('dc=my-domain,dc=com').with({:ensure => :absent,})}
     end
 
   end
