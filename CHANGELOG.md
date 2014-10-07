@@ -1,3 +1,7 @@
+## 2014-10-07 Release 1.0.0
+###Summary
+Change usage : one must explicitely configure an openldap::server::database resource
+
 ## 2014-10-05 Release 0.5.3
 ###Summary
 Fix service startup on RedHat
