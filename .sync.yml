@@ -1,0 +1,6 @@
+---
+Gemfile:
+  required:
+  - gem: serverspec
+  - gem: beaker
+  - gem: beaker-rspec
