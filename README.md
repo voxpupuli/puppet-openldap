@@ -1,6 +1,7 @@
 OpenLDAP
 ========
 
+[![Puppet Forge](http://img.shields.io/puppetforge/v/camptocamp/openldap.svg)](https://forge.puppetlabs.com/camptocamp/openldap)
 [![Build Status](https://travis-ci.org/camptocamp/puppet-openldap.png?branch=master)](https://travis-ci.org/camptocamp/puppet-openldap)
 
 Overview
