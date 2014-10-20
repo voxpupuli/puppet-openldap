@@ -1,3 +1,7 @@
+## 2014-10-20 Release 1.1.0
+### Summary
+Setup automatic forge releases
+
 ## 2014-10-07 Release 1.0.0
 ###Summary
 Change usage : one must explicitely configure an openldap::server::database resource
