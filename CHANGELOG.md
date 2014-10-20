@@ -1,3 +1,7 @@
+## 2014-10-20 Release 1.1.1
+### Summary
+Really setup automatic forge releases
+
 ## 2014-10-20 Release 1.1.0
 ### Summary
 Setup automatic forge releases
