@@ -156,6 +156,7 @@ Resources:
 Functions:
 
 * [openldap\_password](#function-openldappassword)
+* [openldap\_password](#function-openldapssha)
 
 ###Class: openldap::client
 
@@ -298,6 +299,8 @@ Specify a password (or hash of the password) for the rootdn.
 ###Resource: openldap::server::schema
 
 ###Function: openldap_password
+
+###Function: openldap_ssha
 
 Contributors
 ------------
