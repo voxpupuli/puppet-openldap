@@ -221,8 +221,8 @@ Array of 'interface'/'interface:port' values to serve unsecured requests. Defaul
 Set to an empty array to disable interface.
 
 ####`ldaps_ifs`
-Array of 'interface'/'interface:port' values to serve secured requests. Defaults to ['/'] which means all ifaces, port 636.
-Set to an empty array to disable interface.
+Array of 'interface'/'interface:port' values to serve secured requests. Defaults to [] which means interface is disabled.
+Set to ['/'] to enable on all ifaces, port 636.
 
 ####`ldapi_ifs`
 Array of 'interface'/'interface:port' values to serve IPC requests. Defaults to ['/'].
