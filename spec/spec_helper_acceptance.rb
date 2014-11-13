@@ -5,8 +5,6 @@ def ldapsearch(cmd, exit_codes = [0,1], &block)
 end
 
 hosts.each do |host|
-  # Hack /etc/hosts so that fact fqdn works
-  on host, "sed -i 's/^#{host['ip'].to_s}\t#{host[:vmhostname] || host.name}$/#{host['ip'].to_s}\t#{host[:vmhostname] || host.name}.example.com #{host[:vmhostname] || host.name}/' /etc/hosts"
   # Install Puppet
   install_puppet()
   # Install ruby-augeas
