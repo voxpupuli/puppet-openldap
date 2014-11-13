@@ -1,3 +1,9 @@
+## 2014-11-13 Release 1.1.3
+Fix README
+Use Travis DPL for automatic releases
+Deprecate 2.7 support and add 3.7 support
+Lint metadata.json
+
 ## 2014-10-20 Release 1.1.2
 ### Summary
 Really setup automatic forge releases
