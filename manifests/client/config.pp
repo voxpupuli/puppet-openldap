@@ -7,7 +7,12 @@ class openldap::client::config {
     }
   }
   if $::openldap::client::uri != undef {
-    validate_array($::openldap::client::uri)
+    if is_array($::openldap::client::uri) {
+      validate_array($::openldap::client::uri)
+    } else {
+      validate_string($::openldap::client::uri)
+    }
+
     openldap::client::conf { 'URI':
       ensure => $::openldap::client::ensure,
       value  => $::openldap::client::uri,

@@ -10,7 +10,8 @@ define openldap::client::conf (
   }
 
   if is_array($value) {
-    $value_real = join(flatten([$value]), ' ')
+    $value_flattened = join(flatten([$value]), ' ')
+    $value_real = "'${value_flattened}'"
   } elsif is_integer($value) {
     $value_real = $value
   } else {
@@ -30,7 +31,6 @@ define openldap::client::conf (
   }
 
   augeas { "ldap.conf+${name_real}":
-    ensure  => $ensure,
     incl    => $::openldap::client::file,
     lens    => 'Spacevars.lns',
     context => "/files${::openldap::client::file}",
