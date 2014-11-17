@@ -1,3 +1,6 @@
+## 2014-11-17 Release 1.1.4
+Fix acceptance tests
+
 ## 2014-11-13 Release 1.1.3
 Fix README
 Use Travis DPL for automatic releases
