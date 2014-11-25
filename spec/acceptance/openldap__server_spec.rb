@@ -17,7 +17,7 @@ describe 'openldap::server' do
     end
 
     describe port(636) do
-      it { should_not be_listening }
+      it { is_expected.not_to be_listening }
     end
 
   end
@@ -41,11 +41,11 @@ describe 'openldap::server' do
     end
 
     describe port(636) do
-      it { should_not be_listening }
+      it { is_expected.not_to be_listening }
     end
 
     it 'can connect with ldapsearch using StartTLS' do
-      pending
+      skip
       ldapsearch('-LLL -x -b dc=example,dc=com -ZZ') do |r|
         expect(r.stdout).to match(/dn: dc=example,dc=com/)
       end
@@ -76,7 +76,7 @@ describe 'openldap::server' do
     end
 
     it 'can connect with ldapsearch using ldaps:///' do
-      pending
+      skip
       ldapsearch('-LLL -x -b dc=example,dc=com -H ldaps:///') do |r|
         expect(r.stdout).to match(/dn: dc=example,dc=com/)
       end

@@ -11,9 +11,9 @@ describe 'openldap::server::install' do
     let :pre_condition do
       "class {'openldap::server':}"
     end
-    it { should compile.with_all_deps }
-    it { should contain_class('openldap::server::install') }
-    it { should contain_package('slapd').with({
+    it { is_expected.to compile.with_all_deps }
+    it { is_expected.to contain_class('openldap::server::install') }
+    it { is_expected.to contain_package('slapd').with({
       :ensure => :present,
     })}
   end

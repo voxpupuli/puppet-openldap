@@ -14,9 +14,9 @@ describe 'openldap::server::slapdconf' do
       let :pre_condition do
         "class {'openldap::server':}"
       end
-      it { should compile.with_all_deps }
-      it { should contain_class('openldap::server::slapdconf') }
-      it { should contain_openldap__server__database('dc=my-domain,dc=com').with({:ensure => :absent,})}
+      it { is_expected.to compile.with_all_deps }
+      it { is_expected.to contain_class('openldap::server::slapdconf') }
+      it { is_expected.to contain_openldap__server__database('dc=my-domain,dc=com').with({:ensure => :absent,})}
     end
 
   end
@@ -32,9 +32,9 @@ describe 'openldap::server::slapdconf' do
       let :pre_condition do
         "class {'openldap::server':}"
       end
-      it { should compile.with_all_deps }
-      it { should contain_class('openldap::server::slapdconf') }
-      it { should contain_openldap__server__database('dc=my-domain,dc=com').with({:ensure => :absent,})}
+      it { is_expected.to compile.with_all_deps }
+      it { is_expected.to contain_class('openldap::server::slapdconf') }
+      it { is_expected.to contain_openldap__server__database('dc=my-domain,dc=com').with({:ensure => :absent,})}
     end
 
   end

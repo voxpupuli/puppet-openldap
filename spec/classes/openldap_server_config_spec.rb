@@ -11,11 +11,11 @@ describe 'openldap::server::config' do
     let :pre_condition do
       "class {'openldap::server':}"
     end
-    it { should compile.with_all_deps }
-    it { should contain_class('openldap::server::config') }
-    it { should_not contain_openldap__globalconf( 'TLSCertificateFile') }
-    it { should_not contain_openldap__globalconf( 'TLSCertificateKeyFile') }
-    it { should_not contain_openldap__globalconf( 'TLSCACertificateFile') }
+    it { is_expected.to compile.with_all_deps }
+    it { is_expected.to contain_class('openldap::server::config') }
+    it { is_expected.not_to contain_openldap__globalconf( 'TLSCertificateFile') }
+    it { is_expected.not_to contain_openldap__globalconf( 'TLSCertificateKeyFile') }
+    it { is_expected.not_to contain_openldap__globalconf( 'TLSCACertificateFile') }
   end
 
 end

@@ -12,9 +12,9 @@ describe 'openldap::client::install' do
         "class {'openldap::client':}"
       end
 
-      it { should compile.with_all_deps }
-      it { should contain_class('openldap::client::install') }
-      it { should contain_package('libldap-2.4-2').with({
+      it { is_expected.to compile.with_all_deps }
+      it { is_expected.to contain_class('openldap::client::install') }
+      it { is_expected.to contain_package('libldap-2.4-2').with({
           :ensure => :present,
         })
       }
@@ -25,9 +25,9 @@ describe 'openldap::client::install' do
         "class {'openldap::client': package => 'foo', }"
       end
 
-      it { should compile.with_all_deps }
-      it { should contain_class('openldap::client::install') }
-      it { should contain_package('foo').with({
+      it { is_expected.to compile.with_all_deps }
+      it { is_expected.to contain_class('openldap::client::install') }
+      it { is_expected.to contain_package('foo').with({
           :ensure => :present,
         })
       }
@@ -44,9 +44,9 @@ describe 'openldap::client::install' do
         "class {'openldap::client':}"
       end
 
-      it { should compile.with_all_deps }
-      it { should contain_class('openldap::client::install') }
-      it { should contain_package('openldap').with({
+      it { is_expected.to compile.with_all_deps }
+      it { is_expected.to contain_class('openldap::client::install') }
+      it { is_expected.to contain_package('openldap').with({
           :ensure => :present,
         })
       }

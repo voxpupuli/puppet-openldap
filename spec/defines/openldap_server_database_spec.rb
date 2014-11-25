@@ -12,13 +12,13 @@ describe 'openldap::server::database' do
   context 'with an invalid directory' do
     let(:params) {{ :directory => 'bar' }}
 
-    it { expect { should compile }.to raise_error(Puppet::Error, /class ::openldap::server has not been evaluated/) }
+    it { expect { is_expected.to compile }.to raise_error(/class ::openldap::server has not been evaluated/) }
   end
 
   context 'without declaring Class[openldap::server]' do
     let(:params) {{ :directory => '/foo/bar' }}
 
-    it { expect { should compile }.to raise_error(Puppet::Error) }
+    it { expect { is_expected.to compile }.to raise_error(/class ::openldap::server has not been evaluated/) }
   end
 
   context 'with a valid directory' do
@@ -31,8 +31,8 @@ describe 'openldap::server::database' do
           "class { 'openldap::server': }"
         end
 
-        it { should compile.with_all_deps }
-        it { should contain_openldap__server__database('foo').with({
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_openldap__server__database('foo').with({
             :directory => '/foo/bar',
         })}
 

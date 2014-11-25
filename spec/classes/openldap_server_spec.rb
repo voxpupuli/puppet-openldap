@@ -13,14 +13,14 @@ describe 'openldap::server' do
       "class {'openldap::server': provider => 'foo'}"
     end
 
-    it { expect { should compile }.to raise_error(Puppet::Error, /provider must be one of "olc" or "augeas"/) }
+    it { expect { is_expected.to compile }.to raise_error(/provider must be one of "olc" or "augeas"/) }
   end
 
   context 'with olc provider' do
 
     context 'with no parameters' do
-      it { should compile.with_all_deps }
-      it { should contain_class('openldap::server').with({
+      it { is_expected.to compile.with_all_deps }
+      it { is_expected.to contain_class('openldap::server').with({
         :package  => 'slapd',
         :service  => 'slapd',
         :enable   => true,
@@ -30,16 +30,16 @@ describe 'openldap::server' do
         :ssl_key  => nil,
         :ssl_ca   => nil,
       })}
-      it { should contain_class('openldap::server::install').
+      it { is_expected.to contain_class('openldap::server::install').
         that_comes_before('Class[openldap::server::config]') }
-      it { should contain_class('openldap::server::config').
+      it { is_expected.to contain_class('openldap::server::config').
         that_notifies('Class[openldap::server::service]') }
-      it { should contain_class('openldap::server::service').
+      it { is_expected.to contain_class('openldap::server::service').
         that_comes_before('Class[openldap::server::slapdconf]') }
-      it { should contain_class('openldap::server::slapdconf').
+      it { is_expected.to contain_class('openldap::server::slapdconf').
         that_comes_before('Class[openldap::server]') }
-      it { should have_openldap__server__database_resource_count(1) }
-      it { should contain_openldap__server__database('dc=my-domain,dc=com').with({:ensure => :absent,})}
+      it { is_expected.to have_openldap__server__database_resource_count(1) }
+      it { is_expected.to contain_openldap__server__database('dc=my-domain,dc=com').with({:ensure => :absent,})}
     end
   end
 end

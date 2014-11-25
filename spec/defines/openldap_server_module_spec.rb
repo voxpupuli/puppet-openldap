@@ -10,7 +10,7 @@ describe 'openldap::server::module' do
   }}
 
   context 'without declaring Class[openldap::server]' do
-    it { expect { should compile }.to raise_error(Puppet::Error) }
+    it { expect { is_expected.to compile }.to raise_error(/::openldap::server has not been evaluated/) }
   end
 
   context 'without parameter' do
@@ -18,7 +18,7 @@ describe 'openldap::server::module' do
       "class { 'openldap::server': }"
     end
 
-    it { should compile.with_all_deps }
+    it { is_expected.to compile.with_all_deps }
   end
 
  end

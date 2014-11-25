@@ -4,7 +4,7 @@ describe Puppet::Parser::Functions.function(:openldap_password) do
   let(:scope) { PuppetlabsSpec::PuppetInternals.scope }
 
   it 'should exist' do
-    Puppet::Parser::Functions.function('openldap_password').should == 'function_openldap_password'
+    expect(Puppet::Parser::Functions.function('openldap_password')).to eq('function_openldap_password')
   end
 
   context 'when given a wrong number of arguments' do
@@ -20,7 +20,7 @@ describe Puppet::Parser::Functions.function(:openldap_password) do
       Puppet::Util::Execution.stubs(:execute).with([
         'slappasswd', '-s', 'foo'
       ]).returns("{SSHA}kKSBVuPOwlHp5HfcR3LBKyB7smTnbq9Y\n")
-      scope.function_openldap_password(['foo']).should == '{SSHA}kKSBVuPOwlHp5HfcR3LBKyB7smTnbq9Y'
+      expect(scope.function_openldap_password(['foo'])).to eq('{SSHA}kKSBVuPOwlHp5HfcR3LBKyB7smTnbq9Y')
     end
   end
 
@@ -29,7 +29,7 @@ describe Puppet::Parser::Functions.function(:openldap_password) do
       Puppet::Util::Execution.stubs(:execute).with([
         'slappasswd', '-s', 'foo', '-h', '{MD5}'
       ]).returns("{MD5}rL0Y20zC+Fzt72VPzMSk2A==\n")
-      scope.function_openldap_password(['foo', '{MD5}']).should == '{MD5}rL0Y20zC+Fzt72VPzMSk2A=='
+      expect(scope.function_openldap_password(['foo', '{MD5}'])).to eq('{MD5}rL0Y20zC+Fzt72VPzMSk2A==')
     end
   end
 end

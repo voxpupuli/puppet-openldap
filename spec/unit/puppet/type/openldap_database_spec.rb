@@ -9,10 +9,10 @@ describe Puppet::Type.type(:openldap_database) do
 
   describe "namevar validation" do
     it "should have :suffix as its namevar" do
-      described_class.key_attributes.should == [:suffix]
+      expect(described_class.key_attributes).to eq([:suffix])
     end
     it "should not invalid suffixes" do
-      pending('must implement validation')
+      skip('must implement validation')
       expect { described_class.new(:name => 'foo bar') }.to raise_error(Puppet::Error, /Invalid value/)
       expect { described_class.new(:name => 'cn=admin,dc=example,dc=com') }.to raise_error(Puppet::Error, /Invalid value/)
       expect { described_class.new(:name => 'dc=example, dc=com') }.to raise_error(Puppet::Error, /Invalid value/)
@@ -25,13 +25,13 @@ describe Puppet::Type.type(:openldap_database) do
   describe "when validating attributes" do
     [:suffix, :provider].each do |param|
       it "should have a #{param} parameter" do
-        described_class.attrtype(param).should == :param
+        expect(described_class.attrtype(param)).to eq(:param)
       end
     end
 
     [:backend, :directory].each do |property|
       it "should have a #{property} property" do
-        described_class.attrtype(property).should == :property
+        expect(described_class.attrtype(property)).to eq(:property)
       end
     end
   end
@@ -67,7 +67,7 @@ describe Puppet::Type.type(:openldap_database) do
         expect { described_class.new(:name => 'foo', :directory => '/bar/baz') }.to_not raise_error
       end
       it "should not support other values" do
-        pending('Must implement validation')
+        skip('Must implement validation')
         expect { described_class.new(:name => 'foo', :directory => 'bar/baz') }.to raise_error(Puppet::Error, /kjsflkjdsflk/)
       end
     end
