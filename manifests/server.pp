@@ -1,38 +1,38 @@
 # See README.md for details.
 class openldap::server(
   $package   = $::osfamily ? {
-    Debian => 'slapd',
-    RedHat => 'openldap-servers',
+    'Debian' => 'slapd',
+    'RedHat' => 'openldap-servers',
   },
   $confdir   = $::osfamily ? {
-    Debian => '/etc/ldap/slapd.d',
-    RedHat => '/etc/openldap/slapd.d',
+    'Debian' => '/etc/ldap/slapd.d',
+    'RedHat' => '/etc/openldap/slapd.d',
   },
   $conffile  = $::osfamily ? {
-    Debian => '/etc/ldap/slapd.conf',
-    RedHat => '/etc/openldap/slapd.conf',
+    'Debian' => '/etc/ldap/slapd.conf',
+    'RedHat' => '/etc/openldap/slapd.conf',
   },
   $service   = $::osfamily ? {
-    Debian => 'slapd',
-    RedHat => $::operatingsystemmajrelease ? {
+    'Debian' => 'slapd',
+    'RedHat' => $::operatingsystemmajrelease ? {
       5 => 'ldap',
       6 => 'slapd',
     },
   },
   $service_hasstatus = $::osfamily ? {
-    Debian => $::operatingsystemmajrelease ? {
+    'Debian' => $::operatingsystemmajrelease ? {
       5       => false,
       default => true,
     },
-    RedHat => true,
+    'RedHat' => true,
   },
   $owner     = $::osfamily ? {
-    Debian => 'openldap',
-    RedHat => 'ldap',
+    'Debian' => 'openldap',
+    'RedHat' => 'ldap',
   },
   $group     = $::osfamily ? {
-    Debian => 'openldap',
-    RedHat => 'ldap',
+    'Debian' => 'openldap',
+    'RedHat' => 'ldap',
   },
 
   $enable    = true,

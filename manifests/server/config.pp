@@ -20,7 +20,7 @@ class openldap::server::config {
   $slapd_ldap_urls = "${slapd_ldap_ifs} ${slapd_ldapi_ifs} ${slapd_ldaps_ifs}"
 
   case $::osfamily {
-    Debian: {
+    'Debian': {
       shellvar { 'slapd':
         ensure   => present,
         target   => '/etc/default/slapd',
@@ -28,7 +28,7 @@ class openldap::server::config {
         value    => $slapd_ldap_urls,
       }
     }
-    RedHat: {
+    'RedHat': {
       $ldap = empty($::openldap::server::ldap_ifs) ? {
         false => 'yes',
         true  => 'no',

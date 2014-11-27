@@ -21,8 +21,8 @@ class openldap::server::install {
   }
 
   $responsefile = $::osfamily ? {
-    Debian => '/var/cache/debconf/slapd.preseed',
-    RedHat => undef,
+    'Debian' => '/var/cache/debconf/slapd.preseed',
+    'RedHat' => undef,
   }
 
   package { $::openldap::server::package:
