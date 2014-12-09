@@ -1,3 +1,10 @@
+## 2014-12-09 Release 1.2.0
+Fix metadata.json
+Add future parser tests
+Fix code for future parser
+Migrate tests to rspec 3 syntax
+Use puppet_facts in specs
+
 ## 2014-11-17 Release 1.1.4
 Fix acceptance tests
 
