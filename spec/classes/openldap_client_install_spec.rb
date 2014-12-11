@@ -16,10 +16,18 @@ describe 'openldap::client::install' do
 
           it { is_expected.to compile.with_all_deps }
           it { is_expected.to contain_class('openldap::client::install') }
-          it { is_expected.to contain_package('libldap-2.4-2').with({
-            :ensure => :present,
-          })
-          }
+          case facts[:osfamily]
+          when 'Debian'
+            it { is_expected.to contain_package('libldap-2.4-2').with({
+              :ensure => :present,
+            })
+            }
+          when 'RedHat'
+            it { is_expected.to contain_package('openldap').with({
+              :ensure => :present,
+            })
+            }
+          end
         end
 
         context 'when overriding package name' do
