@@ -8,7 +8,7 @@ describe 'openldap::server::access' do
     "class {'openldap::server':}"
   end
 
-  on_puppet_supported_platforms.each do |version, platforms|
+  on_pe_supported_platforms.each do |version, platforms|
     platforms.each do |platform, facts|
       context "on #{version} #{platform}" do
         let(:facts) do
