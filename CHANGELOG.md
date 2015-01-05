@@ -1,3 +1,7 @@
+## 2015-01-05 - Release 1.2.2
+
+Fix .travis.yml
+
 ## 2014-12-18 - Release 1.2.1
 
 Various improvements in unit tests
