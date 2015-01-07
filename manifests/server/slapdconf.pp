@@ -6,7 +6,7 @@ class openldap::server::slapdconf {
   }
 
   case $::openldap::server::provider {
-    augeas: {
+    'augeas': {
       file { $::openldap::server::conffile:
         ensure => present,
         owner  => $::openldap::server::owner,
@@ -14,7 +14,7 @@ class openldap::server::slapdconf {
         mode   => '0640',
       }
     }
-    olc: {
+    'olc': {
       file { $::openldap::server::confdir:
         ensure => directory,
         owner  => $::openldap::server::owner,
