@@ -18,6 +18,7 @@ end
 group :system_tests do
   gem 'beaker-rspec',  :require => false
   gem 'serverspec',    :require => false
+  gem 'beaker',        :require => false, :git => 'https://github.com/mcanevet/beaker', :branch => 'feature/hypervisor/vagrant_openstack'
 end
 
 if facterversion = ENV['FACTER_GEM_VERSION']

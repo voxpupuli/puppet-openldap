@@ -1,30 +1,43 @@
 ---
 language: ruby
-sudo: false
-cache: bundler
-bundler_args: --without system_tests
-script: ["bundle exec rake validate", "bundle exec rake lint", "bundle exec fakeroot rake spec SPEC_OPTS='--format documentation'", "bundle exec rake metadata"]
+bundler_args: "${BUNDLER_ARGS}"
+before_install:
+- '[ "${DO_BEAKER}" != "yes" ] || sudo apt-get update -qq'
+- '[ "${DO_BEAKER}" != "yes" ] || { wget https://dl.bintray.com/mitchellh/vagrant/vagrant_1.6.5_x86_64.deb && sudo dpkg -i vagrant_1.6.5_x86_64.deb ; }'
+- '[ "${DO_BEAKER}" != "yes" ] || travis_retry vagrant plugin install vagrant-openstack-provider'
+script:
+- '[ "${DO_VALIDATE}" != "yes" ] || bundle exec rake validate'
+- '[ "${DO_LINT}" != "yes" ] || bundle exec rake lint'
+- '[ "${DO_SPEC}" != "yes" ] || bundle exec fakeroot rake spec SPEC_OPTS="--format documentation"'
+- '[ "${DO_METADATA}" != "yes" ] || bundle exec rake metadata'
+- '[ "${DO_BEAKER}" != "yes" -o -z "${OS_AUTH_URL}" -o -z "${OS_USERNAME}" -o -z "${OS_PASSWORD}" -o -z "${OS_TENANT_NAME}" ] || BEAKER_debug="yes" bundle exec rspec spec/acceptance'
 matrix:
   fast_finish: true
   include:
   - rvm: 1.8.7
-    env: PUPPET_GEM_VERSION="~> 3.0" FACTER_GEM_VERSION="~> 1.7.0"
+    env: PUPPET_GEM_VERSION="~> 3.0" FACTER_GEM_VERSION="~> 1.7.0" DO_SPEC="yes" BUNDLER_ARGS="--without system_tests"
   - rvm: 1.9.3
-    env: PUPPET_GEM_VERSION="~> 3.0"
+    env: PUPPET_GEM_VERSION="~> 3.0" DO_VALIDATE="yes" DO_LINT="yes" DO_SPEC="yes" DO_METADATA="yes" BUNDLER_ARGS="--without system_tests"
+  - rvm: 1.9.3
+    env: DO_BEAKER="yes" BEAKER_set="debian-73-x64_openstack"
   - rvm: 2.0.0
-    env: PUPPET_GEM_VERSION="~> 3.0"
+    env: PUPPET_GEM_VERSION="~> 3.0" DO_SPEC="yes" BUNDLER_ARGS="--without system_tests"
   - rvm: 2.0.0
-    env: PUPPET_GEM_VERSION="~> 3.0" FUTURE_PARSER="yes"
+    env: PUPPET_GEM_VERSION="~> 3.0" DO_VALIDATE="yes" DO_SPEC="yes" FUTURE_PARSER="yes" BUNDLER_ARGS="--without system_tests"
 notifications:
   email: false
 deploy:
   provider: puppetforge
   user: camptocamp
   password:
-    secure: "ZjmgM4a2tcCE4dtccVSmYZAcuCaXdZNsZxVzRiDg7URBYyALMNgCV6XaiS/DTHX4jCuiyw/89Vywyf+uDjrj1552D+lF3cuQMXziwJhXp9v0jJRT9kpq8CFnq4iC/qwqLj54QIhIFoVgtiY9k+2MWRoMuGveLnAmg9K6wSNvLS4="
+    secure: ZjmgM4a2tcCE4dtccVSmYZAcuCaXdZNsZxVzRiDg7URBYyALMNgCV6XaiS/DTHX4jCuiyw/89Vywyf+uDjrj1552D+lF3cuQMXziwJhXp9v0jJRT9kpq8CFnq4iC/qwqLj54QIhIFoVgtiY9k+2MWRoMuGveLnAmg9K6wSNvLS4=
   on:
     tags: true
-    # all_branches is required to use tags
     all_branches: true
-    # Only publish if our main Ruby target builds
     rvm: 1.9.3
+env:
+  global:
+  - secure: Pzb35J5xuR39hogwvj88nPW1Oo6g/HRZB0SaP6xCIyvhn4xWzVmOExSLH/6IjgmUtMvVpKh+oRACGrIPg2UT2RietMM/XwXzkYjOf7S2RdFBs5T7BMINp1U2yNDHRZ2xAi+8ujxstzm06qJN+3FuiRA9/YqDWnT1Prtfc+09zXM=
+  - secure: Uw8xh8bRviyqzdvHjXxhnW2nirxOQ0dRq+/xPmv/buZmnt07ndPn3eGSID2ZtMvkVLlVvu0ADJ0BszveBMYMBy8tgXHTzi4pOb3axVfvDZhT8Jr4SG7C1Izx4OoAj0UqNHckqt5cgIwNw/j35nEP4jqjzE6BEs5KLzwbuxTeslg=
+  - secure: YdiihoHec5Un40eZlffJRhFvUHWIBav3dWu1iR+/J1HQ3+dTDd9N04iMEHGvyoz74Wyeq1noxrHxuAMSUdDTfdda0lEuXJI6bdnE8bh06VjzUAoHfZIGJmy0AwOT8dQ7fCFSppE1KwfROw6NggBe6UeBRx++06x4VrpX5p61rVU=
+  - secure: T/1L86w/kzPsghGC0fzytRhk4i2zbXGBZmX2E8R1pxpaXw2VGskfEYhhotSt0qZ0w3Aj/+HFv+/syeCbOf0JI1/udpkbmkapmoSn0JGiSYbBwUwJ6EZKCneWhXiTe6x0cc0IKSjXcFPRFsjXDbUyYxGabxABMmaf/EMfl6rq6zQ=
