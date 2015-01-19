@@ -17,7 +17,8 @@ class openldap::client(
   # TLS Options
   $tls_cacert = undef,
 ) {
+  anchor { 'openldap::client::begin': } ->
   class { '::openldap::client::install': } ->
   class { '::openldap::client::config': } ->
-  Class['openldap::client']
+  anchor { 'openldap::client::end': }
 }
