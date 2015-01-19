@@ -9,6 +9,7 @@ group :development, :unit_tests do
   gem 'puppet-lint-empty_string-check',                    :require => false
   gem 'puppet-lint-spaceship_operator_without_tag-check',  :require => false
   gem 'puppet-lint-variable_contains_upcase',              :require => false
+  gem 'puppet-lint-absolute_classname-check',              :require => false
   gem 'simplecov',                                         :require => false
   gem 'rspec-puppet-facts',                                :require => false
   gem 'json',                                              :require => false
@@ -18,7 +19,6 @@ end
 group :system_tests do
   gem 'beaker-rspec',  :require => false
   gem 'serverspec',    :require => false
-  gem 'beaker',        :require => false, :git => 'https://github.com/mcanevet/beaker', :branch => 'feature/hypervisor/vagrant_openstack'
 end
 
 if facterversion = ENV['FACTER_GEM_VERSION']
