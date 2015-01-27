@@ -14,12 +14,12 @@ group :development, :unit_tests do
   gem 'rspec-puppet-facts',                                :require => false
   gem 'json',                                              :require => false
   gem 'metadata-json-lint',                                :require => false
-  gem 'travis',                                            :require => false
 end
 
 group :system_tests do
   gem 'beaker-rspec',  :require => false
   gem 'serverspec',    :require => false
+  gem 'beaker',        :require => false, :git => 'https://github.com/mcanevet/beaker', :branch => 'openstack'
 end
 
 if facterversion = ENV['FACTER_GEM_VERSION']
