@@ -3,9 +3,6 @@ language: ruby
 sudo: false
 cache: bundler
 bundler_args: '$([ -z "${BEAKER_set}" ] && echo "--without system_tests")'
-before_install:
-  - "[ -f ~/.ssh/id_rsa ] || ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa"
-  - ssh-keygen -f ~/.ssh/id_rsa -y > ~/.ssh/id_rsa.pub
 script: ["bundle exec rake validate", "bundle exec rake lint", "bundle exec rake spec SPEC_OPTS='--format documentation'", "bundle exec rake metadata", "[ -z \"${BEAKER_set}\" -o -z \"${OS_AUTH_URL}\" -o -z \"${OS_USERNAME}\" -o -z \"${OS_PASSWORD}\" -o -z \"${OS_TENANT_NAME}\" ] || bundle exec rspec spec/acceptance/${SPEC_FILE}"]
 matrix:
   fast_finish: true
