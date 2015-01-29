@@ -15,8 +15,8 @@ matrix:
     env: PUPPET_GEM_VERSION="~> 3.0"
   - rvm: 2.0.0
     env: PUPPET_GEM_VERSION="~> 3.0" FUTURE_PARSER="yes"
-  - rvm: 2.1.0
-    env: PUPPET_GEM_VERSION="~> 3.0" BEAKER_set="debian-7-amd64_openstack"
+  - rvm: 
+    env: BEAKER_set="debian-7-amd64_openstack"
     bundler_args: 
     script: '[ -z "${OS_AUTH_URL}" -o -z "${OS_USERNAME}" -o -z "${OS_PASSWORD}" -o -z "${OS_TENANT_NAME}" ] || bundle exec rspec spec/acceptance'
 notifications:
