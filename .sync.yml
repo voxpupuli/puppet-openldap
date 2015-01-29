@@ -1,8 +1,7 @@
 ---
 .travis.yml:
   extras:
-    - rvm: 2.1.0
-      env: PUPPET_GEM_VERSION="~> 3.0" BEAKER_set="debian-7-amd64_openstack"
+    - env: BEAKER_set="debian-7-amd64_openstack"
       bundler_args:
       script: "'[ -z \"${OS_AUTH_URL}\" -o -z \"${OS_USERNAME}\" -o -z \"${OS_PASSWORD}\" -o -z \"${OS_TENANT_NAME}\" ] || bundle exec rspec spec/acceptance'"
   forge_password: "ZjmgM4a2tcCE4dtccVSmYZAcuCaXdZNsZxVzRiDg7URBYyALMNgCV6XaiS/DTHX4jCuiyw/89Vywyf+uDjrj1552D+lF3cuQMXziwJhXp9v0jJRT9kpq8CFnq4iC/qwqLj54QIhIFoVgtiY9k+2MWRoMuGveLnAmg9K6wSNvLS4="
