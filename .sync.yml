@@ -11,9 +11,3 @@
     - secure: Uw8xh8bRviyqzdvHjXxhnW2nirxOQ0dRq+/xPmv/buZmnt07ndPn3eGSID2ZtMvkVLlVvu0ADJ0BszveBMYMBy8tgXHTzi4pOb3axVfvDZhT8Jr4SG7C1Izx4OoAj0UqNHckqt5cgIwNw/j35nEP4jqjzE6BEs5KLzwbuxTeslg=
     - secure: YdiihoHec5Un40eZlffJRhFvUHWIBav3dWu1iR+/J1HQ3+dTDd9N04iMEHGvyoz74Wyeq1noxrHxuAMSUdDTfdda0lEuXJI6bdnE8bh06VjzUAoHfZIGJmy0AwOT8dQ7fCFSppE1KwfROw6NggBe6UeBRx++06x4VrpX5p61rVU=
     - secure: T/1L86w/kzPsghGC0fzytRhk4i2zbXGBZmX2E8R1pxpaXw2VGskfEYhhotSt0qZ0w3Aj/+HFv+/syeCbOf0JI1/udpkbmkapmoSn0JGiSYbBwUwJ6EZKCneWhXiTe6x0cc0IKSjXcFPRFsjXDbUyYxGabxABMmaf/EMfl6rq6zQ=
-Gemfile:
-  optional:
-    ':system_tests':
-    - gem: beaker
-      git: https://github.com/mcanevet/beaker
-      branch: openstack
