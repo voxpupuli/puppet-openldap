@@ -178,7 +178,7 @@ Authorities the client will recognize.
 ###Class: openldap::server
 
 ####`package`
-Name of the package to install. Defaults to `slapd` on Debian and 'openldap-servers` on RedHat.
+Name of the package to install. Defaults to `slapd` on Debian and `openldap-servers` on RedHat.
 
 ####`file`
 Name of the `slapd.conf` file to use with augeas provider. Defaults to `/etc/ldap/slapd.conf` on Debian and `/etc/openldap/slapd.conf` on RedHat.
