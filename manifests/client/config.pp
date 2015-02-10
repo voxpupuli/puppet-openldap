@@ -19,7 +19,7 @@ class openldap::client::config {
   if $::openldap::client::tls_cacert != undef {
     validate_absolute_path($::openldap::client::tls_cacert)
     augeas { 'ldap.conf+tls_cacert':
-      changes  => "set TLS_CACERT ${::openldap::client::tls_cacert}"
+      changes  => "set TLS_CACERT ${::openldap::client::tls_cacert}",
     }
   }
 }

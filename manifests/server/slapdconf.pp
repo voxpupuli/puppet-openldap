@@ -8,7 +8,7 @@ class openldap::server::slapdconf {
   case $::openldap::server::provider {
     'augeas': {
       file { $::openldap::server::conffile:
-        ensure => present,
+        ensure => file,
         owner  => $::openldap::server::owner,
         group  => $::openldap::server::group,
         mode   => '0640',

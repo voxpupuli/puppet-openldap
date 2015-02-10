@@ -11,7 +11,7 @@ class openldap::server::install {
 
   if $::osfamily == 'Debian' {
     file { '/var/cache/debconf/slapd.preseed':
-      ensure  => present,
+      ensure  => file,
       mode    => '0644',
       owner   => 'root',
       group   => 'root',
