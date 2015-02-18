@@ -1,14 +1,7 @@
 # See README.md for details.
 class openldap::client(
-  $package    = $::osfamily ? {
-    'Debian' => 'libldap-2.4-2',
-    'RedHat' => 'openldap',
-  },
-
-  $file       = $::osfamily ? {
-    'Debian' => '/etc/ldap/ldap.conf',
-    'RedHat' => '/etc/openldap/ldap.conf',
-  },
+  $package    = $openldap::params::client_package,
+  $file       = $openldap::params::client_conffile,
 
   # Options
   $base       = undef,
@@ -16,7 +9,7 @@ class openldap::client(
 
   # TLS Options
   $tls_cacert = undef,
-) {
+) inherits ::openldap::params {
   anchor { 'openldap::client::begin': } ->
   class { '::openldap::client::install': } ->
   class { '::openldap::client::config': } ->
