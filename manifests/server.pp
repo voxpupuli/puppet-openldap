@@ -1,39 +1,12 @@
 # See README.md for details.
 class openldap::server(
-  $package   = $::osfamily ? {
-    'Debian' => 'slapd',
-    'RedHat' => 'openldap-servers',
-  },
-  $confdir   = $::osfamily ? {
-    'Debian' => '/etc/ldap/slapd.d',
-    'RedHat' => '/etc/openldap/slapd.d',
-  },
-  $conffile  = $::osfamily ? {
-    'Debian' => '/etc/ldap/slapd.conf',
-    'RedHat' => '/etc/openldap/slapd.conf',
-  },
-  $service   = $::osfamily ? {
-    'Debian' => 'slapd',
-    'RedHat' => $::operatingsystemmajrelease ? {
-      '5' => 'ldap',
-      '6' => 'slapd',
-    },
-  },
-  $service_hasstatus = $::osfamily ? {
-    'Debian' => $::operatingsystemmajrelease ? {
-      '5'     => false,
-      default => true,
-    },
-    'RedHat' => true,
-  },
-  $owner     = $::osfamily ? {
-    'Debian' => 'openldap',
-    'RedHat' => 'ldap',
-  },
-  $group     = $::osfamily ? {
-    'Debian' => 'openldap',
-    'RedHat' => 'ldap',
-  },
+  $package           = $openldap::params::server_package,
+  $confdir           = $openldap::params::server_confdir,
+  $conffile          = $openldap::params::server_conffile,
+  $service           = $openldap::params::server_service,
+  $service_hasstatus = $openldap::params::server_service_hasstatus,
+  $owner             = $openldap::params::server_owner,
+  $group             = $openldap::params::server_group,
 
   $enable    = true,
   $start     = true,
@@ -49,7 +22,7 @@ class openldap::server(
   $ldap_ifs  = ['/'],
   $ldaps_ifs = [],
   $ldapi_ifs = ['/'],
-) {
+) inherits ::openldap::params {
   validate_hash($databases)
 
   class { '::openldap::server::install': } ->
