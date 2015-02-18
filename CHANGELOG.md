@@ -1,3 +1,8 @@
+## 2015-02-18 - Release 1.3.0
+
+Use params pattern
+Some minor fixes
+
 ## 2015-01-07 - Release 1.2.3
 
 Fix unquoted strings in cases
