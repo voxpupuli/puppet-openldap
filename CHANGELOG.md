@@ -1,3 +1,7 @@
+## 2015-03-06 - Release 1.3.1
+
+Destroy default database before creating new ones
+
 ## 2015-02-18 - Release 1.3.0
 
 Use params pattern
