@@ -21,6 +21,9 @@ define openldap::server::database(
     Openldap::Server::Database[$title] ->
     Class['openldap::server']
   }
+  if $title != 'dc=my-domain,dc=com' {
+    Openldap::Server::Database['dc=my-domain,dc=com'] -> Openldap::Server::Database[$title]
+  }
 
   if $ensure == present {
     validate_absolute_path($directory)
