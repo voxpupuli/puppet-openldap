@@ -299,13 +299,3 @@ Specify a password (or hash of the password) for the rootdn.
 
 ###Function: openldap_password
 
-Contributors
-------------
-
- * Bill ONeill
- * Christian Kaenzig
- * Ilya Kulakov
- * Mathieu Parent
- * Mickaël Canévet
- * Raphaël Pinson
- * Ronny Srnka
