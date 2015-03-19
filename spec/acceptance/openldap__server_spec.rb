@@ -54,6 +54,7 @@ describe 'openldap::server' do
 
   context 'when enabling ldaps' do
     it 'should idempotently run' do
+      skip 'Beaker does not always set FQDN so it may not work...'
       pp = <<-EOS
         class { 'openldap::server':
           ldaps_ifs => ['/'],
@@ -68,15 +69,21 @@ describe 'openldap::server' do
     end
 
     describe port(389) do
-      it { is_expected.to be_listening }
+      it {
+        skip 'Beaker does not always set FQDN so it may not work...'
+        is_expected.to be_listening
+      }
     end
 
     describe port(636) do
-      it { is_expected.to be_listening }
+      it {
+        skip 'Beaker does not always set FQDN so it may not work...'
+        is_expected.to be_listening
+      }
     end
 
     it 'can connect with ldapsearch using ldaps:///' do
-      skip
+      skip 'Does not work yet'
       ldapsearch('-LLL -x -b dc=example,dc=com -H ldaps:///') do |r|
         expect(r.stdout).to match(/dn: dc=example,dc=com/)
       end
