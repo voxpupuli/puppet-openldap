@@ -25,7 +25,6 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       directory = nil
       rootdn = nil
       rootpw = nil
-      suffix = nil
       paragraph.split("\n").collect do |line|
         case line
         when /^olcDatabase: /
