@@ -21,7 +21,7 @@ module      | Y             | N
 overlay     | Y             | N
 access      | Y             | N
 index       | Y             | N
-schema      | N             | N
+schema      | Y             | N
 
 Usage
 -----
@@ -135,6 +135,19 @@ openldap::server::access {
     access => 'read';
 }
 ```
+
+###Configuring Schemas
+```
+openldap::server::overlay { "core"
+	ensure => present,
+}
+
+openldap::server::schema { "samba":
+	ensure => present,
+	path => "/etc/ldap/schema/samba.schema",
+	require => Openldap::Server::Schema["inetorgperson"], before => Openldap::Server::Schema["core-fd"
+}
+
 
 Reference
 ---------
@@ -296,6 +309,14 @@ Specify a password (or hash of the password) for the rootdn.
 ###Resource: openldap::server::overlay
 
 ###Resource: openldap::server::schema
+
+This resource allow you to add schema files
+
+####`name`
+The name of the schema to insert
+
+####`path`
+The path to the .schema file, if not set defaults to /etc/ldap/schema/$name.schema
 
 ###Function: openldap_password
 
