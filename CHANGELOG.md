@@ -1,3 +1,8 @@
+## 2015-03-24 - Release 1.3.2
+
+- Various spec improvements
+- Fix specs
+
 ## 2015-03-06 - Release 1.3.1
 
 Destroy default database before creating new ones
