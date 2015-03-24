@@ -1,8 +1,10 @@
 OpenLDAP
 ========
 
-[![Puppet Forge](http://img.shields.io/puppetforge/v/camptocamp/openldap.svg)](https://forge.puppetlabs.com/camptocamp/openldap)
-[![Build Status](https://travis-ci.org/camptocamp/puppet-openldap.png?branch=master)](https://travis-ci.org/camptocamp/puppet-openldap)
+[![Puppet Forge Version](http://img.shields.io/puppetforge/v/camptocamp/openldap.svg)](https://forge.puppetlabs.com/camptocamp/openldap)
+[![Puppet Forge Downloads](http://img.shields.io/puppetforge/dt/camptocamp/openldap.svg)](https://forge.puppetlabs.com/camptocamp/openldap)
+[![Build Status](https://img.shields.io/travis/camptocamp/puppet-openldap/master.svg)](https://travis-ci.org/camptocamp/puppet-openldap)
+[![Puppet Forge Endorsement](https://img.shields.io/puppetforge/e/camptocamp/openldap.svg)](https://forge.puppetlabs.com/camptocamp/openldap)
 
 Overview
 --------
