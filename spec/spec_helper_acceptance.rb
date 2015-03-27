@@ -12,6 +12,7 @@ hosts.each do |host|
   when 'Debian'
     install_package host, 'libaugeas-ruby'
   when 'RedHat'
+    install_package host, 'gcc'
     install_package host, 'ruby-devel'
     install_package host, 'augeas-devel'
     on host, 'gem install ruby-augeas --no-ri --no-rdoc'
