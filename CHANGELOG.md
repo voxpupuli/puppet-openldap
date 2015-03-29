@@ -1,3 +1,17 @@
+## 2015-03-29 - Release 1.4.0
+
+- Add more acceptance tests to travis matrix
+- Confine pinning to rspec 3.1 to ruby 1.8
+- openldap_password does not use slappasswd anymore
+- openldap_password is idempotent
+- Add MDB backend support
+- Remove RedHat 5 support (may still work but not tested on travis)
+- Add RedHat 7 support
+- Add Debian 8 support
+- Database creation don't require nis schema anymore
+- Fix openldap_module on RedHat
+- Set selinux to permissive on acceptance tests
+
 ## 2015-03-24 - Release 1.3.2
 
 - Various spec improvements
