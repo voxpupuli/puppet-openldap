@@ -16,7 +16,7 @@ Puppet::Type.newtype(:openldap_database) do
 
   newproperty(:backend) do
     desc "The name of the backend."
-    newvalues('bdb', 'hdb')
+    newvalues('bdb', 'hdb', 'mdb')
     defaultto do
       case Facter.value(:osfamily)
       when 'Debian'
