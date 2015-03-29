@@ -26,6 +26,7 @@ hosts.each do |host|
     puts 'Sorry, this osfamily is not supported.'
     exit
   end
+  on host, 'puppet cert generate $(facter fqdn)'
 end
 
 RSpec.configure do |c|
@@ -43,15 +44,6 @@ RSpec.configure do |c|
     # Set up Certificates
     pp = <<-EOS
       $ssldir = '/var/lib/puppet/ssl'
-      Exec {
-        path => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
-      }
-      exec { "puppet cert generate ${::fqdn}":
-        creates => [
-          "${ssldir}/private_keys/${::fqdn}.pem",
-          "${ssldir}/certs/${::fqdn}.pem",
-        ],
-      }
       file { '/etc/ldap':
         ensure => directory,
       }
@@ -66,10 +58,8 @@ RSpec.configure do |c|
         ->
         exec { "certtool -k < ${ssldir}/private_keys/${::fqdn}.pem > /etc/ldap/ssl/${::fqdn}.key":
           creates => "/etc/ldap/ssl/${::fqdn}.key",
-          require => [
-            File['/etc/ldap/ssl'],
-            Exec["puppet cert generate ${::fqdn}"],
-          ],
+          path    => $::path,
+          require => File['/etc/ldap/ssl'],
           before  => File["/etc/ldap/ssl/${::fqdn}.key"],
         }
       } else {
