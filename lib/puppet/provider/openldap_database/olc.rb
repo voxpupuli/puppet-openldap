@@ -133,7 +133,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
     t << "olcDbIndex: objectClass eq\n"
     t << "olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break\n"
-    t << "olcAccess: to attrs=userPassword,shadowLastChange\n"
+    t << "olcAccess: to attrs=userPassword\n"
     t << "  by self write\n"
     t << "  by anonymous auth\n"
     t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
