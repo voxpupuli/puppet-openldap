@@ -17,6 +17,7 @@ hosts.each do |host|
     end
     install_package host, 'libaugeas-ruby'
   when 'RedHat'
+    on host, 'setenforce 0'
     install_package host, 'gcc'
     install_package host, 'ruby-devel'
     install_package host, 'augeas-devel'
