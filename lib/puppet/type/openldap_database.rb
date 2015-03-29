@@ -20,7 +20,11 @@ Puppet::Type.newtype(:openldap_database) do
     defaultto do
       case Facter.value(:osfamily)
       when 'Debian'
-        'hdb'
+        if Facter.value(:operatingsystemmajrelease).to_i < 8
+          'hdb'
+        else
+          'mdb'
+        end
       when 'RedHat'
         if Facter.value(:operatingsystemmajrelease).to_i < 7
           'bdb'
