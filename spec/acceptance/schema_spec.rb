@@ -7,13 +7,13 @@ describe 'openldap::server::schema' do
       pp = <<-EOS
       class { 'openldap::server': }
       ->
-      openldap::server::schema { 'core':
+      openldap::server::schema { 'misc':
         ensure => present,
       }
       EOS
 
       apply_manifest(pp, :catch_failures => true)
-      #apply_manifest(pp, :catch_changes => true)
+      apply_manifest(pp, :catch_changes => true)
     end
   end
 end

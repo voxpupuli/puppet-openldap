@@ -6,7 +6,7 @@ Puppet::Type.type(:openldap_schema).provide(:olc) do
 
   defaultfor :osfamily => :debian, :osfamily => :redhat
 
-  commands :slapcat => 'slapcat', :ldapadd => 'ldapadd', :slaptest => 'slaptest', :ldapsearch => 'ldapsearch'
+  commands :slapcat => 'slapcat', :ldapadd => 'ldapadd', :slaptest => 'slaptest'
 
   mk_resource_methods
 
@@ -16,31 +16,28 @@ Puppet::Type.type(:openldap_schema).provide(:olc) do
   @@openldap_schema_max_count = 0
 
   def self.instances
-    self.getSchemaNames.map { |schema|
-          new(
-            :ensure => :present,
-            :name   => schema
-          )
-    }
-  end
-
-  def self.getSchemaNames
       schemas = []
-      ldapsearch('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-b', 'cn=config', '(objectClass=olcSchemaConfig)', 'cn').split("\n\n").each do |paragraph|
+      slapcat('-H', 'ldap:///???(objectClass=olcSchemaConfig)', '-b', 'cn=config').split("\n\n").each do |paragraph|
           paragraph.split("\n").each do |line|
               if line =~ /^cn: \{/
                   schemas.push line
               end
           end
       end
-      schemas.map{ |entry| entry.match(/^cn: \{\d+\}(\S+)/)[1] }
+      names = schemas.map{ |entry| entry.match(/^cn: \{\d+\}(\S+)/)[1] }
+      names.map { |schema|
+          new(
+            :ensure => :present,
+            :name   => schema
+          )
+      }
   end
 
   def self.prefetch(resources)
     # Match installed schemas with requested schemas to find the paths to them
-    installed = getSchemaNames()
+    installed = instances.map{ |i| i.name }
     for schema in installed do
-        if match = resources.values.find{ |resource| resource.pathWithDefault =~ /#{Regexp.escape(schema)}\.schema$/ }
+        if match = resources.values.find{ |resource| resource[:path] =~ /#{Regexp.escape(schema)}\.schema$/ }
             @@openldap_schema_existing.push(match)
         else
             warning("Missing schema '#{schema}', might cause insertion issues")
@@ -64,7 +61,6 @@ Puppet::Type.type(:openldap_schema).provide(:olc) do
 
     # Only insert in the last requested resource
     @@openldap_schema_create_count += 1
-    puts @@openldap_schema_max_count
     unless @@openldap_schema_create_count == @@openldap_schema_max_count
         return
     end
@@ -73,10 +69,10 @@ Puppet::Type.type(:openldap_schema).provide(:olc) do
     t2 = Tempfile.new('openldap_schemas_includes')
     
     for resource in @@openldap_schema_existing do
-        t2 << "include #{resource.pathWithDefault}\n"
+        t2 << "include #{resource[:path]}\n"
     end
     for resource in @@openldap_schema_new do
-        t2 << "include #{resource.pathWithDefault}\n"
+        t2 << "include #{resource[:path]}\n"
     end
 
     t2.close
