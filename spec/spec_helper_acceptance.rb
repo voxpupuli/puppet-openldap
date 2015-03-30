@@ -10,8 +10,15 @@ hosts.each do |host|
   # Install ruby-augeas
   case fact('osfamily')
   when 'Debian'
+    if fact('operatingsystemmajrelease').to_i < 7
+      on host, 'echo deb http://http.debian.net/debian-backports squeeze-backports main >> /etc/apt/sources.list'
+      on host, 'apt-get update'
+      on host, 'apt-get -y -t squeeze-backports install libaugeas0 augeas-lenses'
+    end
     install_package host, 'libaugeas-ruby'
   when 'RedHat'
+    on host, 'setenforce 0' if fact('selinux') == 'true'
+    install_package host, 'gcc'
     install_package host, 'ruby-devel'
     install_package host, 'augeas-devel'
     on host, 'gem install ruby-augeas --no-ri --no-rdoc'
@@ -19,6 +26,7 @@ hosts.each do |host|
     puts 'Sorry, this osfamily is not supported.'
     exit
   end
+  on host, 'puppet cert generate $(facter fqdn)'
 end
 
 RSpec.configure do |c|
@@ -36,15 +44,6 @@ RSpec.configure do |c|
     # Set up Certificates
     pp = <<-EOS
       $ssldir = '/var/lib/puppet/ssl'
-      Exec {
-        path => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
-      }
-      exec { "puppet cert generate ${::fqdn}":
-        creates => [
-          "${ssldir}/private_keys/${::fqdn}.pem",
-          "${ssldir}/certs/${::fqdn}.pem",
-        ],
-      }
       file { '/etc/ldap':
         ensure => directory,
       }
@@ -59,10 +58,8 @@ RSpec.configure do |c|
         ->
         exec { "certtool -k < ${ssldir}/private_keys/${::fqdn}.pem > /etc/ldap/ssl/${::fqdn}.key":
           creates => "/etc/ldap/ssl/${::fqdn}.key",
-          require => [
-            File['/etc/ldap/ssl'],
-            Exec["puppet cert generate ${::fqdn}"],
-          ],
+          path    => $::path,
+          require => File['/etc/ldap/ssl'],
           before  => File["/etc/ldap/ssl/${::fqdn}.key"],
         }
       } else {

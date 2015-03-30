@@ -16,7 +16,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       '-b',
       'cn=config',
       '-H',
-      'ldap:///???(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)))'
+      'ldap:///???(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)))'
     )
     databases.split("\n\n").collect do |paragraph|
       suffix = nil
@@ -25,10 +25,10 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       directory = nil
       rootdn = nil
       rootpw = nil
-      paragraph.split("\n").collect do |line|
+      paragraph.gsub("\n ", "").split("\n").collect do |line|
         case line
         when /^olcDatabase: /
-          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb)$/).captures
+          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb)$/).captures
         when /^olcDbDirectory: /
           directory = line.split(' ')[1]
         when /^olcRootDN: /
@@ -118,22 +118,15 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     t = Tempfile.new('openldap_database')
     t << "dn: olcDatabase=#{resource[:backend]},cn=config\n"
     t << "changetype: add\n"
-    t << "objectClass: olcDatabaseConfig\n"
     t << "objectClass: olc#{resource[:backend].to_s.capitalize}Config\n"
     t << "olcDatabase: #{resource[:backend]}\n"
-    t << "olcDbCheckpoint: 512 30\n"
-    t << "olcDbConfig: set_cachesize 0 2097152 0\n"
-    t << "olcDbConfig: set_lk_max_objects 1500\n"
-    t << "olcDbConfig: set_lk_max_locks 1500\n"
-    t << "olcDbConfig: set_lk_max_lockers 1500\n"
-    t << "olcLastMod: TRUE\n"
     t << "olcDbDirectory: #{resource[:directory]}\n" if resource[:directory]
     t << "olcRootDN: #{resource[:rootdn]}\n" if resource[:rootdn]
     t << "olcRootPW: #{resource[:rootpw]}\n" if resource[:rootpw]
     t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
     t << "olcDbIndex: objectClass eq\n"
     t << "olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break\n"
-    t << "olcAccess: to attrs=userPassword,shadowLastChange\n"
+    t << "olcAccess: to attrs=userPassword\n"
     t << "  by self write\n"
     t << "  by anonymous auth\n"
     t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"

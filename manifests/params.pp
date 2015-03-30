@@ -26,6 +26,7 @@ class openldap::params {
       $server_service           = $::operatingsystemmajrelease ? {
         '5' => 'ldap',
         '6' => 'slapd',
+        '7' => 'slapd',
       }
       $server_service_hasstatus = true
     }
