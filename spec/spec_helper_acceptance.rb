@@ -17,7 +17,7 @@ hosts.each do |host|
     end
     install_package host, 'libaugeas-ruby'
   when 'RedHat'
-    on host, 'setenforce 0'
+    on host, 'setenforce 0' if fact('selinux') == 'true'
     install_package host, 'gcc'
     install_package host, 'ruby-devel'
     install_package host, 'augeas-devel'
