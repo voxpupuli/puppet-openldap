@@ -1,3 +1,7 @@
+## 2015-04-03 - Release 1.4.1
+
+- Fix acceptance tests
+
 ## 2015-03-29 - Release 1.4.0
 
 - Add more acceptance tests to travis matrix
