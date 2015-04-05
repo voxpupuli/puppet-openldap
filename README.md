@@ -94,9 +94,11 @@ class { 'openldap::server':
 openldap::server::database { 'dc=example,dc=com':
   directory => '/var/lib/ldap',
   rootdn    => 'cn=admin,dc=example,dc=com',
-  rootpw    => openldap_password('mySuperSecretPassword'),
+  rootpw    => 'secret',
 }
 ```
+
+`rootpw` will be automatically converted to a SSHA hash with random salt.
 
 ###Configuring modules
 
