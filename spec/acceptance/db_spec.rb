@@ -64,5 +64,28 @@ describe 'openldap::server::database' do
     end
   end
 
+  context 'with a rootdn and rootpw' do
+    it 'creates a database' do
+      tmpdir = default.tmpdir('openldap')
+      pp = <<-EOS
+      class { 'openldap::server': }
+      openldap::server::database { 'dc=bar,dc=com':
+        ensure    => present,
+        directory => '#{tmpdir}',
+        rootdn    => 'cn=admin,dc=bar,dc=com',
+        rootpw    => 'secret',
+      }
+      EOS
+
+      apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp, :catch_changes => true)
+    end
+
+    it 'can connect with ldapsearch' do
+      ldapsearch('-LLL -x -b "dc=foo,dc=com" -D "cn=admin,dc=bar,dc=com" -w secret') do |r|
+        expect(r.stdout).to match(/dn: dc=foo,dc=com/)
+      end
+    end
+  end
 end
 
