@@ -1,3 +1,7 @@
+## 2015-04-17 - Release 1.5.1
+
+- Add beaker nodesets
+
 ## 2015-04-08 - Release 1.5.0
 
 - Generate random salt for rootpw instead of using fqdn
