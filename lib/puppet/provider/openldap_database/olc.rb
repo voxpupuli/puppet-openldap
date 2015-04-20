@@ -153,7 +153,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       '-H',
       "ldap:///???(&(objectClass=olc#{resource[:backend].to_s.capitalize}Config)(olcSuffix=#{resource[:suffix]}))").split("\n").collect do |line|
       if line =~ /^olcDatabase: /
-        @property_hash[:index] = line.match(/^olcDatabase: {(\d+)}#{resource[:backend]}$/).captures[0]
+        @property_hash[:index] = line.match(/^olcDatabase: \{(\d+)\}#{resource[:backend]}$/).captures[0]
       end
     end
   end
