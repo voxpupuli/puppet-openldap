@@ -1,3 +1,7 @@
+## 2015-04-21 - Release 1.5.2
+
+- Correct client package name for RHEL
+
 ## 2015-04-17 - Release 1.5.1
 
 - Add beaker nodesets
