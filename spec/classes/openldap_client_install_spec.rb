@@ -22,7 +22,7 @@ describe 'openldap::client::install' do
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_package('openldap').with({
+          it { is_expected.to contain_package('openldap-clients').with({
             :ensure => :present,
           })
           }
