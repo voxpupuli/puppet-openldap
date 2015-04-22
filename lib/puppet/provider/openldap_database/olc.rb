@@ -119,6 +119,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     t = Tempfile.new('openldap_database')
     t << "dn: olcDatabase=#{resource[:backend]},cn=config\n"
     t << "changetype: add\n"
+    t << "objectClass: olcDatabaseConfig\n"
     t << "objectClass: olc#{resource[:backend].to_s.capitalize}Config\n"
     t << "olcDatabase: #{resource[:backend]}\n"
     t << "olcDbDirectory: #{resource[:directory]}\n" if resource[:directory]
