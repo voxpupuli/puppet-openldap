@@ -62,14 +62,14 @@ describe 'openldap::client::config' do
           it { is_expected.to contain_augeas('ldap.conf+uri').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => "set URI 'ldap://ldap.example.com'",
+            :changes => "set URI ldap://ldap.example.com",
           })
           }
         when 'RedHat'
           it { is_expected.to contain_augeas('ldap.conf+uri').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => "set URI 'ldap://ldap.example.com'",
+            :changes => "set URI ldap://ldap.example.com",
           })
           }
         end
