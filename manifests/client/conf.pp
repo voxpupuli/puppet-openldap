@@ -3,7 +3,7 @@ define openldap::client::conf (
   $ensure = present,
   $value  = undef,
 ) {
-  include openldap::client
+  include ::openldap::client
 
   if ! ($ensure in [ present, absent ]) {
     fail("'${ensure}' is not a valid ensure parameter value")

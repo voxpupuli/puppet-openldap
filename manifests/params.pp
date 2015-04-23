@@ -3,12 +3,12 @@ class openldap::params {
   case $::osfamily {
     'Debian': {
       $client_package           = $::osfamily ? {
-        Debian => 'libldap-2.4-2',
-        RedHat => 'openldap',
+        'Debian' => 'libldap-2.4-2',
+        'RedHat' => 'openldap',
       }
       $client_conffile          = $::osfamily ? {
-        Debian => '/etc/ldap/ldap.conf',
-        RedHat => '/etc/openldap/ldap.conf',
+        'Debian' => '/etc/ldap/ldap.conf',
+        'RedHat' => '/etc/openldap/ldap.conf',
       }
       $server_confdir           = '/etc/ldap/slapd.d'
       $server_conffile          = '/etc/ldap/slapd.conf'
