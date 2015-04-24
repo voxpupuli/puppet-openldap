@@ -16,7 +16,7 @@ class openldap::params {
       }
     }
     'RedHat': {
-      $client_package           = 'openldap'
+      $client_package           = 'openldap-clients'
       $client_conffile          = '/etc/openldap/ldap.conf'
       $server_confdir           = '/etc/openldap/slapd.d'
       $server_conffile          = '/etc/openldap/slapd.conf'

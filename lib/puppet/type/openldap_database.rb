@@ -46,6 +46,37 @@ Puppet::Type.newtype(:openldap_database) do
 
   newproperty(:rootpw) do
     desc "Password (or hash of the password) for the rootdn."
-  end
 
+    def insync?(is)
+      if should =~ /^\{(CRYPT|MD5|SMD5|SSHA|SHA)\}.+/
+        should == is
+      else
+        case is
+        when /^\{CRYPT\}.+/
+          "{CRYPT}" + should.crypt(is[0,2]) == is
+        when /^\{MD5\}.+/
+          "{MD5}" + Digest::MD5.hexdigest(should) == is
+        when /^\{SMD5\}.+/
+          salt = is[16..-1]
+          md5_hash_with_salt = "#{Digest::MD5.digest(should + salt)}#{salt}"
+          "{SMD5}#{[md5_hash_with_salt].pack('m').gsub("\n", '')}" == is
+        when /^\{SSHA\}.+/
+          decoded = Base64.decode64(is.gsub(/^\{SSHA\}/, ''))
+          salt = decoded[20..-1]
+          "{SSHA}" + Base64.encode64("#{Digest::SHA1.digest("#{should}#{salt}")}#{salt}").chomp == is
+        when /^\{SHA\}.+/
+          "{SHA}" + Digest::SHA1.hexdigest(should) == is
+        else
+          false
+        end
+      end
+    end
+
+    def sync
+      require 'securerandom'
+      salt = SecureRandom.random_bytes(4)
+      @resource[:rootpw] = "{SSHA}" + Base64.encode64("#{Digest::SHA1.digest("#{should}#{salt}")}#{salt}").chomp
+      super
+    end
+  end
 end

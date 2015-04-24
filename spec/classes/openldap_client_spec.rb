@@ -24,7 +24,7 @@ describe 'openldap::client' do
           }
         when 'RedHat'
           it { is_expected.to contain_class('openldap::client').with({
-            :package    => 'openldap',
+            :package    => 'openldap-clients',
             :file       => '/etc/openldap/ldap.conf',
             :base       => nil,
             :uri        => nil,

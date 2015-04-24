@@ -1,3 +1,21 @@
+## 2015-04-21 - Release 1.5.2
+
+- Correct client package name for RHEL
+
+## 2015-04-17 - Release 1.5.1
+
+- Add beaker nodesets
+
+## 2015-04-08 - Release 1.5.0
+
+- Generate random salt for rootpw instead of using fqdn
+- Deprecates openldap_password function
+- Fix database destroy
+
+## 2015-04-03 - Release 1.4.1
+
+- Fix acceptance tests
+
 ## 2015-03-29 - Release 1.4.0
 
 - Add more acceptance tests to travis matrix
