@@ -19,18 +19,18 @@ define openldap::server::schema(
   }
 
   if $path {
-      $pathWithDefault = $path
+      $path_with_default = $path
   } else {
-      $pathWithDefault = $osfamily ? {
-          'Debian' => "/etc/ldap/schema/$title.schema",
-          'Redhat' => "/etc/openldap/schema/$title.schema",
-          default => "/etc/ldap/schema/$title.schema",
+      $path_with_default = $::osfamily ? {
+          'Debian' => "/etc/ldap/schema/${title}.schema",
+          'Redhat' => "/etc/openldap/schema/${title}.schema",
+          default => "/etc/ldap/schema/${title}.schema",
       }
   }
 
   openldap_schema { $title:
     ensure   => $ensure,
-    path     => $pathWithDefault,
+    path     => $path_with_default,
     provider => $::openldap::server::provider,
   }
 }
