@@ -78,5 +78,20 @@ Puppet::Type.newtype(:openldap_database) do
       @resource[:rootpw] = "{SSHA}" + Base64.encode64("#{Digest::SHA1.digest("#{should}#{salt}")}#{salt}").chomp
       super
     end
+
+    def change_to_s(currentvalue, newvalue)
+      if currentvalue == :absent
+        return "created password"
+      else
+        return "changed password"
+      end
+    end
+
+    def is_to_s( currentvalue )
+      return '[old password hash redacted]'
+    end
+    def should_to_s( newvalue )
+      return '[new password hash redacted]'
+    end
   end
 end
