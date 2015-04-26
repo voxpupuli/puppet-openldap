@@ -74,4 +74,27 @@ describe Puppet::Type.type(:openldap_database) do
 
   end
 
+  describe "rootpw" do
+    before do
+      @resource = described_class.new(:name => 'foo')
+      @password = described_class.attrclass(:rootpw).new(:resource => @resource, :should => 'secret')
+    end
+
+    it "should not include the password in the change log when adding the password" do
+      expect(@password.change_to_s(:absent, 'secret')).not_to be_include('secret')
+    end
+
+    it "should not include the password in the change log when changing the password" do
+      expect(@password.change_to_s('oldpass', 'secret')).not_to be_include('secret')
+    end
+
+    it "should redact the password when displaying the old value" do
+      expect(@password.is_to_s('oldpass')).to match(/^\[old password hash redacted\]$/)
+    end
+
+    it "should redact the password when displaying the new value" do
+      expect(@password.should_to_s('newpass')).to match(/^\[new password hash redacted\]$/)
+    end
+  end
+
 end
