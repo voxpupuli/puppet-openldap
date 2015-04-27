@@ -2,6 +2,6 @@ fixtures:
   forge_modules:
     augeasproviders_core: 'hercules-team/augeasproviders_core'
     augeasproviders_shellvar: 'hercules-team/augeasproviders_shellvar'
-    stdlib: 'puppetlabs/puppetlabs-stdlib'
+    stdlib: 'puppetlabs/stdlib'
   symlinks:
     openldap: "#{source_dir}"
