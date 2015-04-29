@@ -1,3 +1,7 @@
+## 2015-04-29 - Release 1.5.3
+
+- Avoid logging password
+
 ## 2015-04-21 - Release 1.5.2
 
 - Correct client package name for RHEL
