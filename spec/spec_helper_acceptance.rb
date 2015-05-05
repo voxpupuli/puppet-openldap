@@ -10,7 +10,7 @@ hosts.each do |host|
   # Install ruby-augeas
   case fact('osfamily')
   when 'Debian'
-    if fact('operatingsystemmajrelease').to_i < 7
+    if fact('operatingsystem') == 'Debian' and fact('operatingsystemmajrelease').to_i < 7
       on host, 'echo deb http://http.debian.net/debian-backports squeeze-backports main >> /etc/apt/sources.list'
       on host, 'apt-get update'
       on host, 'apt-get -y -t squeeze-backports install libaugeas0 augeas-lenses'
