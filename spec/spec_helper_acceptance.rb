@@ -10,6 +10,8 @@ hosts.each do |host|
   # Install ruby-augeas
   case fact('osfamily')
   when 'Debian'
+    # Fix for beaker on Docker
+    on host, 'rm /usr/sbin/policy-rc.d || true'
     if fact('operatingsystemmajrelease').to_i < 7
       on host, 'echo deb http://http.debian.net/debian-backports squeeze-backports main >> /etc/apt/sources.list'
       on host, 'apt-get update'
@@ -27,6 +29,7 @@ hosts.each do |host|
     exit
   end
   on host, 'puppet cert generate $(facter fqdn)'
+  install_package host, 'net-tools'
 end
 
 RSpec.configure do |c|
