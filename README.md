@@ -88,6 +88,15 @@ class { 'openldap::server':
 }
 ```
 
+Configuring a global parameter:
+
+```puppet
+openldap::server::globalconf { 'security':
+  ensure => present,
+  value  => 'tls=128',
+}
+```
+
 ###Configuring a database
 
 ```puppet
