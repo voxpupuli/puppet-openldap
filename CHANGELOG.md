@@ -1,3 +1,7 @@
+## 2015-05-12 - Release 1.5.5
+
+Don't pin beaker
+
 ## 2015-05-12 - Release 1.5.4
 
 Add documentation for puppet::server::globalconf
