@@ -1,43 +1,48 @@
+## 2015-05-12 - Release 1.5.4
+
+Add documentation for puppet::server::globalconf
+Fix Beaker on Docker
+
 ## 2015-04-29 - Release 1.5.3
 
-- Avoid logging password
+Avoid logging password
 
 ## 2015-04-21 - Release 1.5.2
 
-- Correct client package name for RHEL
+Correct client package name for RHEL
 
 ## 2015-04-17 - Release 1.5.1
 
-- Add beaker nodesets
+Add beaker nodesets
 
 ## 2015-04-08 - Release 1.5.0
 
-- Generate random salt for rootpw instead of using fqdn
-- Deprecates openldap_password function
-- Fix database destroy
+Generate random salt for rootpw instead of using fqdn
+Deprecates openldap_password function
+Fix database destroy
 
 ## 2015-04-03 - Release 1.4.1
 
-- Fix acceptance tests
+Fix acceptance tests
 
 ## 2015-03-29 - Release 1.4.0
 
-- Add more acceptance tests to travis matrix
-- Confine pinning to rspec 3.1 to ruby 1.8
-- openldap_password does not use slappasswd anymore
-- openldap_password is idempotent
-- Add MDB backend support
-- Remove RedHat 5 support (may still work but not tested on travis)
-- Add RedHat 7 support
-- Add Debian 8 support
-- Database creation don't require nis schema anymore
-- Fix openldap_module on RedHat
-- Set selinux to permissive on acceptance tests
+Add more acceptance tests to travis matrix
+Confine pinning to rspec 3.1 to ruby 1.8
+openldap_password does not use slappasswd anymore
+openldap_password is idempotent
+Add MDB backend support
+Remove RedHat 5 support (may still work but not tested on travis)
+Add RedHat 7 support
+Add Debian 8 support
+Database creation don't require nis schema anymore
+Fix openldap_module on RedHat
+Set selinux to permissive on acceptance tests
 
 ## 2015-03-24 - Release 1.3.2
 
-- Various spec improvements
-- Fix specs
+Various spec improvements
+Fix specs
 
 ## 2015-03-06 - Release 1.3.1
 
@@ -68,47 +73,48 @@ Migrate tests to rspec 3 syntax
 Use puppet_facts in specs
 
 ## 2014-11-17 Release 1.1.4
+
 Fix acceptance tests
 
 ## 2014-11-13 Release 1.1.3
+
 Fix README
 Use Travis DPL for automatic releases
 Deprecate 2.7 support and add 3.7 support
 Lint metadata.json
 
 ## 2014-10-20 Release 1.1.2
-### Summary
+
 Really setup automatic forge releases
 
 ## 2014-10-20 Release 1.1.0
-### Summary
+
 Setup automatic forge releases
 
 ## 2014-10-07 Release 1.0.0
-###Summary
+
 Change usage : one must explicitely configure an openldap::server::database resource
 
 ## 2014-10-05 Release 0.5.3
-###Summary
+
 Fix service startup on RedHat
 
 ## 2014-09-23 Release 0.5.2
-###Summary
+
 Updated dependencies for augeasproviders
 Acceptance tests refactoring
 
 ## 2014-09-05 Release 0.5.1
-###Summary
+
 Fix for ruby 1.8.7
 Fix overlay
 Use .puppet-lin.rc
 Update travis matrix
 
 ## 2014-08-26 Release 0.5.0
-###Summary
+
 User augeasproviders 2.0.0 and re-enable augeas provider.
 
 ## 2014-07-02 Release 0.4.0
-###Summary
-This release add ability to specify ldap* interfaces and thus removes openldap::server::ssl parameter. It also add a new type/provider/define to manage dbindex.
 
+This release add ability to specify ldap* interfaces and thus removes openldap::server::ssl parameter. It also add a new type/provider/define to manage dbindex.
