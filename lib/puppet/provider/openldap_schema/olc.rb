@@ -26,13 +26,13 @@ Puppet::Type.type(:openldap_schema).provide(:olc) do
         :name		=> schema
       )
     }
-        end
+  end
 
   def self.schemaToLdif(schema, name)
     ldif = [
       "dn: cn=#{name},cn=schema,cn=config",
       "objectClass: olcSchemaConfig",
-        "cn: #{name}",
+      "cn: #{name}",
     ]
     schema.split("\n").each do |line|
       case line
@@ -76,7 +76,7 @@ Puppet::Type.type(:openldap_schema).provide(:olc) do
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end
     @property_hash[:ensure] = :present
-    end
+  end
 
   def exists?
     @property_hash[:ensure] == :present
