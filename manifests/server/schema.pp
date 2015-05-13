@@ -1,7 +1,10 @@
 # See README.md for details.
 define openldap::server::schema(
   $ensure = undef,
-  $path = false,
+  $path = $::osfamily ? {
+    'Debian' => "/etc/ldap/schema/${title}.schema",
+    'Redhat' => "/etc/openldap/schema/${title}.schema",
+  }
 ) {
 
   if ! defined(Class['openldap::server']) {
@@ -18,19 +21,9 @@ define openldap::server::schema(
     Class['openldap::server']
   }
 
-  if $path {
-      $path_with_default = $path
-  } else {
-      $path_with_default = $::osfamily ? {
-          'Debian' => "/etc/ldap/schema/${title}.schema",
-          'Redhat' => "/etc/openldap/schema/${title}.schema",
-          default => "/etc/ldap/schema/${title}.schema",
-      }
-  }
-
   openldap_schema { $title:
     ensure   => $ensure,
-    path     => $path_with_default,
+    path     => $path,
     provider => $::openldap::server::provider,
   }
 }
