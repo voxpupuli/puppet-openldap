@@ -1,6 +1,6 @@
 {
   "name": "camptocamp-openldap",
-  "version": "1.5.5",
+  "version": "1.6.0",
   "author": "Camptocamp",
   "summary": "Puppet OpenLDAP module",
   "license": "Apache-2.0",
