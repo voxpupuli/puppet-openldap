@@ -1,3 +1,7 @@
+## 2015-05-13 - Release 1.6.0
+
+Add support for schema
+
 ## 2015-05-12 - Release 1.5.5
 
 Don't pin beaker
