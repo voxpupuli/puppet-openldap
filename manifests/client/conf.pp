@@ -22,19 +22,15 @@ define openldap::client::conf (
   $name_real = downcase($name)
   $param     = upcase($name)
 
-  if $ensure == present {
-    $onlyif  = "match ${param}[.='${value_real}'] size == 0"
-    $changes = "set ${param} ${value_real}"
-  } else {
-    $onlyif  = "match ${param} size != 0"
-    $changes = "rm ${param}"
+  $changes = $ensure ? {
+    present => "set ${param} ${value_real}",
+    absent  => "rm ${param}",
   }
 
   augeas { "ldap.conf+${name_real}":
     incl    => $::openldap::client::file,
     lens    => 'Spacevars.lns',
     context => "/files${::openldap::client::file}",
-    onlyif  => $onlyif,
     changes => $changes,
   }
 
