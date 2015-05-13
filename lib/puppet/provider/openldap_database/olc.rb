@@ -25,6 +25,12 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       directory = nil
       rootdn = nil
       rootpw = nil
+      readonly = nil
+      sizelimit = nil
+      syncrepl = nil
+      timelimit = nil
+      updateref = nil
+      dboptions = {}
       paragraph.gsub("\n ", "").split("\n").collect do |line|
         case line
         when /^olcDatabase: /
@@ -37,17 +43,57 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
           rootpw = Base64.decode64(line.split(' ')[1])
         when /^olcSuffix: /
           suffix = line.split(' ')[1]
+        when /^olcReadOnly: /i
+          readonly = line.split(' ')[1]
+        when /^olcSizeLimit: /i
+          sizelimit = line.split(' ')[1]
+        when /^olcSyncrepl: /i
+          syncrepl = line.split(' ')[1]
+        when /^olcTimeLimit: /i
+          timelimit = line.split(' ')[1]
+        when /^olcUpdateref: /i
+          updateref = line.split(' ')[1]
+        when /^olcDb\S+: /i
+          optname, optvalue = line.split(': ',2)
+          optname.downcase!
+          case optname
+          when 'olcdbconfig'
+            dboptions['dbconfig'] = Array.new if !dboptions['dbconfig']
+            optvalue = optvalue.match(/^\{\d+\}(.+)$/).captures[0] if optvalue =~ /^\{\d+\}.+$/
+            dboptions['dbconfig'].push(optvalue)
+          when 'olcdbnosync'
+            dboptions['dbnosync'] = optvalue
+          when 'olcdbpasesize'
+            dboptions['dbpagesize'] = optvalue
+          else
+            ldifoptname = optname.match(/^olcDb(\S+)$/i).captures[0]
+            if dboptions[ldifoptname] and !dboptions[ldifoptname].is_a?(Array)
+              dboptions[ldifoptname] = [dboptions[ldifoptname]]
+              dboptions[ldifoptname].push(optvalue)
+            elsif dboptions[ldifoptname]
+              dboptions[ldifoptname].push(optvalue)
+            else
+              dboptions[optname.match(/^olcDb(\S+)$/i).captures[0]] = optvalue
+            end
+          end
         end
       end
+      dbconfig = dbconfig.sort.collect { |x| x.split('}')[1] } if dbconfig
       new(
-        :ensure    => :present,
-        :name      => suffix,
-        :suffix    => suffix,
-        :index     => index.to_i,
-        :backend   => backend,
-        :directory => directory,
-        :rootdn    => rootdn,
-        :rootpw    => rootpw
+        :ensure         => :present,
+        :name           => suffix,
+        :suffix         => suffix,
+        :index          => index.to_i,
+        :backend        => backend,
+        :directory      => directory,
+        :rootdn         => rootdn,
+        :rootpw         => rootpw,
+        :readonly       => readonly,
+        :sizelimit      => sizelimit,
+        :syncrepl       => syncrepl,
+        :timelimit      => timelimit,
+        :updateref      => updateref,
+        :dboptions      => dboptions
       )
     end
   end
@@ -125,7 +171,30 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     t << "olcRootDN: #{resource[:rootdn]}\n" if resource[:rootdn]
     t << "olcRootPW: #{resource[:rootpw]}\n" if resource[:rootpw]
     t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
-    t << "olcDbIndex: objectClass eq\n"
+    t << "olcDbIndex: objectClass eq\n" if !resource[:dboptions] or !resource[:dboptions]['index']
+    t << "olcReadOnly: #{resource[:readonly]}\n" if resource[:readonly]
+    t << "olcSizeLimit: #{resource[:sizelimit]}\n" if resource[:sizelimit]
+    t << "olcSyncrepl: #{resource[:syncrepl]}\n" if resource[:syncrepl]
+    t << "olcTimeLimit: #{resource[:timelimit]}\n" if resource[:timelimit]
+    t << "olcUpdateref: #{resource[:updateref]}\n" if resource[:updateref]
+    if resource[:dboptions]
+      resource[:dboptions].each do |k, v|
+        case k
+        when 'dbnosync'
+          t << "olcDbNosync: #{v}\n"
+        when 'dbpagesize'
+          t << "olcDbPagesize: #{v}\n"
+        when 'dbconfig'
+          t << v.collect { |x| "olcDbConfig: #{x}" }.join("\n") + "\n"
+        else
+          if v.is_a?(Array)
+            t << v.collect { |x| "olcDb#{k}: #{x}" }.join("\n") + "\n"
+          else
+            t << "olcDb#{k}: #{v}\n"
+          end
+        end
+      end
+    end
     t << "olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break\n"
     t << "olcAccess: to attrs=userPassword\n"
     t << "  by self write\n"
@@ -179,6 +248,30 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     @property_flush[:suffix] = value
   end
 
+  def readonly=(value)
+    @property_flush[:readonly] = value
+  end
+
+  def sizelimit=(value)
+    @property_flush[:sizelimit] = value
+  end
+
+  def syncrepl=(value)
+    @property_flush[:syncrepl] = value
+  end
+
+  def timelimit=(value)
+    @property_flush[:timelimit] = value
+  end
+
+  def updateref=(value)
+    @property_flush[:updateref] = value
+  end
+
+  def dboptions=(value)
+    @property_flush[:dboptions] = value
+  end
+
   def flush
     if not @property_flush.empty?
       t = Tempfile.new('openldap_database')
@@ -188,6 +281,43 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       t << "replace: olcRootDN\nolcRootDN: #{resource[:rootdn]}\n-\n" if @property_flush[:rootdn]
       t << "replace: olcRootPW\nolcRootPW: #{resource[:rootpw]}\n-\n" if @property_flush[:rootpw]
       t << "replace: olcSuffix\nolcSuffix: #{resource[:suffix]}\n-\n" if @property_flush[:suffix]
+      t << "replace: olcReadOnly\nolcReadOnly: #{resource[:readonly]}\n-\n" if @property_flush[:readonly]
+      t << "replace: olcSizeLimit\nolcSizeLimit: #{resource[:sizelimit]}\n-\n" if @property_flush[:sizelimit]
+      t << "replace: olcSyncrepl\nolcSyncrepl: #{resource[:syncrepl]}\n-\n" if @property_flush[:syncrepl]
+      t << "replace: olcTimeLimit\nolcTimeLimit: #{resource[:timelimit]}\n-\n" if @property_flush[:timelimit]
+      t << "replace: olcUpdateref\nolcUpdateref: #{resource[:updateref]}\n-\n" if @property_flush[:updateref]
+      if @property_flush[:dboptions]
+        if "#{resource[:synctype]}" == "inclusive" and !@property_hash[:dboptions].empty?
+          @property_hash[:dboptions].keys.each do |k|
+            case k
+            when 'dbnosync'
+              t << "delete: olcDbNosync\n-\n"
+            when 'dbpagesize'
+              t << "delete: olcDbPagesize\n-\n"
+            when 'dbconfig'
+              t << "delete: olcDbConfig\n-\n"
+            else
+              t << "delete: olcDb#{k}\n-\n"
+            end
+          end
+        end
+        @property_flush[:dboptions].each do |k, v|
+          case k
+          when 'dbnosync'
+            t << "replace: olcDbNosync\nolcDbNosync: #{v}\n-\n"
+          when 'dbpagesize'
+            t << "replace: olcDbPagesize\nolcDbPagesize: #{v}\n-\n"
+          when 'dbconfig'
+            t << "replace: olcDbConfig\n" + v.collect { |x| "olcDbConfig: #{x}" }.join("\n") + "\n-\n"
+          else
+            if v.is_a?(Array)
+              t << "replace: olcDb#{k}\n" + v.collect { |x| "olcDb#{k}: #{x}" }.join("\n") + "\n-\n"
+            else
+              t << "replace: olcDb#{k}\nolcDb#{k}: #{v}\n-\n"
+            end
+          end
+        end
+      end
       t.close
       Puppet.debug(IO.read t.path)
       begin

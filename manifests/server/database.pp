@@ -7,6 +7,14 @@ define openldap::server::database(
   $rootdn    = undef,
   $rootpw    = undef,
   $initdb    = undef,
+  $readonly  = false,
+  $sizelimit = undef,
+  $syncrepl  = undef,
+  $timelimit = undef,
+  $updateref = undef,
+  # BDB/HDB options
+  $dboptions = undef,
+  $synctype  = undef,
 ) {
 
   if ! defined(Class['openldap::server']) {
@@ -46,6 +54,13 @@ define openldap::server::database(
     rootdn    => $rootdn,
     rootpw    => $rootpw,
     initdb    => $initdb,
+    readonly  => $readonly,
+    sizelimit => $sizelimit,
+    syncrepl  => $syncrepl,
+    timelimit => $timelimit,
+    updateref => $updateref,
+    dboptions => $dboptions,
+    synctype  => $synctype,
   }
 
 }

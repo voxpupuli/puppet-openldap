@@ -101,4 +101,49 @@ Puppet::Type.newtype(:openldap_database) do
     newvalues(:true, :false)
     defaultto(:true)
   end
+
+  newproperty(:readonly) do
+    desc "Puts the database into read-only mode."
+  end
+
+  newproperty(:sizelimit) do
+    desc "Specifies the maximum number of entries to return from a search operation."
+  end
+
+  newproperty(:syncrepl) do
+    desc "This directive specifies the current database as a replica of the master content."
+  end
+
+  newproperty(:timelimit) do
+    desc "Specifies the maximum number of seconds (in real time) slapd will spend answering a search request."
+  end
+
+  newproperty(:updateref) do
+    desc "This directive is only applicable in a slave slapd. It specifies the URL to return to clients which submit update requests upon the replica."
+  end
+
+  newproperty(:dboptions) do
+    desc "Hash to pass specific HDB/BDB options for the database"
+
+    def insync?(is)
+      if resource[:synctype] == :inclusive
+        is == should
+      else
+        should.each do |k, v|
+          if is[k] != should[k]
+            return false
+          end
+        end
+      end
+    end
+  end
+
+  newparam(:synctype) do
+    desc "Whether specified dboptions should be considered the complete list (inclusive) or the minimum list (minimum) of dboptions the database should have. Defaults to minimum.
+
+    Valid values are inclusive, minimum."
+
+    newvalues(:inclusive, :minimum)
+    defaultto :minimum
+  end
 end
