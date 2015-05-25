@@ -12,6 +12,7 @@ define openldap::server::globalconf(
     Openldap::Server::Globalconf[$title] ~> Class['openldap::server::service']
   }
   openldap_global_conf { $name:
+    ensure   => $ensure,
     provider => $::openldap::server::provider,
     target   => $::openldap::server::conffile,
     value    => $value,
