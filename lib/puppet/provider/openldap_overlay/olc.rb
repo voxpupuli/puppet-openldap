@@ -42,7 +42,7 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
         :overlay => overlay,
         :suffix  => suffix,
         :index   => index.to_i,
-        :options => options,
+        :options => options
       )
     end
   end
