@@ -73,6 +73,12 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
       t << "objectClass: olcPPolicyConfig\n"
     when 'dynlist'
       t << "objectClass: olcDynamicList\n"
+    when 'auditlog'
+      t << "objectClass: olcAuditLogConfig\n"
+    when 'constraint'
+      t << "objectClass: olcConstraintConfig\n"
+    when 'pcache'
+      t << "objectClass: olcPcacheConfig\n"
     end
     #t << "objectClass: olcMemberOf\n" if resource[:overlay] == 'memberof'
     t << "olcOverlay: #{resource[:overlay]}\n"
