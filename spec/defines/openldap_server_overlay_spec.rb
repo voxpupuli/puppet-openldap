@@ -33,6 +33,25 @@ describe 'openldap::server::overlay' do
              with_suffix('dc=example,dc=com')
         }
       end
+
+      context 'with options' do
+        let(:title) { 'ppolicy on dc=example,dc=com' }
+        let(:params) do
+          {
+            :options => [
+              'olcPPolicyDefault: cn=default,ou=policies,dc=example,dc=com',
+            ],
+          }
+        end
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_openldap_overlay('memberof on dc=example,dc=com').
+             with_ensure('present').
+             with_provider('olc').
+             with_overlay('memberof').
+             with_suffix('dc=example,dc=com').
+             with_options(['olcPPolicyDefault: cn=default,ou=policies,dc=example,dc=com'])
+        }
+      end
     end
   end
 end
