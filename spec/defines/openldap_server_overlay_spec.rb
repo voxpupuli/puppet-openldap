@@ -35,11 +35,11 @@ describe 'openldap::server::overlay' do
       end
 
       context 'with options' do
-        let(:title) { 'ppolicy on dc=example,dc=com' }
         let(:params) do
           {
+            :ensure => 'present',
             :options => [
-              'olcPPolicyDefault: cn=default,ou=policies,dc=example,dc=com',
+              'olcMemberOfGroupOC: groupOfNames',
             ],
           }
         end
@@ -49,7 +49,7 @@ describe 'openldap::server::overlay' do
              with_provider('olc').
              with_overlay('memberof').
              with_suffix('dc=example,dc=com').
-             with_options(['olcPPolicyDefault: cn=default,ou=policies,dc=example,dc=com'])
+             with_options(['olcMemberOfGroupOC: groupOfNames'])
         }
       end
     end
