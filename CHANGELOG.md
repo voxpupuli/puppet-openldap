@@ -1,3 +1,15 @@
+## 2015-05-26 - Release 1.6.4
+
+Use random application order in nodeset
+
+## 2015-05-26 - Release 1.6.3
+
+add utopic & vivid nodesets
+
+## 2015-05-25 - Release 1.6.2
+
+Don't allow failure on Puppet 4
+
 ## 2015-05-13 - Release 1.6.1
 
 Add puppet-lint-file_source_rights-check gem
