@@ -6,6 +6,7 @@ define openldap::server::database(
   $backend   = undef,
   $rootdn    = undef,
   $rootpw    = undef,
+  $initdb    = undef,
 ) {
 
   if ! defined(Class['openldap::server']) {
@@ -44,6 +45,7 @@ define openldap::server::database(
     directory => $directory,
     rootdn    => $rootdn,
     rootpw    => $rootpw,
+    initdb    => $initdb,
   }
 
 }
