@@ -94,4 +94,11 @@ Puppet::Type.newtype(:openldap_database) do
       return '[new password hash redacted]'
     end
   end
+
+  newparam(:initdb) do
+    desc "When true it initiales the database with the top object. When false, it does not create any object in the database, so you have to create it by other mechanism.  It defaults to true"
+
+    newvalues(:true, :false)
+    defaultto(:true)
+  end
 end

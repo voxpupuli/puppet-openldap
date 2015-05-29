@@ -145,7 +145,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end
     t.delete
-    initdb
+    initdb if resource[:initdb] == :true
     @property_hash[:ensure] = :present
     slapcat(
       '-b',
