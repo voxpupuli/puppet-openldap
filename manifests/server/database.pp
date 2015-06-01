@@ -1,20 +1,23 @@
 # See README.md for details.
 define openldap::server::database(
-  $ensure    = present,
-  $directory = '/var/lib/ldap',
-  $suffix    = $title,
-  $backend   = undef,
-  $rootdn    = undef,
-  $rootpw    = undef,
-  $initdb    = undef,
-  $readonly  = false,
-  $sizelimit = undef,
-  $syncrepl  = undef,
-  $timelimit = undef,
-  $updateref = undef,
+  $ensure          = present,
+  $directory       = '/var/lib/ldap',
+  $suffix          = $title,
+  $backend         = undef,
+  $rootdn          = undef,
+  $rootpw          = undef,
+  $initdb          = undef,
+  $readonly        = false,
+  $sizelimit       = undef,
+  $timelimit       = undef,
+  $updateref       = undef,
   # BDB/HDB options
-  $dboptions = undef,
-  $synctype  = undef,
+  $dboptions       = undef,
+  $synctype        = undef,
+  # Synchronization options
+  $mirrormode      = undef,
+  $syncusesubentry = undef,
+  $syncrepl        = undef,
 ) {
 
   if ! defined(Class['openldap::server']) {
@@ -45,22 +48,24 @@ define openldap::server::database(
   }
 
   openldap_database { $title:
-    ensure    => $ensure,
-    suffix    => $suffix,
-    provider  => $::openldap::server::provider,
-    target    => $::openldap::server::conffile,
-    backend   => $backend,
-    directory => $directory,
-    rootdn    => $rootdn,
-    rootpw    => $rootpw,
-    initdb    => $initdb,
-    readonly  => $readonly,
-    sizelimit => $sizelimit,
-    syncrepl  => $syncrepl,
-    timelimit => $timelimit,
-    updateref => $updateref,
-    dboptions => $dboptions,
-    synctype  => $synctype,
+    ensure          => $ensure,
+    suffix          => $suffix,
+    provider        => $::openldap::server::provider,
+    target          => $::openldap::server::conffile,
+    backend         => $backend,
+    directory       => $directory,
+    rootdn          => $rootdn,
+    rootpw          => $rootpw,
+    initdb          => $initdb,
+    readonly        => $readonly,
+    sizelimit       => $sizelimit,
+    timelimit       => $timelimit,
+    updateref       => $updateref,
+    dboptions       => $dboptions,
+    synctype        => $synctype,
+    mirrormode      => $mirrormode,
+    syncusesubentry => $syncusesubentry,
+    syncrepl        => $syncrepl,
   }
 
 }

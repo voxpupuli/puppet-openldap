@@ -117,10 +117,6 @@ Puppet::Type.newtype(:openldap_database) do
     desc "Specifies the maximum number of entries to return from a search operation."
   end
 
-  newproperty(:syncrepl) do
-    desc "This directive specifies the current database as a replica of the master content."
-  end
-
   newproperty(:timelimit) do
     desc "Specifies the maximum number of seconds (in real time) slapd will spend answering a search request."
   end
@@ -152,5 +148,19 @@ Puppet::Type.newtype(:openldap_database) do
 
     newvalues(:inclusive, :minimum)
     defaultto :minimum
+  end
+
+  newproperty(:mirrormode) do
+    desc "This  option  puts  a  replica database into \"mirror\" mode"
+
+    newvalues(:true, :false)
+  end
+
+  newproperty(:syncusesubentry) do
+    desc "Store  the  syncrepl  contextCSN  in  a  subentry  instead of the context entry of the database"
+  end
+
+  newproperty(:syncrepl, :array_matching => :all) do
+    desc "Specify  the  current  database  as a replica which is kept up-to-date with the master content by establishing the current slapd(8) as a replication consumer site running  a syncrepl  replication  engine."
   end
 end
