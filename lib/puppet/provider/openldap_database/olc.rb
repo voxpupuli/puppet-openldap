@@ -82,9 +82,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
         when /^olcSyncUseSubentry: /
           syncusesubentry = line.split(' ', 2)[1]
         when /^olcSyncrepl: /
-          if !syncrepl
-            syncrepl = Array.new
-          end
+          syncrepl ||= Array.new
           optvalue = line.split(' ',2)[1]
           syncrepl.push(optvalue.match(/^(\{\d+\})?(.+)$/).captures[1])
         end
