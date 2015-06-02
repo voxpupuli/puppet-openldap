@@ -182,16 +182,15 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
   end
 
   def destroy
-    # TODO: I'm not sure that this works when there are more overlays in the
-    # database
     default_confdir = Facter.value(:osfamily) == 'Debian' ? '/etc/ldap/slapd.d' : Facter.value(:osfamily) == 'RedHat' ? '/etc/openldap/slapd.d' : nil
 
     `service slapd stop`
     path = default_confdir  + "/" + getPath("olcOverlay={#{@property_hash[:index]}}#{resource[:overlay]},#{getDn(resource[:suffix])}")
     File.delete(path)
-    slapcat('-b', 'olcDatabase={2}hdb,cn=config', '-H', "ldap:///???objectClass=olcOverlayConfig"
-           ).split("\n").select { |line| line =~ /^dn: / }.select { |dn| dn.match(/^dn: olcOverlay=\{(\d+)\}(.+),olcDatabase=\{2\}hdb,cn=config$/).captures[0].to_i > @property_hash[:index] }.each { |dn|
-             index, type = dn.match(/^dn: olcOverlay=\{(\d+)\}(.+),olcDatabase=\{2\}hdb,cn=config$/).captures
+    
+    slapcat('-b', "#{getDn(resource[:suffix])}", '-H', "ldap:///???objectClass=olcOverlayConfig"
+           ).split("\n").select { |line| line =~ /^dn: / }.select { |dn| dn.match(/^dn: olcOverlay=\{(\d+)\}(.+),#{Regexp.quote(getDn(resource[:suffix]))}$/).captures[0].to_i > @property_hash[:index] }.each { |dn|
+             index, type = dn.match(/^dn: olcOverlay=\{(\d+)\}(.+),#{Regexp.quote(getDn(resource[:suffix]))}$/).captures
              index = index.to_i
              old_filename = "#{default_confdir}/#{getPath(dn.split(' ',2)[1])}"
              new_filename = "#{default_confdir}/#{getPath("olcOverlay={#{index - 1}}#{type},#{getDn(@property_hash[:suffix])}")}"
@@ -199,6 +198,7 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
              File.rename(old_filename, new_filename)
              text = File.read(new_filename)
              replace = text.gsub("{#{index}}#{type}", "{#{index - 1}}#{type}")
+             Puppet.debug "UPDATE OVERLAY: #{replace}"
              File.open(new_filename, "w") { |file| file.puts replace }
            }
     `service slapd start`
