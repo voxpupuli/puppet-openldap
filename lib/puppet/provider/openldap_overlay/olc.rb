@@ -198,7 +198,6 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
              File.rename(old_filename, new_filename)
              text = File.read(new_filename)
              replace = text.gsub("{#{index}}#{type}", "{#{index - 1}}#{type}")
-             Puppet.debug "UPDATE OVERLAY: #{replace}"
              File.open(new_filename, "w") { |file| file.puts replace }
            }
     `service slapd start`
