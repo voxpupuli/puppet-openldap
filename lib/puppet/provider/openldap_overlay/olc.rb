@@ -20,29 +20,35 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
       overlay = nil
       suffix = nil
       index = nil
-      options = Array.new
+      options = {}
       paragraph.split("\n").collect do |line|
         case line
         when /^dn: /
           index, overlay, database = line.match(/^dn: olcOverlay=\{(\d+)\}([^,]+),olcDatabase=([^,]+),cn=config$/).captures
           suffix = getSuffix(database)
         when /^olcOverlay: /i
-        when /^olc([a-zA-Z]+): /i
-          opt_k, opt_n = line.split(': ', 2)
-          if opt_n =~ /^\{\d+\}(.+)$/ then
-            opt_n = opt_n.split('}', 2)[1]
+        when /^olc(\S+): /i
+          opt_k, opt_v = line.split(': ', 2)
+          if opt_v =~ /^\{\d+\}(.+)$/ then
+            opt_v = opt_v.split('}', 2)[1]
           end
-          options.push("#{opt_k}: #{opt_n}")
+          if options[opt_k] and !options[opt_k].is_a?(Array)
+            options[opt_k] = [options[opt_k]]
+            options[opt_k].push(opt_v)
+          elsif options[opt_k]
+            options[opt_k].push(opt_v)
+          else
+            options[opt_k] = opt_v
+          end
         end
       end
-      options = options.empty? ? nil : options.sort
       new(
         :name    => "#{overlay} on #{suffix}",
         :ensure  => :present,
         :overlay => overlay,
         :suffix  => suffix,
         :index   => index.to_i,
-        :options => options
+        :options => options.empty? ? nil : options
       )
     end
   end
@@ -82,8 +88,12 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
     end
     t << "olcOverlay: #{resource[:overlay]}\n"
     if resource[:options]
-      resource[:options].each do |opt|
-        t << opt.split(':')[0] + ": " + opt.split(':', 2)[1]
+      resource[:options].each do |k, v|
+        if v.is_a?(Array)
+          t << v.collect { |x| "#{k}: #{x}" }.join("\n") + "\n"
+        else
+          t << "#{k}: #{v}\n"
+        end
       end
     end
     t.close
@@ -141,30 +151,18 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
       t << "dn: olcOverlay={#{@property_hash[:index]}}#{resource[:overlay]},#{getDn(resource[:suffix])}\n"
       t << "changetype: modify\n"
       if @property_flush[:options] then
-        # Convert to hash so it was easier
-        hash = {}
-        @property_flush[:options].each do |opt|
-          opt_n, opt_v = opt.split(': ', 2)
-          if hash.has_key?(opt_n) then
-            if hash[opt_n].is_a?(Array) then
-              hash[opt_n].push(opt_v)
-            else
-              hash[opt_n] = [hash[opt_n]].push(opt_v)
-            end
-          else
-            hash[opt_n] = opt_v
+        if @property_hash[:options]
+          # Remove all previously options remove in the should
+          @property_hash[:options].select { |key, value| !@property_flush[:options].member?(key) }.keys.each do |k|
+            t << "delete: #{k}\n-\n"
           end
         end
-        hash.each do |k, v|
-          t << "replace: #{k}\n" + ( v.respond_to?('collect') ? v.collect { |x| "#{k}: #{x}" }.join("\n") + "\n" : "#{k}: #{v}\n" ) + "-\n"
-        end
-        # We could remove some option...
-        if @property_hash[:options] then
-          [@property_hash[:options]].flatten.each do |opt|
-            key = opt.split(': ', 2)[0]
-            if not hash.has_key?(key) then
-              t << "delete: #{key}\n-\n"
-            end
+        # Add current options
+        @property_flush[:options].each do |k, v|
+          if v.is_a?(Array)
+            t << "replace: #{k}\n#{v.collect { |x| "#{k}: #{x}" }.join("\n")}\n-\n"
+          else
+            t << "replace: #{k}\n#{k}: #{v}\n-\n"
           end
         end
       end
