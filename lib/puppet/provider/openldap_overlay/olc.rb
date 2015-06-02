@@ -80,7 +80,6 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
     when 'pcache'
       t << "objectClass: olcPcacheConfig\n"
     end
-    #t << "objectClass: olcMemberOf\n" if resource[:overlay] == 'memberof'
     t << "olcOverlay: #{resource[:overlay]}\n"
     if resource[:options]
       resource[:options].each do |opt|
