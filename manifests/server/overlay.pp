@@ -1,6 +1,6 @@
 # See README.md for details.
 define openldap::server::overlay(
-  $ensure  = undef,
+  $ensure  = present,
   $overlay = regsubst($title, '^(\S+)\s+on\s+(\S+)$', '\1'),
   $suffix  = regsubst($title, '^(\S+)\s+on\s+(\S+)$', '\2'),
   $options = undef,
