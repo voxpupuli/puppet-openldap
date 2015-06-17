@@ -68,9 +68,13 @@ Puppet::Type.type(:openldap_schema).provide(:olc) do
 
     begin
       schema = IO.read resource[:path]
-      t << self.class.schemaToLdif(schema, resource[:name])
-      t.close
+      if resource[:converttoldif]
+        t << self.class.schemaToLdif(schema, resource[:name])
+      else
+        t << schema
+      end
 
+      t.close
       ldapadd('-cQY', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
@@ -80,7 +84,7 @@ Puppet::Type.type(:openldap_schema).provide(:olc) do
 
   def exists?
     @property_hash[:ensure] == :present
-    end
+  end
 
   def destroy
     raise Puppet::Error, "Removing schemas is not supported by this provider. Slapd needs to be stopped and the schema must be removed manually."
