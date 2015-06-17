@@ -1,15 +1,19 @@
 # See README.md for details.
 define openldap::server::schema(
-  $ensure = undef,
-  $path = $::osfamily ? {
+  $ensure        = undef,
+  $converttoldif = true,
+  $path          = $::osfamily ? {
     'Debian' => "/etc/ldap/schema/${title}.schema",
     'Redhat' => "/etc/openldap/schema/${title}.schema",
   }
 ) {
 
+
   if ! defined(Class['openldap::server']) {
     fail 'class ::openldap::server has not been evaluated'
   }
+
+  validate_bool($converttoldif)
 
   if $::openldap::server::provider == 'augeas' {
     Class['openldap::server::install'] ->
@@ -22,8 +26,9 @@ define openldap::server::schema(
   }
 
   openldap_schema { $title:
-    ensure   => $ensure,
-    path     => $path,
-    provider => $::openldap::server::provider,
+    ensure        => $ensure,
+    path          => $path,
+    provider      => $::openldap::server::provider,
+    converttoldif => $converttoldif,
   }
 }
