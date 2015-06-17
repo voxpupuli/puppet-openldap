@@ -8,9 +8,12 @@ define openldap::server::schema(
   }
 ) {
 
+
   if ! defined(Class['openldap::server']) {
     fail 'class ::openldap::server has not been evaluated'
   }
+
+  validate_bool($converttoldif)
 
   if $::openldap::server::provider == 'augeas' {
     Class['openldap::server::install'] ->
@@ -23,8 +26,9 @@ define openldap::server::schema(
   }
 
   openldap_schema { $title:
-    ensure   => $ensure,
-    path     => $path,
-    provider => $::openldap::server::provider,
+    ensure        => $ensure,
+    path          => $path,
+    provider      => $::openldap::server::provider,
+    converttoldif => $converttoldif,
   }
 }
