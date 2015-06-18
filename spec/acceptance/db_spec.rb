@@ -87,5 +87,24 @@ describe 'openldap::server::database' do
       end
     end
   end
+
+  context 'with a monitor db' do
+    it 'creates a monitor database' do
+      pp = <<-EOS
+      class {'openldap::server': }
+      openldap::server::module {'back_monitor':
+        ensure => present,
+      }
+      openldap::server::database { 'cn=Monitor':
+        ensure => present,
+        backend => 'monitor',
+        require => Openldap::Server::Module['back_monitor'],
+      }
+      EOS
+
+      apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp, :catch_changes => true)
+    end
+  end
 end
 

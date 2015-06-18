@@ -1,7 +1,7 @@
 # See README.md for details.
 define openldap::server::database(
   $ensure          = present,
-  $directory       = '/var/lib/ldap',
+  $directory       = undef,
   $suffix          = $title,
   $backend         = undef,
   $rootdn          = undef,
@@ -24,6 +24,14 @@ define openldap::server::database(
     fail 'class ::openldap::server has not been evaluated'
   }
 
+  $manage_directory = $backend ? {
+    'monitor' => undef,
+    default   => $directory ? {
+      undef   => '/var/lib/ldap',
+      default => $directory,
+    },
+  }
+
   if $::openldap::server::provider == 'augeas' {
     Class['openldap::server::install'] ->
     Openldap::Server::Database[$title] ~>
@@ -37,9 +45,9 @@ define openldap::server::database(
     Openldap::Server::Database['dc=my-domain,dc=com'] -> Openldap::Server::Database[$title]
   }
 
-  if $ensure == present {
-    validate_absolute_path($directory)
-    file { $directory:
+  if $ensure == present and $backend != 'monitor' {
+    validate_absolute_path($manage_directory)
+    file { $manage_directory:
       ensure => directory,
       owner  => $::openldap::server::owner,
       group  => $::openldap::server::group,
@@ -53,7 +61,7 @@ define openldap::server::database(
     provider        => $::openldap::server::provider,
     target          => $::openldap::server::conffile,
     backend         => $backend,
-    directory       => $directory,
+    directory       => $manage_directory,
     rootdn          => $rootdn,
     rootpw          => $rootpw,
     initdb          => $initdb,
