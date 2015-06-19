@@ -99,7 +99,6 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
     t.close
     Puppet.debug(IO.read t.path)
     begin
-      system "cat " + t.path
       ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
