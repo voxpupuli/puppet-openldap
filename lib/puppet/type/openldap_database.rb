@@ -155,7 +155,6 @@ Puppet::Type.newtype(:openldap_database) do
   newproperty(:mirrormode, :boolean => true) do
     desc "This option puts a replica database into \"mirror\" mode"
     newvalues(:true, :false)
-
   end
 
   newproperty(:syncusesubentry) do
