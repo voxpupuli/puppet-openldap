@@ -11,6 +11,10 @@ Puppet::Type.newtype(:openldap_overlay) do
     desc "The slapd.conf file"
   end
 
+  newproperty(:index) do
+    desc "The index of the overlay."
+  end
+
   newparam(:overlay, :namevar => true) do
     desc "The name of the overlay to apply"
   end
@@ -38,7 +42,7 @@ Puppet::Type.newtype(:openldap_overlay) do
     ]
   end
 
-  newproperty(:options) do
+  newproperty(:options, :array_matching => :all) do
     desc "Overlay options."
   end
 
