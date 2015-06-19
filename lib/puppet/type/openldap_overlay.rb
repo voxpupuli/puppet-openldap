@@ -42,11 +42,8 @@ Puppet::Type.newtype(:openldap_overlay) do
     ]
   end
 
-  newproperty(:options) do
+  newproperty(:options, :array_matching => :all) do
     desc "Overlay options."
-    def insync?(is)
-      is == should
-    end
   end
 
 end
