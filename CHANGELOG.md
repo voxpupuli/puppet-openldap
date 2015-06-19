@@ -1,3 +1,11 @@
+## 2015-06-19 - Release 1.8.0
+
+Revert "Use ruby to generate idempotent SSHA password (more secure password)
+Add support to configure overlays on a database
+Fix some issues on Ubuntu (no official support yet)
+Update documentation
+Don't convert schema if already in LDIF format
+
 ## 2015-06-19 - Release 1.7.0
 
 Add `initdb` param to `openldap::server::database` define to allow to not
