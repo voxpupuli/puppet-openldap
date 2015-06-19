@@ -13,7 +13,7 @@ hosts.each do |host|
     # Fix for beaker on Docker
     on host, 'rm /usr/sbin/policy-rc.d || true'
     if fact('operatingsystem') == 'Debian' and fact('operatingsystemmajrelease').to_i < 7
-      on host, 'echo deb http://http.debian.net/debian-backports squeeze-backports main >> /etc/apt/sources.list'
+      on host, 'echo deb http://httpredir.debian.org/debian-backports squeeze-backports main >> /etc/apt/sources.list'
       on host, 'apt-get update'
       on host, 'apt-get -y -t squeeze-backports install libaugeas0 augeas-lenses'
     end
