@@ -1,3 +1,5 @@
+require 'puppet/property/boolean'
+
 Puppet::Type.newtype(:openldap_database) do
   @doc = "Manages OpenLDAP BDB and HDB databases."
 
@@ -150,8 +152,12 @@ Puppet::Type.newtype(:openldap_database) do
     defaultto :minimum
   end
 
-  newproperty(:mirrormode) do
+  newproperty(:mirrormode, :boolean => true, :parent => Puppet::Property::Boolean) do
     desc "This option puts a replica database into \"mirror\" mode"
+
+    munge do |value|
+        super(value) ? :true : :false
+    end
   end
 
   newproperty(:syncusesubentry) do
