@@ -152,7 +152,7 @@ openldap::server::access {
 ```
 
 ###Configuring Schemas
-```
+```puppet
 openldap::server::schema { 'samba':
   ensure  => present,
   path    => '/etc/ldap/schema/samba.schema',
