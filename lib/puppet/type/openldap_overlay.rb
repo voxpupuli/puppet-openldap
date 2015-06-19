@@ -42,7 +42,7 @@ Puppet::Type.newtype(:openldap_overlay) do
     ]
   end
 
-  newproperty(:options, :array_matching => :all) do
+  newproperty(:options) do
     desc "Overlay options."
   end
 
