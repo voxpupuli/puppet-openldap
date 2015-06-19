@@ -1,3 +1,8 @@
+## 2015-06-19 - Release 1.7.0
+
+Add `initdb` param to `openldap::server::database` define to allow to not
+initialize database.
+
 ## 2015-05-28 - Release 1.6.5
 
 Add beaker_spec_helper to Gemfile
