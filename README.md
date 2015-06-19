@@ -153,16 +153,17 @@ openldap::server::access {
 
 ###Configuring Schemas
 ```
-openldap::server::overlay { "core"
-	ensure => present,
+openldap::server::schema { 'samba':
+  ensure  => present,
+  path    => '/etc/ldap/schema/samba.schema',
+  require => Openldap::Server::Schema["inetorgperson"],
 }
 
-openldap::server::schema { "samba":
-	ensure => present,
-	path => "/etc/ldap/schema/samba.schema",
-	require => Openldap::Server::Schema["inetorgperson"], before => Openldap::Server::Schema["core-fd"
+openldap::server::schema { 'nis':
+  ensure  => present,
+  path    => '/etc/ldap/schema/nis.ldif',
+  require => Openldap::Server::Schema["inetorgperson"],
 }
-
 
 Reference
 ---------

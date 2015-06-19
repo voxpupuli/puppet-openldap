@@ -36,18 +36,18 @@ Puppet::Type.type(:openldap_schema).provide(:olc) do
     ]
     schema.split("\n").each do |line|
       case line
-      when /^\s*#/									# Comments are ok
+      when /^\s*#/    # Comments are ok
         ldif.push(line)
-      when /^$/										# Replace empty lines with comment
+      when /^$/   # Replace empty lines with comment
         ldif.push("#")
-      when /^objectidentifier(.*)$/i				# Rewrite tags
+      when /^objectidentifier(.*)$/i    # Rewrite tags
         ldif.push("olcObjectIdentifier:#{$1}")
       when /^attributetype(.*)$/i
         ldif.push("olcAttributeTypes:#{$1}")
       when /^objectclass(.*)$/i
         ldif.push("olcObjectClasses:#{$1}")
-      when /^\s+(.*)/								# Rewrite continuation whitespace
-        ldif.push("  #{$1}")						# One space to indicate continuation, plus one for spacing between words
+      when /^\s+(.*)/   # Rewrite continuation whitespace
+        ldif.push("  #{$1}")    # One space to indicate continuation, plus one for spacing between words
       end
     end
     ldif.join("\n")
@@ -68,9 +68,13 @@ Puppet::Type.type(:openldap_schema).provide(:olc) do
 
     begin
       schema = IO.read resource[:path]
-      t << self.class.schemaToLdif(schema, resource[:name])
+      file_extention = File.extname resource[:path]
+      if file_extention == '.schema'
+        t << self.class.schemaToLdif(schema, resource[:name])
+      else
+        t << schema
+      end
       t.close
-
       ldapadd('-cQY', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
@@ -80,7 +84,7 @@ Puppet::Type.type(:openldap_schema).provide(:olc) do
 
   def exists?
     @property_hash[:ensure] == :present
-    end
+  end
 
   def destroy
     raise Puppet::Error, "Removing schemas is not supported by this provider. Slapd needs to be stopped and the schema must be removed manually."
