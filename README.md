@@ -162,6 +162,7 @@ openldap::server::schema { "samba":
 	path => "/etc/ldap/schema/samba.schema",
 	require => Openldap::Server::Schema["inetorgperson"], before => Openldap::Server::Schema["core-fd"
 }
+```
 
 
 Reference
