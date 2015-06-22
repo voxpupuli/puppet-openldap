@@ -152,12 +152,10 @@ Puppet::Type.newtype(:openldap_database) do
     defaultto :minimum
   end
 
-  newproperty(:mirrormode, :boolean => true, :parent => Puppet::Property::Boolean) do
+  newproperty(:mirrormode, :boolean => true) do
     desc "This option puts a replica database into \"mirror\" mode"
+    newvalues(:true, :false)
 
-    munge do |value|
-        super(value) ? :true : :false
-    end
   end
 
   newproperty(:syncusesubentry) do
