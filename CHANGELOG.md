@@ -1,3 +1,7 @@
+## 2015-06-24 - Release 1.8.1
+
+Add missing 'ensure' parameter to 'openldap::server::globalconf'
+
 ## 2015-06-19 - Release 1.8.0
 
 Revert "Use ruby to generate idempotent SSHA password (more secure password)
