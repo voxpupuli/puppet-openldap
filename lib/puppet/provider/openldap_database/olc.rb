@@ -33,6 +33,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       mirrormode = nil
       syncusesubentry = nil
       syncrepl = nil
+      limits = []
       paragraph.gsub("\n ", "").split("\n").collect do |line|
         case line
         when /^olcDatabase: /
@@ -84,6 +85,9 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
           syncrepl ||= []
           optvalue = line.split(' ',2)[1]
           syncrepl.push(optvalue.match(/^(\{\d+\})?(.+)$/).captures[1])
+        when /^olcLimits: /
+          limit = line.match(/^olcLimits:\s+(\{\d+\})?(.+)$/).captures[1]
+          limits << limit
         end
       end
       if backend == 'monitor' and !suffix
@@ -105,7 +109,8 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
         :dboptions       => dboptions,
         :mirrormode      => mirrormode,
         :syncusesubentry => syncusesubentry,
-        :syncrepl        => syncrepl
+        :syncrepl        => syncrepl,
+        :limits          => limits
       )
     end
   end
@@ -212,6 +217,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     t << resource[:syncrepl].collect { |x| "olcSyncrepl: #{x}" }.join("\n") + "\n" if resource[:syncrepl]
     t << "olcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:mirrormode]
     t << "olcSyncUseSubentry: #{resource[:syncusesubentry]}\n" if resource[:syncusesubentry]
+    t << "#{resource[:limits].collect { |x| "olcLimits: #{x}" }.join("\n")}\n" if resource[:limits] and !resource[:limits].empty?
     t << "olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break\n"
     t << "olcAccess: to attrs=userPassword\n"
     t << "  by self write\n"
@@ -296,7 +302,11 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
   def syncrepl=(value)
     @property_flush[:syncrepl] = value
   end
-  
+
+  def limits=(value)
+    @property_flush[:limits] = value
+  end
+
   def flush
     if not @property_flush.empty?
       t = Tempfile.new('openldap_database')
@@ -345,6 +355,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       t << "replace: olcSyncrepl\n#{resource[:syncrepl].collect { |x| "olcSyncrepl: #{x}" }.join("\n")}\n-\n" if @property_flush[:syncrepl]
       t << "replace: olcMirrorMode\nolcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n-\n" if @property_flush[:mirrormode]
       t << "replace: olcSyncUseSubentry\nolcSyncUseSubentry: #{resource[:syncusesubentry]}\n-\n" if @property_flush[:syncusesubentry]
+      t << "replace: olcLimits\n#{@property_flush[:limits].collect { |x| "olcLimits: #{x}" }.join("\n")}\n-\n" if @property_flush[:limits]
       t.close
       Puppet.debug(IO.read t.path)
       begin
