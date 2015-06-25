@@ -94,10 +94,10 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     t << "dn: #{resource[:suffix]}\n"
     t << "changetype: add\n"
     t << "objectClass: top\n"
-    t << "objectClass: dcObject\n" if resource[:suffix].start_with?("dc=")
+    t << "objectClass: dcObject\n"
     t << "objectClass: organization\n"
-    t << "dc: #{resource[:suffix].split(/,?dc/).delete_if { |c| c.empty? }[0]}\n" if resource[:suffix].start_with?("dc=")
-    t << "o: #{resource[:suffix].split(/,?dc/).delete_if { |c| c.empty? }.join('.')}\n" if resource[:suffix].start_with?("dc=")
+    t << "dc: #{resource[:suffix].split(/,?dc=/).delete_if { |c| c.empty? }[0]}\n"
+    t << "o: #{resource[:suffix].split(/,?dc=/).delete_if { |c| c.empty? }.join('.')}\n"
     t << "\n"
     t << "dn: cn=admin,#{resource[:suffix]}\n"
     t << "objectClass: simpleSecurityObject\n" if resource[:rootpw]
