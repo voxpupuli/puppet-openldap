@@ -1,3 +1,7 @@
+## 2015-06-26 - Release 1.8.2
+
+Fix strict_variables activation with rspec-puppet 2.2
+
 ## 2015-06-24 - Release 1.8.1
 
 Add missing 'ensure' parameter to 'openldap::server::globalconf'
