@@ -29,35 +29,44 @@ class openldap::server::config {
       }
     }
     'RedHat': {
-      $ldap = empty($::openldap::server::ldap_ifs) ? {
-        false => 'yes',
-        true  => 'no',
-      }
-      shellvar { 'SLAPD_LDAP':
-        ensure   => present,
-        target   => '/etc/sysconfig/ldap',
-        variable => 'SLAPD_LDAP',
-        value    => $ldap,
-      }
-      $ldaps = empty($::openldap::server::ldaps_ifs) ? {
-        false => 'yes',
-        true  => 'no',
-      }
-      shellvar { 'SLAPD_LDAPS':
-        ensure   => present,
-        target   => '/etc/sysconfig/ldap',
-        variable => 'SLAPD_LDAPS',
-        value    => $ldaps,
-      }
-      $ldapi = empty($::openldap::server::ldapi_ifs) ? {
-        false => 'yes',
-        true  => 'no',
-      }
-      shellvar { 'SLAPD_LDAPI':
-        ensure   => present,
-        target   => '/etc/sysconfig/ldap',
-        variable => 'SLAPD_LDAPI',
-        value    => $ldapi,
+      if versioncmp($::operatingsystemmajrelease, '6') <= 0 {
+        $ldap = empty($::openldap::server::ldap_ifs) ? {
+          false => 'yes',
+          true  => 'no',
+        }
+        shellvar { 'SLAPD_LDAP':
+          ensure   => present,
+          target   => '/etc/sysconfig/ldap',
+          variable => 'SLAPD_LDAP',
+          value    => $ldap,
+        }
+        $ldaps = empty($::openldap::server::ldaps_ifs) ? {
+          false => 'yes',
+          true  => 'no',
+        }
+        shellvar { 'SLAPD_LDAPS':
+          ensure   => present,
+          target   => '/etc/sysconfig/ldap',
+          variable => 'SLAPD_LDAPS',
+          value    => $ldaps,
+        }
+        $ldapi = empty($::openldap::server::ldapi_ifs) ? {
+          false => 'yes',
+          true  => 'no',
+        }
+        shellvar { 'SLAPD_LDAPI':
+          ensure   => present,
+          target   => '/etc/sysconfig/ldap',
+          variable => 'SLAPD_LDAPI',
+          value    => $ldapi,
+        }
+      } else {
+        shellvar { 'slapd':
+          ensure   => present,
+          target   => '/etc/sysconfig/slapd',
+          variable => 'SLAPD_URLS',
+          value    => $slapd_ldap_urls,
+        }
       }
     }
     default: {
