@@ -1,3 +1,8 @@
+## 2015-07-08 - Release 1.9.0
+
+Add more parameters to openldap::server::database
+Add support for accesslog overlay
+
 ## 2015-06-26 - Release 1.8.2
 
 Fix strict_variables activation with rspec-puppet 2.2
