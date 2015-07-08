@@ -38,14 +38,26 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
   end
 
   def exists?
-    @property_hash[:ensure] == :present
+    if resource[:value].is_a? Hash
+      (resource[:value].keys - self.class.instances.map { |item| item.name }).empty?
+    else
+      @property_hash[:ensure] == :present
+    end
   end
 
   def create
     t = Tempfile.new('openldap_global_conf')
     t << "dn: cn=config\n"
-    t << "add: olc#{resource[:name]}\n"
-    t << "olc#{resource[:name]}: #{resource[:value]}\n"
+    if resource[:value].is_a? Hash
+      resource[:value].each do |k, v|
+        t << "add: olc#{k}\n"
+        t << "olc#{k}: #{v}\n"
+        t << "-\n"
+      end
+    else
+      t << "add: olc#{resource[:name]}\n"
+      t << "olc#{resource[:name]}: #{resource[:value]}\n"
+    end
     t.close
     Puppet.debug(IO.read t.path)
     begin
@@ -59,7 +71,14 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
   def destroy
     t = Tempfile.new('openldap_global_conf')
     t << "dn: cn=config\n"
-    t << "delete: olc#{name}\n"
+    if resource[:value].is_a? Hash
+      resource[:value].keys.each do |k|
+        t << "delete: olc#{k}\n"
+        t << "-\n"
+      end
+    else
+      t << "delete: olc#{name}\n"
+    end
     t.close
     Puppet.debug(IO.read t.path)
     begin
@@ -70,11 +89,31 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
     @property_hash.clear
   end
 
+  def value
+    if resource[:value].is_a? Hash
+      instances = self.class.instances
+      values = resource[:value].map do |k, v|
+        [ k, instances.find { |item| item.name == k }.get(:value) ]
+      end
+      Hash[values]
+    else
+      @property_hash[:value]
+    end
+  end
+
   def value=(value)
     t = Tempfile.new('openldap_global_conf')
     t << "dn: cn=config\n"
-    t << "replace: olc#{name}\n"
-    t << "olc#{name}: #{value}\n"
+    if resource[:value].is_a? Hash
+      resource[:value].each do |k, v|
+        t << "replace: olc#{k}\n"
+        t << "olc#{k}: #{v}\n"
+        t << "-\n"
+      end
+    else
+      t << "replace: olc#{name}\n"
+      t << "olc#{name}: #{value}\n"
+    end
     t.close
     Puppet.debug(IO.read t.path)
     begin
