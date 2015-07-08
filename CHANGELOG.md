@@ -1,3 +1,7 @@
+## 2015-07-08 - Release 1.9.1
+
+Fix TLS setting on new versions of OpenLDAP
+
 ## 2015-07-08 - Release 1.9.0
 
 Add more parameters to openldap::server::database
