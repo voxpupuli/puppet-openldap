@@ -1,3 +1,5 @@
+require 'puppet/property/boolean'
+
 Puppet::Type.newtype(:openldap_database) do
   @doc = "Manages OpenLDAP BDB and HDB databases."
 
@@ -102,8 +104,8 @@ Puppet::Type.newtype(:openldap_database) do
     end
   end
 
-  newparam(:initdb) do
-    desc "When true it initiales the database with the top object. When false, it does not create any object in the database, so you have to create it by other mechanism.  It defaults to true"
+  newparam(:initdb, :boolean => true) do
+    desc "When true it initiales the database with the top object. When false, it does not create any object in the database, so you have to create it by other mechanism. It defaults to true"
 
     newvalues(:true, :false)
     defaultto(:true)
@@ -115,10 +117,6 @@ Puppet::Type.newtype(:openldap_database) do
 
   newproperty(:sizelimit) do
     desc "Specifies the maximum number of entries to return from a search operation."
-  end
-
-  newproperty(:syncrepl) do
-    desc "This directive specifies the current database as a replica of the master content."
   end
 
   newproperty(:timelimit) do
@@ -152,5 +150,19 @@ Puppet::Type.newtype(:openldap_database) do
 
     newvalues(:inclusive, :minimum)
     defaultto :minimum
+  end
+
+  newproperty(:mirrormode, :boolean => true) do
+    desc "This option puts a replica database into \"mirror\" mode"
+    newvalues(:true, :false)
+
+  end
+
+  newproperty(:syncusesubentry) do
+    desc "Store the syncrepl contextCSN in a subentry instead of the context entry of the database"
+  end
+
+  newproperty(:syncrepl, :array_matching => :all) do
+    desc "Specify the current database as a replica which is kept up-to-date with the master content by establishing the current slapd(8) as a replication consumer site running a syncrepl replication engine."
   end
 end

@@ -27,10 +27,12 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       rootpw = nil
       readonly = nil
       sizelimit = nil
-      syncrepl = nil
       timelimit = nil
       updateref = nil
       dboptions = {}
+      mirrormode = nil
+      syncusesubentry = nil
+      syncrepl = nil
       paragraph.gsub("\n ", "").split("\n").collect do |line|
         case line
         when /^olcDatabase: /
@@ -47,8 +49,6 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
           readonly = line.split(' ')[1]
         when /^olcSizeLimit: /i
           sizelimit = line.split(' ')[1]
-        when /^olcSyncrepl: /i
-          syncrepl = line.split(' ')[1]
         when /^olcTimeLimit: /i
           timelimit = line.split(' ')[1]
         when /^olcUpdateref: /i
@@ -58,7 +58,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
           optname.downcase!
           case optname
           when 'olcdbconfig'
-            dboptions['dbconfig'] = Array.new if !dboptions['dbconfig']
+            dboptions['dbconfig'] = [] if !dboptions['dbconfig']
             optvalue = optvalue.match(/^\{\d+\}(.+)$/).captures[0] if optvalue =~ /^\{\d+\}.+$/
             dboptions['dbconfig'].push(optvalue)
           when 'olcdbnosync'
@@ -76,24 +76,34 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
               dboptions[optname.match(/^olcDb(\S+)$/i).captures[0]] = optvalue
             end
           end
+        when /^olcMirrorMode: /
+          mirrormode = line.split(' ')[1] == 'TRUE' ? :true : :false
+        when /^olcSyncUseSubentry: /
+          syncusesubentry = line.split(' ', 2)[1]
+        when /^olcSyncrepl: /
+          syncrepl ||= []
+          optvalue = line.split(' ',2)[1]
+          syncrepl.push(optvalue.match(/^(\{\d+\})?(.+)$/).captures[1])
         end
       end
       dbconfig = dbconfig.sort.collect { |x| x.split('}')[1] } if dbconfig
       new(
-        :ensure         => :present,
-        :name           => suffix,
-        :suffix         => suffix,
-        :index          => index.to_i,
-        :backend        => backend,
-        :directory      => directory,
-        :rootdn         => rootdn,
-        :rootpw         => rootpw,
-        :readonly       => readonly,
-        :sizelimit      => sizelimit,
-        :syncrepl       => syncrepl,
-        :timelimit      => timelimit,
-        :updateref      => updateref,
-        :dboptions      => dboptions
+        :ensure          => :present,
+        :name            => suffix,
+        :suffix          => suffix,
+        :index           => index.to_i,
+        :backend         => backend,
+        :directory       => directory,
+        :rootdn          => rootdn,
+        :rootpw          => rootpw,
+        :readonly        => readonly,
+        :sizelimit       => sizelimit,
+        :timelimit       => timelimit,
+        :updateref       => updateref,
+        :dboptions       => dboptions,
+        :mirrormode      => mirrormode,
+        :syncusesubentry => syncusesubentry,
+        :syncrepl        => syncrepl
       )
     end
   end
@@ -175,7 +185,6 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     t << "olcDbIndex: objectClass eq\n" if !resource[:dboptions] or !resource[:dboptions]['index']
     t << "olcReadOnly: #{resource[:readonly]}\n" if resource[:readonly]
     t << "olcSizeLimit: #{resource[:sizelimit]}\n" if resource[:sizelimit]
-    t << "olcSyncrepl: #{resource[:syncrepl]}\n" if resource[:syncrepl]
     t << "olcTimeLimit: #{resource[:timelimit]}\n" if resource[:timelimit]
     t << "olcUpdateref: #{resource[:updateref]}\n" if resource[:updateref]
     if resource[:dboptions]
@@ -196,6 +205,9 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
         end
       end
     end
+    t << resource[:syncrepl].collect { |x| "olcSyncrepl: #{x}" }.join("\n") + "\n" if resource[:syncrepl]
+    t << "olcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:mirrormode]
+    t << "olcSyncUseSubentry: #{resource[:syncusesubentry]}\n" if resource[:syncusesubentry]
     t << "olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break\n"
     t << "olcAccess: to attrs=userPassword\n"
     t << "  by self write\n"
@@ -257,10 +269,6 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     @property_flush[:sizelimit] = value
   end
 
-  def syncrepl=(value)
-    @property_flush[:syncrepl] = value
-  end
-
   def timelimit=(value)
     @property_flush[:timelimit] = value
   end
@@ -273,6 +281,18 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     @property_flush[:dboptions] = value
   end
 
+  def mirrormode=(value)
+    @property_flush[:mirrormode] = value
+  end
+
+  def syncusesubentry=(value)
+    @property_flush[:syncusesubentry] = value
+  end
+
+  def syncrepl=(value)
+    @property_flush[:syncrepl] = value
+  end
+  
   def flush
     if not @property_flush.empty?
       t = Tempfile.new('openldap_database')
@@ -284,7 +304,6 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       t << "replace: olcSuffix\nolcSuffix: #{resource[:suffix]}\n-\n" if @property_flush[:suffix]
       t << "replace: olcReadOnly\nolcReadOnly: #{resource[:readonly]}\n-\n" if @property_flush[:readonly]
       t << "replace: olcSizeLimit\nolcSizeLimit: #{resource[:sizelimit]}\n-\n" if @property_flush[:sizelimit]
-      t << "replace: olcSyncrepl\nolcSyncrepl: #{resource[:syncrepl]}\n-\n" if @property_flush[:syncrepl]
       t << "replace: olcTimeLimit\nolcTimeLimit: #{resource[:timelimit]}\n-\n" if @property_flush[:timelimit]
       t << "replace: olcUpdateref\nolcUpdateref: #{resource[:updateref]}\n-\n" if @property_flush[:updateref]
       if @property_flush[:dboptions]
@@ -319,6 +338,9 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
           end
         end
       end
+      t << "replace: olcSyncrepl\n#{resource[:syncrepl].collect { |x| "olcSyncrepl: #{x}" }.join("\n")}\n-\n" if @property_flush[:syncrepl]
+      t << "replace: olcMirrorMode\nolcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n-\n" if @property_flush[:mirrormode]
+      t << "replace: olcSyncUseSubentry\nolcSyncUseSubentry: #{resource[:syncusesubentry]}\n-\n" if @property_flush[:syncusesubentry]
       t.close
       Puppet.debug(IO.read t.path)
       begin
