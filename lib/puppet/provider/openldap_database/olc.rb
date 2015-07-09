@@ -76,7 +76,6 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
               dboptions[optname.match(/^olcDb(\S+)$/i).captures[0]] = optvalue
             end
           end
-        end
         when /^olcMirrorMode: /
           mirrormode = line.split(' ')[1] == 'TRUE' ? :true : :false
         when /^olcSyncUseSubentry: /
