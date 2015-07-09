@@ -58,7 +58,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
           optname.downcase!
           case optname
           when 'olcdbconfig'
-            dboptions['dbconfig'] = Array.new if !dboptions['dbconfig']
+            dboptions['dbconfig'] = [] if !dboptions['dbconfig']
             optvalue = optvalue.match(/^\{\d+\}(.+)$/).captures[0] if optvalue =~ /^\{\d+\}.+$/
             dboptions['dbconfig'].push(optvalue)
           when 'olcdbnosync'
@@ -81,7 +81,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
         when /^olcSyncUseSubentry: /
           syncusesubentry = line.split(' ', 2)[1]
         when /^olcSyncrepl: /
-          syncrepl ||= Array.new
+          syncrepl ||= []
           optvalue = line.split(' ',2)[1]
           syncrepl.push(optvalue.match(/^(\{\d+\})?(.+)$/).captures[1])
         end
