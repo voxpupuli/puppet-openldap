@@ -47,7 +47,7 @@ Puppet::Type.newtype(:openldap_database) do
   newproperty(:directory) do
     desc "The directory where the BDB files containing this database and associated indexes live."
     defaultto do
-      if @resource[:backend] !~ /^monitor$/
+      if "#{@resource[:backend]}" != "monitor"
         '/var/lib/ldap'
       end
     end

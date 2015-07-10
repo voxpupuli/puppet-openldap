@@ -180,7 +180,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     t << "objectClass: olcDatabaseConfig\n"
     t << "objectClass: olc#{resource[:backend].to_s.capitalize}Config\n"
     t << "olcDatabase: #{resource[:backend]}\n"
-    if resource[:backend] !~ /^monitor$/
+    if "#{resource[:backend]}" != "monitor"
       t << "olcDbDirectory: #{resource[:directory]}\n" if resource[:directory]
       t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
       t << "olcDbIndex: objectClass eq\n" if !resource[:dboptions] or !resource[:dboptions]['index']
