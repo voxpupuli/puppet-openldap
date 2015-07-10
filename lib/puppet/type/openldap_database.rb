@@ -113,7 +113,7 @@ Puppet::Type.newtype(:openldap_database) do
 
     newvalues(:true, :false)
     defaultto do
-      if @resource[:backend] =~ /^monitor$/
+      if "#{@resource[:backend]}" == "monitor"
         :false
       else
         :true
