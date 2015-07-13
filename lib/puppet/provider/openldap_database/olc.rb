@@ -16,7 +16,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       '-b',
       'cn=config',
       '-H',
-      'ldap:///???(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)))'
+      'ldap:///???(|(olcDatabase=monitor)(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)(objectClass=olcMonitorConfig))))'
     )
     databases.split("\n\n").collect do |paragraph|
       suffix = nil
@@ -36,7 +36,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       paragraph.gsub("\n ", "").split("\n").collect do |line|
         case line
         when /^olcDatabase: /
-          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb)$/).captures
+          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor)$/).captures
         when /^olcDbDirectory: /
           directory = line.split(' ')[1]
         when /^olcRootDN: /
@@ -86,7 +86,9 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
           syncrepl.push(optvalue.match(/^(\{\d+\})?(.+)$/).captures[1])
         end
       end
-      dbconfig = dbconfig.sort.collect { |x| x.split('}')[1] } if dbconfig
+      if backend == 'monitor' and !suffix
+        suffix = 'cn=Monitor'
+      end
       new(
         :ensure          => :present,
         :name            => suffix,
@@ -178,11 +180,13 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     t << "objectClass: olcDatabaseConfig\n"
     t << "objectClass: olc#{resource[:backend].to_s.capitalize}Config\n"
     t << "olcDatabase: #{resource[:backend]}\n"
-    t << "olcDbDirectory: #{resource[:directory]}\n" if resource[:directory]
+    if "#{resource[:backend]}" != "monitor"
+      t << "olcDbDirectory: #{resource[:directory]}\n" if resource[:directory]
+      t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
+      t << "olcDbIndex: objectClass eq\n" if !resource[:dboptions] or !resource[:dboptions]['index']
+    end
     t << "olcRootDN: #{resource[:rootdn]}\n" if resource[:rootdn]
     t << "olcRootPW: #{resource[:rootpw]}\n" if resource[:rootpw]
-    t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
-    t << "olcDbIndex: objectClass eq\n" if !resource[:dboptions] or !resource[:dboptions]['index']
     t << "olcReadOnly: #{resource[:readonly]}\n" if resource[:readonly]
     t << "olcSizeLimit: #{resource[:sizelimit]}\n" if resource[:sizelimit]
     t << "olcTimeLimit: #{resource[:timelimit]}\n" if resource[:timelimit]

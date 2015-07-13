@@ -18,7 +18,7 @@ Puppet::Type.newtype(:openldap_database) do
 
   newproperty(:backend) do
     desc "The name of the backend."
-    newvalues('bdb', 'hdb', 'mdb')
+    newvalues('bdb', 'hdb', 'mdb', 'monitor')
     defaultto do
       case Facter.value(:osfamily)
       when 'Debian'
@@ -46,7 +46,11 @@ Puppet::Type.newtype(:openldap_database) do
 
   newproperty(:directory) do
     desc "The directory where the BDB files containing this database and associated indexes live."
-    defaultto '/var/lib/ldap'
+    defaultto do
+      if "#{@resource[:backend]}" != "monitor"
+        '/var/lib/ldap'
+      end
+    end
   end
 
   newproperty(:rootdn) do
@@ -108,7 +112,13 @@ Puppet::Type.newtype(:openldap_database) do
     desc "When true it initiales the database with the top object. When false, it does not create any object in the database, so you have to create it by other mechanism. It defaults to true"
 
     newvalues(:true, :false)
-    defaultto(:true)
+    defaultto do
+      if "#{@resource[:backend]}" == "monitor"
+        :false
+      else
+        :true
+      end
+    end
   end
 
   newproperty(:readonly) do
@@ -155,7 +165,6 @@ Puppet::Type.newtype(:openldap_database) do
   newproperty(:mirrormode, :boolean => true) do
     desc "This option puts a replica database into \"mirror\" mode"
     newvalues(:true, :false)
-
   end
 
   newproperty(:syncusesubentry) do
