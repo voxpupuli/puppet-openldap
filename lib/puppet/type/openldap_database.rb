@@ -174,4 +174,14 @@ Puppet::Type.newtype(:openldap_database) do
   newproperty(:syncrepl, :array_matching => :all) do
     desc "Specify the current database as a replica which is kept up-to-date with the master content by establishing the current slapd(8) as a replication consumer site running a syncrepl replication engine."
   end
+
+  newproperty(:limits, :array_matching => :all) do
+    desc "Limits the number entries returned and/or the time spent by a request"
+
+    validate do |value|
+      if value !~ /^(\*|anonymous|users|self|(dn(\.\S+)?=\S+)|(dn\.\S+=\S+)|(group(\/oc(\/at)?)?=\S+))(\s+((time(\.(soft|hard))?=((\d+)|unlimited))|(size(\.(soft|hard|unchecked))?=((\d+)|unlimited))|(size\.pr=((\d+)|noEstimate|unlimited))|(size.prtotal=((\d+)|unlimited|disabled))))+$/
+        raise ArgumentError, "Invalid limit: #{value}\nLimit values must be according to syntax described at http://www.openldap.org/doc/admin24/limits.html#Per-Database%20Limits"
+      end
+    end
+  end
 end
