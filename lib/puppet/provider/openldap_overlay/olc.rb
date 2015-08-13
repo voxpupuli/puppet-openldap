@@ -155,7 +155,7 @@ Puppet::Type.
       if @property_flush[:options] then
         if @property_hash[:options]
           # Remove all previously options remove in the should
-          @property_hash[:options].select { |key, value| !@property_flush[:options].member?(key) }.keys.each do |k|
+          Hash[@property_hash[:options].select { |key, value| !@property_flush[:options].member?(key) }].keys.each do |k|
             t << "delete: #{k}\n-\n"
           end
         end
