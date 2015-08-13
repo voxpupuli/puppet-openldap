@@ -12,7 +12,7 @@ Puppet::Type.type(:openldap_module).provide(:olc) do
 
   def self.instances
     # Create dn: cn=Module{0},cn=config if not exists
-    dn = slapcat('-b', 'cn=config', '-H', 'ldap:///???(objectClass=olcModuleList)')
+    dn = slapcat('-b', 'cn=config', '-o', 'ldif-wrap=no', '-H', 'ldap:///???(objectClass=olcModuleList)')
     if dn == ''
       ldif = %Q{dn: cn=module{0},cn=config
 changetype: add

@@ -14,6 +14,8 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
     slapcat(
       '-b',
       'cn=config',
+      '-o',
+      'ldif-wrap=no',
       '-H',
       'ldap:///???(olcOverlay=*)'
     ).split("\n\n").collect do |paragraph|
@@ -120,6 +122,8 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
       slapcat(
         '-b',
         'cn=config',
+        '-o',
+        'ldif-wrap=no',
         '-H',
         "ldap:///???(olcSuffix=#{suffix})"
       ).split("\n").collect do |line|
@@ -135,6 +139,8 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
     slapcat(
       '-b',
       'cn=config',
+      '-o',
+      'ldif-wrap=no',
       '-H',
       "ldap:///???(olcDatabase=#{database})"
     ).split("\n").collect do |line|
@@ -201,7 +207,7 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
     path = default_confdir  + "/" + getPath("olcOverlay={#{@property_hash[:index]}}#{resource[:overlay]},#{getDn(resource[:suffix])}")
     File.delete(path)
     
-    slapcat('-b', "#{getDn(resource[:suffix])}", '-H', "ldap:///???objectClass=olcOverlayConfig"
+    slapcat('-b', "#{getDn(resource[:suffix])}", '-o', 'ldif-wrap=no', '-H', "ldap:///???objectClass=olcOverlayConfig"
            ).split("\n").select { |line| line =~ /^dn: / }.select { |dn| dn.match(/^dn: olcOverlay=\{(\d+)\}(.+),#{Regexp.quote(getDn(resource[:suffix]))}$/).captures[0].to_i > @property_hash[:index] }.each { |dn|
              index, type = dn.match(/^dn: olcOverlay=\{(\d+)\}(.+),#{Regexp.quote(getDn(resource[:suffix]))}$/).captures
              index = index.to_i

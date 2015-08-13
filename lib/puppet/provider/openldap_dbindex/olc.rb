@@ -16,6 +16,8 @@ Puppet::Type.type(:openldap_dbindex).provide(:olc) do
     slapcat(
       '-b',
       'cn=config',
+      '-o',
+      'ldif-wrap=no',
       '-H',
       'ldap:///???(olcDbIndex=*)'
     ).split("\n\n").collect do |paragraph|
@@ -59,6 +61,8 @@ Puppet::Type.type(:openldap_dbindex).provide(:olc) do
     slapcat(
       '-b',
       'cn=config',
+      '-o',
+      'ldif-wrap=no',
       '-H',
       "ldap:///???(olcSuffix=#{suffix})"
     ).split("\n").collect do |line|
