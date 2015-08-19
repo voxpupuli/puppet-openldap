@@ -6,6 +6,21 @@ HOSTS:
     platform: el-7-x86_64
     hypervisor : docker
     image: centos:7
+    docker_image_commands:
+      - 'yum -y swap -- remove fakesystemd -- install systemd systemd-libs'
+        #- 'yum -y swap -- remove systemd-container systemd-container-libs -- install systemd systemd-libs'
+      - 'yum -y update; yum clean all'
+      - 'find /lib/systemd/system/sysinit.target.wants/ ! -name systemd-tmpfiles-setup.service -type f -exec rm -f {} +'
+      - 'rm -f /lib/systemd/system/multi-user.target.wants/*'
+      - 'rm -f /etc/systemd/system/*.wants/*'
+      - 'rm -f /lib/systemd/system/local-fs.target.wants/*'
+      - 'rm -f /lib/systemd/system/sockets.target.wants/*udev*'
+      - 'rm -f /lib/systemd/system/sockets.target.wants/*initctl*'
+      - 'rm -f /lib/systemd/system/basic.target.wants/*'
+      - 'rm -f /lib/systemd/system/anaconda.target.wants/*'
+      - 'yum install -y wget ntpdate rubygems ruby-devel augeas-devel ruby-augeas tar'
+      - 'systemctl enable sshd.service'
+    docker_cmd: '["/usr/sbin/init"]'
     docker_preserve_image: true
     docker_cmd: '["/usr/sbin/init"]'
     docker_image_commands:

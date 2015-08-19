@@ -5,6 +5,7 @@ def ldapsearch(cmd, exit_codes = [0,1], &block)
 end
 
 hosts.each do |host|
+  install_package host, 'wget'
   # Install Puppet
   install_puppet()
   # Install ruby-augeas
@@ -20,10 +21,13 @@ hosts.each do |host|
     install_package host, 'libaugeas-ruby'
   when 'RedHat'
     on host, 'setenforce 0' if fact('selinux') == 'true'
+    install_package host, 'tar'
+    install_package host, 'gzip'
     install_package host, 'gcc'
     install_package host, 'ruby-devel'
     install_package host, 'augeas-devel'
     install_package host, 'initscripts' # FIXME: openldap_database's olc provider's create method should call systemctl when using systemd
+    install_package host, 'make'
     on host, 'gem install ruby-augeas --no-ri --no-rdoc'
   else
     puts 'Sorry, this osfamily is not supported.'
