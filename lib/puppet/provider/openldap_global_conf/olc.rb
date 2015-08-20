@@ -17,7 +17,7 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
       '-H',
       'ldap:///???(objectClass=olcGlobal)'
     )
-    items.split("\n").select{|e| e =~ /^olc/}.collect do |line|
+    items.gsub("\n ", "").split("\n").select{|e| e =~ /^olc/}.collect do |line|
       name, value = line.split(': ')
       # initialize @property_hash
       new(
