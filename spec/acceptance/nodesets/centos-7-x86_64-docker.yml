@@ -8,6 +8,8 @@ HOSTS:
     image: centos:7
     docker_preserve_image: true
     docker_cmd: '["/usr/sbin/init"]'
+    docker_image_commands:
+      - 'yum install -y wget'
 CONFIG:
   type: foss
   log_level: debug
