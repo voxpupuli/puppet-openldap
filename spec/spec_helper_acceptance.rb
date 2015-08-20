@@ -5,7 +5,6 @@ def ldapsearch(cmd, exit_codes = [0,1], &block)
 end
 
 hosts.each do |host|
-  install_package host, 'wget'
   # Install Puppet
   install_puppet()
   # Install ruby-augeas
@@ -21,8 +20,6 @@ hosts.each do |host|
     install_package host, 'libaugeas-ruby'
   when 'RedHat'
     on host, 'setenforce 0' if fact('selinux') == 'true'
-    install_package host, 'tar'
-    install_package host, 'gzip'
     install_package host, 'gcc'
     install_package host, 'ruby-devel'
     install_package host, 'augeas-devel'
