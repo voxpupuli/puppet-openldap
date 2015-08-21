@@ -1,3 +1,7 @@
+## 2015-08-21 - Release 1.9.2
+
+Use docker for acceptance tests
+
 ## 2015-07-08 - Release 1.9.1
 
 Fix TLS setting on new versions of OpenLDAP
