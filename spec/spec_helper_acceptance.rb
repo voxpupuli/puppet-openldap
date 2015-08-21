@@ -23,6 +23,7 @@ hosts.each do |host|
     install_package host, 'gcc'
     install_package host, 'ruby-devel'
     install_package host, 'augeas-devel'
+    install_package host, 'initscripts' # FIXME: openldap_database's olc provider's create method should call systemctl when using systemd
     on host, 'gem install ruby-augeas --no-ri --no-rdoc'
   else
     puts 'Sorry, this osfamily is not supported.'
