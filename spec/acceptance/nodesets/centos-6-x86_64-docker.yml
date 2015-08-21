@@ -10,6 +10,7 @@ HOSTS:
     docker_cmd: '["/sbin/init"]'
     docker_image_commands:
       - 'yum install -y crontabs tar wget'
+        #- 'touch /etc/sysconfig/network'
 CONFIG:
   type: foss
   log_level: debug
