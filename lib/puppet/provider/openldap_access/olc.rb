@@ -108,7 +108,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
     t << "olcAccess: {#{@property_hash[:position]}}\n"
     t << "-\n"
     t << "add: olcAccess\n"
-    t << "olcAccess: {#{@property_hash[:position]}}#{resource[:access]}\n"
+    t << "olcAccess: {#{@property_hash[:position]}}to #{resource[:what]} by #{resource[:by]} #{resource[:access]}\n"
     t.close
     Puppet.debug(IO.read t.path)
     begin
