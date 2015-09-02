@@ -87,6 +87,8 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
       t << "objectClass: olcPcacheConfig\n"
     when 'accesslog'
       t << "objectClass: olcAccessLogConfig\n"
+    when 'syncprov'
+      t << "objectClass: olcSyncProvConfig\n"
     end
     t << "olcOverlay: #{resource[:overlay]}\n"
     if resource[:options]
