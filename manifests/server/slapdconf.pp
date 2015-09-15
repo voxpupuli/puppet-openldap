@@ -29,7 +29,7 @@ class openldap::server::slapdconf {
   }
 
   if $::openldap::server::ssl_cert {
-    if $::osfamily == 'RedHat' and $::operatingsystemmajrelease >= 6 {
+    if $::osfamily == 'RedHat' and versioncmp($::operatingsystemmajrelease, '6') > -1 {
         validate_string($::openldap::server::ssl_cert)
         openldap::server::globalconf { 'TLSCertificate':
           value => {
