@@ -29,23 +29,40 @@ class openldap::server::slapdconf {
   }
 
   if $::openldap::server::ssl_cert {
-    if $::openldap::server::ssl_key {
-      validate_absolute_path($::openldap::server::ssl_cert)
-      validate_absolute_path($::openldap::server::ssl_key)
-      openldap::server::globalconf { 'TLSCertificate':
-        value => {
-          'TLSCertificateFile'    => $::openldap::server::ssl_cert,
-          'TLSCertificateKeyFile' => $::openldap::server::ssl_key,
-        },
-      }
-      if $::openldap::server::ssl_ca {
-        validate_absolute_path($::openldap::server::ssl_ca)
-        openldap::server::globalconf { 'TLSCACertificateFile':
-          value => $::openldap::server::ssl_ca,
+    if $::osfamily == 'RedHat' and $::operatingsystemmajrelease >= 6 {
+        validate_string($::openldap::server::ssl_cert)
+        openldap::server::globalconf { 'TLSCertificate':
+          value => {
+            'TLSCertificateFile'    => $::openldap::server::ssl_cert,
+          },
         }
-      }
+        if $::openldap::server::ssl_key {
+          validate_string($::openldap::server::ssl_key)
+          openldap::server::globalconf { 'TLSCertificateKeyFile':
+            value => {
+              'TLSCertificateKeyFile' => $::openldap::server::ssl_key,
+            },
+          }
+        }
     } else {
-      fail 'You must specify a ssl_key'
+      if $::openldap::server::ssl_key {
+        validate_absolute_path($::openldap::server::ssl_cert)
+        validate_absolute_path($::openldap::server::ssl_key)
+        openldap::server::globalconf { 'TLSCertificate':
+          value => {
+            'TLSCertificateFile'    => $::openldap::server::ssl_cert,
+            'TLSCertificateKeyFile' => $::openldap::server::ssl_key,
+          },
+        }
+      } else {
+        fail 'You must specify a ssl_key'
+      }
+    }
+    if $::openldap::server::ssl_ca {
+      validate_absolute_path($::openldap::server::ssl_ca)
+      openldap::server::globalconf { 'TLSCACertificateFile':
+        value => $::openldap::server::ssl_ca,
+      }
     }
   } elsif $::openldap::server::ssl_key {
     fail 'You must specify a ssl_cert'
