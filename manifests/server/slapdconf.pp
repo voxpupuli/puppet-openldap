@@ -33,7 +33,7 @@ class openldap::server::slapdconf {
         validate_string($::openldap::server::ssl_cert)
         openldap::server::globalconf { 'TLSCertificate':
           value => {
-            'TLSCertificateFile'    => $::openldap::server::ssl_cert,
+            'TLSCertificateFile' => $::openldap::server::ssl_cert,
           },
         }
         if $::openldap::server::ssl_key {
