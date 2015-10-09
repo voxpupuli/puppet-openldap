@@ -1,3 +1,9 @@
+## 2015-10-09 - Release 1.10.0
+
+Fix ACL changes
+Fix syncprov overlay
+Add support for refint overlay
+
 ## 2015-08-21 - Release 1.9.2
 
 Use docker for acceptance tests
