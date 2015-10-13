@@ -88,7 +88,11 @@ Puppet::Type.newtype(:openldap_database) do
     def sync
       require 'securerandom'
       salt = SecureRandom.random_bytes(4)
-      @resource[:rootpw] = "{SSHA}" + Base64.encode64("#{Digest::SHA1.digest("#{should}#{salt}")}#{salt}").chomp
+      if should =~ /^\{(CRYPT|MD5|SMD5|SSHA|SHA)\}.+/
+        @resource[:rootpw] = should
+      else
+        @resource[:rootpw] = "{SSHA}" + Base64.encode64("#{Digest::SHA1.digest("#{should}#{salt}")}#{salt}").chomp
+      end
       super
     end
 
