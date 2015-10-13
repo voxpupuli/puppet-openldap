@@ -112,14 +112,18 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
   end
 
   def getDn(suffix)
-    slapcat(
-      '-b',
-      'cn=config',
-      '-H',
-      "ldap:///???(olcSuffix=#{suffix})"
-    ).split("\n").collect do |line|
-      if line =~ /^dn: /
-        return line.split(' ')[1]
+    if suffix == 'cn=config'
+      return 'olcDatabase={0}config,cn=config'
+    else
+      slapcat(
+        '-b',
+        'cn=config',
+        '-H',
+        "ldap:///???(olcSuffix=#{suffix})"
+      ).split("\n").collect do |line|
+        if line =~ /^dn: /
+          return line.split(' ')[1]
+        end
       end
     end
   end
@@ -135,7 +139,9 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
       if line =~ /^dn: olcDatabase=#{database.gsub('{', '\{').gsub('}','\}')},/
         found = true
       end
-      if line =~ /^olcSuffix: / and found
+      if database == '{0}config'
+        return 'cn=config'
+      elsif line =~ /^olcSuffix: / and found
         return line.split(' ')[1]
       end
     end
