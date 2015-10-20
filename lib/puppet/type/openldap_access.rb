@@ -11,15 +11,15 @@ Puppet::Type.newtype(:openldap_access) do
     desc "The slapd.conf file"
   end
 
-  newparam(:what, :namevar => true) do
+  newproperty(:what) do
     desc "The entries and/or attributes to which the access applies"
   end
 
-  newparam(:by, :namevar => true) do
+  newproperty(:by) do
     desc "To whom the access applies"
   end
 
-  newparam(:suffix, :namevar => true) do
+  newproperty(:suffix) do
     desc "The suffix to which the access applies"
   end
 
@@ -51,7 +51,7 @@ Puppet::Type.newtype(:openldap_access) do
     ]
   end
 
-  newparam(:position) do
+  newproperty(:position) do
     desc "Where to place the new entry"
   end
 
