@@ -116,22 +116,34 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
     slapdd('-b', 'cn=config', '-l', t.path)
   end
 
+  def initialize(value={})
+    super(value)
+    @property_flush = {}
+  end
+
+  def what=(value)
+    @property_flush[:what] = value
+  end
+
+  def by=(value)
+    @property_flush[:by] = value
+  end
+
+  def suffix=(value)
+    @property_flush[:suffix] = value
+  end
+
+  def position=(value)
+    @property_flush[:position] = value
+  end
+
+
   def access=(value)
-    t = Tempfile.new('openldap_access')
-    t << "dn: #{getDn(@property_hash[:suffix])}\n"
-    t << "changetype: modify\n"
-    t << "delete: olcAccess\n"
-    t << "olcAccess: {#{@property_hash[:position]}}\n"
-    t << "-\n"
-    t << "add: olcAccess\n"
-    t << "olcAccess: {#{@property_hash[:position]}}to #{resource[:what]} by #{resource[:by]} #{resource[:access]}\n"
-    t.close
-    Puppet.debug(IO.read t.path)
-    begin
-      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
-    rescue Exception => e
-      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
-    end
+    @property_flush[:access] = value
+  end
+
+  def control=(value)
+    @property_flush[:control] = value
   end
 
   def getCountOfOlcAccess(suffix)
@@ -149,5 +161,58 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
     end
     return countOfElement
   end
+
+  def getCurrentOlcAccess(suffix)
+    i = []
+    slapcat(
+      '-H',
+      "ldap:///#{getDn(suffix)}???(olcAccess=*)"
+    ).split("\n\n").collect do |paragraph|
+      paragraph.gsub("\n ", '').split("\n").collect do |line|
+        case line
+        when /^olcAccess: /
+          position, content = line.match(/^olcAccess:\s+\{(\d+)\}(.*)$/).captures
+          i << {
+            :position => position,
+            :content => content,
+          }
+        end
+      end
+    end
+    return i
+  end
+
+  def flush
+    if not @property_flush.empty?
+      current_olcAccess = getCurrentOlcAccess(@property_hash[:suffix])
+      t = Tempfile.new('openldap_access')
+      t << "dn: #{getDn(@property_hash[:suffix])}\n"
+      t << "changetype: modify\n"
+      t << "replace: olcAccess\n"
+      current_olcAccess.each do |olcAccess|
+        if olcAccess[:position] == @property_hash[:position]
+          t << "olcAccess: {#{@property_hash[:position]}}to #{resource[:what]} by #{resource[:by]} #{resource[:access]}\n"
+        else
+          t << "olcAccess: {#{olcAccess[:position]}}#{olcAccess[:content]}\n"
+        end
+      end
+      if resource[:islast]
+        t << "-\n"
+        t << "delete: olcAccess\n"
+        (@property_hash[:position].to_i+1..getCountOfOlcAccess(@property_hash[:suffix])-1).each do |n|
+          t << "olcAccess: {#{n}}\n"
+        end
+      end
+      t.close
+      Puppet.debug(IO.read t.path)
+      begin
+        ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+      rescue Exception => e
+        raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+      end
+    end
+    @property_hash = resource.to_hash
+  end
+
 
 end
