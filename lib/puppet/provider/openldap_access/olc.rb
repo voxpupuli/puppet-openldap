@@ -102,6 +102,15 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
     t << "changetype: modify\n"
     t << "delete: olcAccess\n"
     t << "olcAccess: {#{@property_hash[:position]}}\n"
+    if resource[:islast]
+      t << "\n\n"
+      t << "dn: #{getDn(resource[:suffix])}\n"
+      t << "changetype: modify\n"
+      t << "delete: olcAccess\n"
+      (resource[:position].to_i+1..getCountOfOlcAccess(resource[:suffix])).each do |n|
+        t << "olcAccess: {#{n}}\n"
+      end
+    end
     t.close
     Puppet.debug(IO.read t.path)
     slapdd('-b', 'cn=config', '-l', t.path)
@@ -123,6 +132,22 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end
+  end
+
+  def getCountOfOlcAccess(suffix)
+    countOfElement = 0
+    slapcat(
+      '-H',
+      "ldap:///#{getDn(suffix)}???(olcAccess=*)"
+    ).split("\n\n").collect do |paragraph|
+      paragraph.gsub("\n ", '').split("\n").collect do |line|
+        case line
+        when /^olcAccess: /
+          countOfElement = countOfElement + 1
+        end
+      end
+    end
+    return countOfElement
   end
 
 end
