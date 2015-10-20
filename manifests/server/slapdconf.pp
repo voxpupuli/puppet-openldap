@@ -31,28 +31,24 @@ class openldap::server::slapdconf {
   if $::openldap::server::ssl_cert {
     if $::osfamily == 'RedHat' and versioncmp($::operatingsystemmajrelease, '6') > -1 {
         validate_string($::openldap::server::ssl_cert)
-        openldap::server::globalconf { 'TLSCertificate':
-          value => {
-            'TLSCertificateFile' => $::openldap::server::ssl_cert,
-          },
+        openldap::server::globalconf { 'TLSCertificateFile':
+          value => $::openldap::server::ssl_cert,
         }
         if $::openldap::server::ssl_key {
           validate_string($::openldap::server::ssl_key)
           openldap::server::globalconf { 'TLSCertificateKeyFile':
-            value => {
-              'TLSCertificateKeyFile' => $::openldap::server::ssl_key,
-            },
+            value => $::openldap::server::ssl_key,
           }
         }
     } else {
       if $::openldap::server::ssl_key {
         validate_absolute_path($::openldap::server::ssl_cert)
         validate_absolute_path($::openldap::server::ssl_key)
-        openldap::server::globalconf { 'TLSCertificate':
-          value => {
-            'TLSCertificateFile'    => $::openldap::server::ssl_cert,
-            'TLSCertificateKeyFile' => $::openldap::server::ssl_key,
-          },
+        openldap::server::globalconf { 'TLSCertificateFile':
+          value => $::openldap::server::ssl_cert,
+        }
+        openldap::server::globalconf { 'TLSCertificateKeyFile':
+          value => $::openldap::server::ssl_key,
         }
       } else {
         fail 'You must specify a ssl_key'
