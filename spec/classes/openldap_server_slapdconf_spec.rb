@@ -32,9 +32,9 @@ describe 'openldap::server::slapdconf' do
         when 'RedHat'
           it { is_expected.to compile.with_all_deps }
           it { is_expected.to contain_class('openldap::server::slapdconf') }
-          it { is_expected.to contain_openldap__globalconf( 'TLSCertificateFile') }
-          it { is_expected.to contain_openldap__globalconf( 'TLSCACertificateFile') }
-          it { is_expected.not_to contain_openldap__globalconf( 'TLSCertificateKeyFile') }
+          it { is_expected.to contain_openldap__server__globalconf( 'TLSCertificateFile') }
+          it { is_expected.to contain_openldap__server__globalconf( 'TLSCACertificateFile') }
+          it { is_expected.not_to contain_openldap__server___globalconf( 'TLSCertificateKeyFile') }
         end
       end
 
@@ -46,15 +46,15 @@ describe 'openldap::server::slapdconf' do
         when 'Debian'
           it { is_expected.to compile.with_all_deps }
           it { is_expected.to contain_class('openldap::server::slapdconf') }
-          it { is_expected.to contain_openldap__globalconf( 'TLSCertificateFile') }
-          it { is_expected.to contain_openldap__globalconf( 'TLSCACertificateFile') }
-          it { is_expected.to contain_openldap__globalconf( 'TLSCertificateKeyFile') }
+          it { is_expected.to contain_openldap__server__globalconf( 'TLSCertificateFile') }
+          it { is_expected.to contain_openldap__server__globalconf( 'TLSCACertificateFile') }
+          it { is_expected.to contain_openldap__server__globalconf( 'TLSCertificateKeyFile') }
         when 'RedHat'
           it { is_expected.to compile.with_all_deps }
           it { is_expected.to contain_class('openldap::server::slapdconf') }
-          it { is_expected.to contain_openldap__globalconf( 'TLSCertificateFile') }
-          it { is_expected.to contain_openldap__globalconf( 'TLSCACertificateFile') }
-          it { is_expected.to contain_openldap__globalconf( 'TLSCertificateKeyFile') }
+          it { is_expected.to contain_openldap__server__globalconf( 'TLSCertificateFile') }
+          it { is_expected.to contain_openldap__server__globalconf( 'TLSCACertificateFile') }
+          it { is_expected.to contain_openldap__server__globalconf( 'TLSCertificateKeyFile') }
         end
       end
     end
