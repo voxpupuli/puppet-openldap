@@ -184,14 +184,14 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
 
   def flush
     if not @property_flush.empty?
-      current_olcAccess = getCurrentOlcAccess(@property_hash[:suffix])
+      current_olcAccess = getCurrentOlcAccess(resource[:suffix])
       t = Tempfile.new('openldap_access')
-      t << "dn: #{getDn(@property_hash[:suffix])}\n"
+      t << "dn: #{getDn(resource[:suffix])}\n"
       t << "changetype: modify\n"
       t << "replace: olcAccess\n"
       current_olcAccess.each do |olcAccess|
-        if olcAccess[:position] == @property_hash[:position]
-          t << "olcAccess: {#{@property_hash[:position]}}to #{resource[:what]} by #{resource[:by]} #{resource[:access]}\n"
+        if olcAccess[:position] == resource[:position]
+          t << "olcAccess: {#{resource[:position]}}to #{resource[:what]} by #{resource[:by]} #{resource[:access]}\n"
         else
           t << "olcAccess: {#{olcAccess[:position]}}#{olcAccess[:content]}\n"
         end
@@ -199,7 +199,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
       if resource[:islast]
         t << "-\n"
         t << "delete: olcAccess\n"
-        (@property_hash[:position].to_i+1..getCountOfOlcAccess(@property_hash[:suffix])-1).each do |n|
+        (resource[:position].to_i+1..getCountOfOlcAccess(resource[:suffix])-1).each do |n|
           t << "olcAccess: {#{n}}\n"
         end
       end
