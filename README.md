@@ -151,6 +151,124 @@ openldap::server::access {
 }
 ```
 
+####Note #1:
+The chaining arrows `->` are importants if you want to order your entries.
+Openldap put the entry as the last available position.
+So if you got in your ldap:
+```
+ olcAccess: {0}to ...
+ olcAccess: {1}to ...
+ olcAccess: {2}to ...
+```
+
+  Even if you set the parameter `position => '4'`, the next entry will be set as
+
+```
+ olcAccess: {3}to ...
+```
+
+####Note #2:
+  The parameter `islast` is used for purging remaining entries
+  So if you got in your ldap:
+```
+ olcAccess: {0}to ...
+ olcAccess: {1}to ...
+ olcAccess: {2}to ...
+ olcAccess: {3}to ...
+```
+
+And set `islast => true` in `position => 1`, entries 2 and 3 will get deleted.
+
+```puppet
+openldap::server::access {
+  'to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" on dc=example,dc=com':
+    position => '1',
+    access   => 'write',
+} ->
+openldap::server::access {
+  'to attrs=userPassword,shadowLastChange by anonymous on dc=example,dc=com':
+    position => '2',
+    access   => 'auth',
+} ->
+openldap::server::access {
+  'to attrs=userPassword,shadowLastChange by self on dc=example,dc=com':
+    position => '3',
+    access   => 'write',
+    islast   => true,
+}
+```
+
+Call your acl from a hash:
+
+```puppet
+$acl_hash = {
+  'acl 1' => {
+    suffix   => 'dc=example,dc=com',
+    position => '1',
+    what     => 'attrs=userPassword,shadowLastChange',
+    by       => 'dn="cn=admin,dc=example,dc=com"',
+    access   => 'write',
+  },
+  'acl 2' => {
+    suffix   => 'dc=example,dc=com',
+    position => '2',
+    what     => 'attrs=userPassword,shadowLastChange',
+    by       => 'anonymous',
+    access   => 'auth',
+  },
+  'acl 3' => {
+    suffix   => 'dc=example,dc=com',
+    position => '3',
+    what     => 'attrs=userPassword,shadowLastChange',
+    by       => 'self',
+    access   => 'write',
+  },
+}
+
+$acl_hash_keys = keys($acl_hash)
+openldap::server::access_wrapper { $acl_hash_keys :
+  hash => $acl_hash,
+}
+```
+
+And with a little help of an inline\_template, you can auto-generate your list
+of acl like so:
+
+```puppet
+$acl = {
+  'to attrs=userPassword,shadowLastChange' => {
+    'by dn="cn=admin,dc=example,dc=com"' => 'write',
+    'by self                             => 'write',
+    'by anonymous'                       => 'auth',
+  },
+}
+
+$acl_hash_yaml = inline_template('<%=
+  position = -1
+  acl.map { |to,value|
+  value.map do |by,access|
+    position = position + 1
+    {
+      "#{position} on dc=example,dc=com" => {
+        "position" => position,
+        "what"     => to[3..-1],
+        "by"       => by[3..-1],
+        "access"   => access,
+        "suffix"   => "dc=example,dc=com",
+      }
+    }
+  end
+}.flatten.reduce({}, :update).to_yaml
+%>')
+
+$acl_hash = parseyaml($acl_hash_yaml)
+$acl_hash_keys = keys($acl_hash)
+
+openldap::server::access_wrapper { $acl_hash_keys :
+  hash => $acl_hash,
+}
+```
+
 ###Configuring Schemas
 ```puppet
 openldap::server::schema { 'samba':
