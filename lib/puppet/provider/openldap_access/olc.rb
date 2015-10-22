@@ -190,7 +190,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
       t << "changetype: modify\n"
       t << "replace: olcAccess\n"
       current_olcAccess.each do |olcAccess|
-        if olcAccess[:position] == resource[:position]
+        if olcAccess[:position].to_i == resource[:position].to_i
           t << "olcAccess: {#{resource[:position]}}to #{resource[:what]} by #{resource[:by]} #{resource[:access]}\n"
         else
           t << "olcAccess: {#{olcAccess[:position]}}#{olcAccess[:content]}\n"
