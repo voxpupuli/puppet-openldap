@@ -181,27 +181,18 @@ And set `islast => true` in `position => 1`, entries 2 and 3 will get deleted.
 
 ```puppet
 openldap::server::access {
-  'acl 1' :
-    suffix   => 'dc=example,dc=com',
+  'to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" on dc=example,dc=com':
     position => '1',
-    what     => 'attrs=userPassword,shadowLastChange',
-    by       => 'dn="cn=admin,dc=example,dc=com"',
     access   => 'write',
 } ->
 openldap::server::access {
-  'acl 2' :
-    suffix   => 'dc=example,dc=com',
+  'to attrs=userPassword,shadowLastChange by anonymous on dc=example,dc=com':
     position => '2',
-    what     => 'attrs=userPassword,shadowLastChange',
-    by       => 'anonymous',
     access   => 'auth',
 } ->
 openldap::server::access {
-  'acl 3' :
-    suffix   => 'dc=example,dc=com'
+  'to attrs=userPassword,shadowLastChange by self on dc=example,dc=com':
     position => '3',
-    what     => 'attrs=userPassword,shadowLastChange'
-    by       => 'self'
     access   => 'write',
     islast   => true,
 }
