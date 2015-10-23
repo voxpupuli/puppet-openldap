@@ -7,6 +7,11 @@ describe 'openldap::server::database' do
       openldap::server::database { 'dc=foo,dc=com':
         ensure => absent,
       }
+      openldap::server::database { 'cn=config':
+        rootdn    => 'cn=admin,cn=config',
+        backend   => 'config',
+        rootpw    => 'secret',
+      }
     EOS
 
     apply_manifest(pp, :catch_failures => true)
@@ -18,6 +23,11 @@ describe 'openldap::server::database' do
       class { 'openldap::server': }
       openldap::server::database { ['dc=foo,dc=com', 'dc=bar,dc=com']:
         ensure => absent,
+      }
+      openldap::server::database { 'cn=config':
+        rootdn    => 'cn=admin,cn=config',
+        backend   => 'config',
+        rootpw    => 'secret',
       }
     EOS
 
@@ -104,6 +114,30 @@ describe 'openldap::server::database' do
 
       apply_manifest(pp, :catch_failures => true)
       apply_manifest(pp, :catch_changes => true)
+    end
+  end
+
+  context 'cn=config with a rootdn and rootpw' do
+    it 'change a config password database' do
+      tmpdir = default.tmpdir('openldap')
+      pp = <<-EOS
+      class { 'openldap::server': }
+      openldap::server::database { 'cn=config':
+        ensure    => present,
+        backend   => 'config',
+        rootdn    => 'cn=newadmin,cn=config',
+        rootpw    => 'newsecret',
+      }
+      EOS
+
+      apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp, :catch_changes => true)
+    end
+
+    it 'can connect with ldapsearch to the new password' do
+      ldapsearch('-LLL -x -b "cn=config" -D "cn=newadmin,cn=config" -w newsecret') do |r|
+        expect(r.stdout).to match(/dn: cn=config/)
+      end
     end
   end
 end
