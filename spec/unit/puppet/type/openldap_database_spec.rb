@@ -19,6 +19,7 @@ describe Puppet::Type.type(:openldap_database) do
     end
     it "should allow valid suffix" do
       expect { described_class.new(:name => 'dc=example,dc=com') }.to_not raise_error
+      expect { described_class.new(:name => 'cn=config') }.to_not raise_error
     end
   end
 
@@ -56,6 +57,9 @@ describe Puppet::Type.type(:openldap_database) do
       end
       it "should support hdb as a value for backend" do
         expect { described_class.new(:name => 'foo', :backend => 'hdb') }.to_not raise_error
+      end
+      it "should support config as a value for backend" do
+        expect { described_class.new(:name => 'foo', :backend => 'config') }.to_not raise_error
       end
       it "should not support other values" do
         expect { described_class.new(:name => 'foo', :backend => 'bar') }.to raise_error(Puppet::Error, /Invalid value/)

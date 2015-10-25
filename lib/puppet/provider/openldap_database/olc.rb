@@ -16,7 +16,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       '-b',
       'cn=config',
       '-H',
-      'ldap:///???(|(olcDatabase=monitor)(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)(objectClass=olcMonitorConfig))))'
+      'ldap:///???(|(olcDatabase=monitor)(olcDatabase={0}config)(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)(objectClass=olcMonitorConfig))))'
     )
     databases.split("\n\n").collect do |paragraph|
       suffix = nil
@@ -37,7 +37,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       paragraph.gsub("\n ", "").split("\n").collect do |line|
         case line
         when /^olcDatabase: /
-          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor)$/).captures
+          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor|config)$/).captures
         when /^olcDbDirectory: /
           directory = line.split(' ')[1]
         when /^olcRootDN: /
@@ -92,6 +92,9 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       end
       if backend == 'monitor' and !suffix
         suffix = 'cn=Monitor'
+      end
+      if backend == 'config' and !suffix
+        suffix = 'cn=config'
       end
       new(
         :ensure          => :present,
@@ -192,7 +195,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     end
     t << "olcRootDN: #{resource[:rootdn]}\n" if resource[:rootdn]
     t << "olcRootPW: #{resource[:rootpw]}\n" if resource[:rootpw]
-    t << "olcReadOnly: #{resource[:readonly]}\n" if resource[:readonly]
+    t << "olcReadOnly: #{resource[:readonly] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:readonly]
     t << "olcSizeLimit: #{resource[:sizelimit]}\n" if resource[:sizelimit]
     t << "olcTimeLimit: #{resource[:timelimit]}\n" if resource[:timelimit]
     t << "olcUpdateref: #{resource[:updateref]}\n" if resource[:updateref]
@@ -316,7 +319,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       t << "replace: olcRootDN\nolcRootDN: #{resource[:rootdn]}\n-\n" if @property_flush[:rootdn]
       t << "replace: olcRootPW\nolcRootPW: #{resource[:rootpw]}\n-\n" if @property_flush[:rootpw]
       t << "replace: olcSuffix\nolcSuffix: #{resource[:suffix]}\n-\n" if @property_flush[:suffix]
-      t << "replace: olcReadOnly\nolcReadOnly: #{resource[:readonly]}\n-\n" if @property_flush[:readonly]
+      t << "replace: olcReadOnly\nolcReadOnly: #{resource[:readonly] == :true ? 'TRUE' : 'FALSE'}\n-\n" if @property_flush[:readonly]
       t << "replace: olcSizeLimit\nolcSizeLimit: #{resource[:sizelimit]}\n-\n" if @property_flush[:sizelimit]
       t << "replace: olcTimeLimit\nolcTimeLimit: #{resource[:timelimit]}\n-\n" if @property_flush[:timelimit]
       t << "replace: olcUpdateref\nolcUpdateref: #{resource[:updateref]}\n-\n" if @property_flush[:updateref]

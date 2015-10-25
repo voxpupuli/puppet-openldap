@@ -18,7 +18,7 @@ Puppet::Type.newtype(:openldap_database) do
 
   newproperty(:backend) do
     desc "The name of the backend."
-    newvalues('bdb', 'hdb', 'mdb', 'monitor')
+    newvalues('bdb', 'hdb', 'mdb', 'monitor', 'config')
     defaultto do
       case Facter.value(:osfamily)
       when 'Debian'
@@ -47,7 +47,7 @@ Puppet::Type.newtype(:openldap_database) do
   newproperty(:directory) do
     desc "The directory where the BDB files containing this database and associated indexes live."
     defaultto do
-      if "#{@resource[:backend]}" != "monitor"
+      if "#{@resource[:backend]}" != "monitor" and "#{@resource[:backend]}" != "config"
         '/var/lib/ldap'
       end
     end
@@ -113,7 +113,7 @@ Puppet::Type.newtype(:openldap_database) do
 
     newvalues(:true, :false)
     defaultto do
-      if "#{@resource[:backend]}" == "monitor"
+      if "#{@resource[:backend]}" == "monitor" or "#{@resource[:backend]}" == "config"
         :false
       else
         :true
