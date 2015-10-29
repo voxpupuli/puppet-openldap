@@ -163,7 +163,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     t << "objectClass: dcObject\n" if resource[:suffix].start_with?("dc=")
     t << "objectClass: organization\n"
     t << "dc: #{resource[:suffix].split(/,?dc=/).delete_if { |c| c.empty? }[0]}\n" if resource[:suffix].start_with?("dc=")
-    t << "o: #{resource[:suffix].split(/,?dc=/).delete_if { |c| c.empty? }.join('.')}\n" if resource[:suffix].start_with?("dc=")
+    t << "o: #{resource[:suffix].split(/,?(dc|cn)=/).delete_if { |c| c.empty? }.join('.')}\n" if resource[:suffix].start_with?("dc=","cn=")
     t << "\n"
     t << "dn: cn=admin,#{resource[:suffix]}\n"
     t << "objectClass: simpleSecurityObject\n" if resource[:rootpw]
@@ -366,7 +366,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       rescue Exception => e
         raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
       end
-      initdb if @property_flush[:directory]
+      initdb if @property_flush[:directory] and resource[:initdb] != false
     end
     @property_hash = resource.to_hash
   end
