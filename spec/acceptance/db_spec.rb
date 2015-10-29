@@ -92,8 +92,8 @@ describe 'openldap::server::database' do
     end
 
     it 'can connect with ldapsearch' do
-      ldapsearch('-LLL -x -b "dc=foo,dc=com" -D "cn=admin,dc=bar,dc=com" -w secret') do |r|
-        expect(r.stdout).to match(/dn: dc=foo,dc=com/)
+      ldapsearch('-LLL -x -b "dc=bar,dc=com" -D "cn=admin,dc=bar,dc=com" -w secret') do |r|
+        expect(r.stdout).to match(/dn: dc=bar,dc=com/)
       end
     end
   end
