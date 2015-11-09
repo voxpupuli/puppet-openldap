@@ -1,3 +1,9 @@
+## 2015-11-09 - Release 1.11.0
+
+Do not try to hash password if it is given in "{SSHA}" form
+Add cn=config suffix support
+Add readonly support to openldap_database's augeas provider
+
 ## 2015-10-09 - Release 1.10.0
 
 Fix ACL changes
