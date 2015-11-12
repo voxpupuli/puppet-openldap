@@ -15,7 +15,7 @@ Puppet::Type.newtype(:openldap_dbindex) do
     desc "The suffix to which the index applies"
   end
 
-  newparam(:attribute) do
+  newparam(:attribute, :namevar => true) do
     desc "The attribute to index"
     defaultto('default')
   end
