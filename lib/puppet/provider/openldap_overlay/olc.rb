@@ -91,6 +91,8 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
       t << "objectClass: olcSyncProvConfig\n"
     when 'refint'
       t << "objectClass: olcRefintConfig\n"
+    when 'unique'
+      t << "objectClass: olcUniqueConfig\n"
     end
     t << "olcOverlay: #{resource[:overlay]}\n"
     if resource[:options]
