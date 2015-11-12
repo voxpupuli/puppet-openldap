@@ -15,25 +15,7 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+base') }
-        it { is_expected.not_to contain_augeas('ldap.conf+bind_policy') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ldap_version') }
-        it { is_expected.not_to contain_augeas('ldap.conf+scope') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ssl') }
-        it { is_expected.not_to contain_augeas('ldap.conf+suffix') }
-        it { is_expected.not_to contain_augeas('ldap.conf+uri') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_group') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_hosts') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_passwd') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_shadow') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_filter') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_login_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_member_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_password') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacert') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacertdir') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_checkpeer') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_reqcert') }
+        it { is_expected.to contain_augeas('ldap.conf') }
       end
 
       context 'with base set' do
@@ -43,37 +25,20 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+bind_policy') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ldap_version') }
-        it { is_expected.not_to contain_augeas('ldap.conf+scope') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ssl') }
-        it { is_expected.not_to contain_augeas('ldap.conf+suffix') }
-        it { is_expected.not_to contain_augeas('ldap.conf+uri') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_group') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_hosts') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_passwd') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_shadow') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_filter') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_login_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_member_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_password') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacert') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacertdir') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_checkpeer') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_reqcert') }
+        it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf+base').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => 'set BASE dc=example,dc=com',
+            :changes => [ 'set BASE dc=example,dc=com' ],
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf+base').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => 'set BASE dc=example,dc=com',
+            :changes => [ 'set BASE dc=example,dc=com' ],
           })
           }
         end
@@ -86,37 +51,20 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+base') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ldap_version') }
-        it { is_expected.not_to contain_augeas('ldap.conf+scope') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ssl') }
-        it { is_expected.not_to contain_augeas('ldap.conf+suffix') }
-        it { is_expected.not_to contain_augeas('ldap.conf+uri') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_group') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_hosts') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_passwd') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_shadow') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_filter') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_login_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_member_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_password') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacert') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacertdir') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_checkpeer') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_reqcert') }
+        it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf+bind_policy').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => 'set BIND_POLICY soft',
+            :changes => [ 'set BIND_POLICY soft' ],
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf+bind_policy').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => 'set BIND_POLICY soft',
+            :changes => [ 'set BIND_POLICY soft' ],
           })
           }
         end
@@ -129,37 +77,20 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+base') }
-        it { is_expected.not_to contain_augeas('ldap.conf+bind_policy') }
-        it { is_expected.not_to contain_augeas('ldap.conf+scope') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ssl') }
-        it { is_expected.not_to contain_augeas('ldap.conf+suffix') }
-        it { is_expected.not_to contain_augeas('ldap.conf+uri') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_group') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_hosts') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_passwd') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_shadow') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_filter') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_login_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_member_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_password') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacert') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacertdir') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_checkpeer') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_reqcert') }
+        it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf+ldap_version').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => 'set LDAP_VERSION 3',
+            :changes => [ 'set LDAP_VERSION 3' ],
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf+ldap_version').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => 'set LDAP_VERSION 3',
+            :changes => [ 'set LDAP_VERSION 3' ],
           })
           }
         end
@@ -172,37 +103,20 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+base') }
-        it { is_expected.not_to contain_augeas('ldap.conf+bind_policy') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ldap_version') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ssl') }
-        it { is_expected.not_to contain_augeas('ldap.conf+suffix') }
-        it { is_expected.not_to contain_augeas('ldap.conf+uri') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_group') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_hosts') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_passwd') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_shadow') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_filter') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_login_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_member_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_password') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacert') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacertdir') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_checkpeer') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_reqcert') }
+        it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf+scope').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => 'set SCOPE one',
+            :changes => [ 'set SCOPE one' ],
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf+scope').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => 'set SCOPE one',
+            :changes => [ 'set SCOPE one' ],
           })
           }
         end
@@ -215,37 +129,20 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+base') }
-        it { is_expected.not_to contain_augeas('ldap.conf+bind_policy') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ldap_version') }
-        it { is_expected.not_to contain_augeas('ldap.conf+scope') }
-        it { is_expected.not_to contain_augeas('ldap.conf+suffix') }
-        it { is_expected.not_to contain_augeas('ldap.conf+uri') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_group') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_hosts') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_passwd') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_shadow') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_filter') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_login_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_member_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_password') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacert') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacertdir') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_checkpeer') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_reqcert') }
+        it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf+ssl').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => 'set SSL on',
+            :changes => [ 'set SSL on' ],
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf+ssl').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => 'set SSL on',
+            :changes => [ 'set SSL on' ],
           })
           }
         end
@@ -258,37 +155,20 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+base') }
-        it { is_expected.not_to contain_augeas('ldap.conf+bind_policy') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ldap_version') }
-        it { is_expected.not_to contain_augeas('ldap.conf+scope') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ssl') }
-        it { is_expected.not_to contain_augeas('ldap.conf+uri') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_group') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_hosts') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_passwd') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_shadow') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_filter') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_login_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_member_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_password') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacert') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacertdir') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_checkpeer') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_reqcert') }
+        it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf+suffix').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => 'set SUFFIX dc=example,dc=com',
+            :changes => [ 'set SUFFIX dc=example,dc=com' ],
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf+suffix').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => 'set SUFFIX dc=example,dc=com',
+            :changes => [ 'set SUFFIX dc=example,dc=com' ],
           })
           }
         end
@@ -301,37 +181,20 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+base') }
-        it { is_expected.not_to contain_augeas('ldap.conf+bind_policy') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ldap_version') }
-        it { is_expected.not_to contain_augeas('ldap.conf+scope') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ssl') }
-        it { is_expected.not_to contain_augeas('ldap.conf+suffix') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_group') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_hosts') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_passwd') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_shadow') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_filter') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_login_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_member_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_password') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacert') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacertdir') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_checkpeer') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_reqcert') }
+        it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf+uri').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => "set URI 'ldap://ldap.example.com'",
+            :changes => [ "set URI 'ldap://ldap.example.com'" ],
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf+uri').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => "set URI 'ldap://ldap.example.com'",
+            :changes => [ "set URI 'ldap://ldap.example.com'" ],
           })
           }
         end
@@ -344,37 +207,20 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+base') }
-        it { is_expected.not_to contain_augeas('ldap.conf+bind_policy') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ldap_version') }
-        it { is_expected.not_to contain_augeas('ldap.conf+scope') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ssl') }
-        it { is_expected.not_to contain_augeas('ldap.conf+suffix') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_group') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_hosts') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_passwd') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_shadow') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_filter') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_login_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_member_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_password') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacert') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacertdir') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_checkpeer') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_reqcert') }
+        it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf+uri').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => "set URI 'ldap://ldap1.example.com ldap://ldap2.example.com'",
+            :changes => [ "set URI 'ldap://ldap1.example.com ldap://ldap2.example.com'" ],
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf+uri').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => "set URI 'ldap://ldap1.example.com ldap://ldap2.example.com'",
+            :changes => [ "set URI 'ldap://ldap1.example.com ldap://ldap2.example.com'" ],
           })
           }
         end
@@ -387,37 +233,20 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+base') }
-        it { is_expected.not_to contain_augeas('ldap.conf+bind_policy') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ldap_version') }
-        it { is_expected.not_to contain_augeas('ldap.conf+scope') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ssl') }
-        it { is_expected.not_to contain_augeas('ldap.conf+suffix') }
-        it { is_expected.not_to contain_augeas('ldap.conf+uri') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_hosts') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_passwd') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_shadow') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_filter') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_login_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_member_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_password') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacert') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacertdir') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_checkpeer') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_reqcert') }
+        it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf+nss_base_group').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => 'set NSS_BASE_GROUP ou=group,dc=example,dc=com',
+            :changes => [ 'set NSS_BASE_GROUP ou=group,dc=example,dc=com' ],
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf+nss_base_group').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => 'set NSS_BASE_GROUP ou=group,dc=example,dc=com',
+            :changes => [ 'set NSS_BASE_GROUP ou=group,dc=example,dc=com' ],
           })
           }
         end
@@ -430,37 +259,20 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+base') }
-        it { is_expected.not_to contain_augeas('ldap.conf+bind_policy') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ldap_version') }
-        it { is_expected.not_to contain_augeas('ldap.conf+scope') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ssl') }
-        it { is_expected.not_to contain_augeas('ldap.conf+suffix') }
-        it { is_expected.not_to contain_augeas('ldap.conf+uri') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_group') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_passwd') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_shadow') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_filter') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_login_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_member_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_password') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacert') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacertdir') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_checkpeer') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_reqcert') }
+        it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf+nss_base_hosts').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => 'set NSS_BASE_HOSTS ou=hosts,dc=example,dc=com',
+            :changes => [ 'set NSS_BASE_HOSTS ou=hosts,dc=example,dc=com' ],
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf+nss_base_hosts').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => 'set NSS_BASE_HOSTS ou=hosts,dc=example,dc=com',
+            :changes => [ 'set NSS_BASE_HOSTS ou=hosts,dc=example,dc=com' ],
           })
           }
         end
@@ -473,37 +285,20 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+base') }
-        it { is_expected.not_to contain_augeas('ldap.conf+bind_policy') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ldap_version') }
-        it { is_expected.not_to contain_augeas('ldap.conf+scope') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ssl') }
-        it { is_expected.not_to contain_augeas('ldap.conf+suffix') }
-        it { is_expected.not_to contain_augeas('ldap.conf+uri') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_group') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_hosts') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_shadow') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_filter') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_login_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_member_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_password') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacert') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacertdir') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_checkpeer') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_reqcert') }
+        it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf+nss_base_passwd').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => 'set NSS_BASE_PASSWD ou=passwd,dc=example,dc=com',
+            :changes => [ 'set NSS_BASE_PASSWD ou=passwd,dc=example,dc=com' ],
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf+nss_base_passwd').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => 'set NSS_BASE_PASSWD ou=passwd,dc=example,dc=com',
+            :changes => [ 'set NSS_BASE_PASSWD ou=passwd,dc=example,dc=com' ],
           })
           }
         end
@@ -516,37 +311,20 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+base') }
-        it { is_expected.not_to contain_augeas('ldap.conf+bind_policy') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ldap_version') }
-        it { is_expected.not_to contain_augeas('ldap.conf+scope') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ssl') }
-        it { is_expected.not_to contain_augeas('ldap.conf+suffix') }
-        it { is_expected.not_to contain_augeas('ldap.conf+uri') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_group') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_hosts') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_passwd') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_filter') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_login_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_member_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_password') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacert') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacertdir') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_checkpeer') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_reqcert') }
+        it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf+nss_base_shadow').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => 'set NSS_BASE_SHADOW ou=shadow,dc=example,dc=com',
+            :changes => [ 'set NSS_BASE_SHADOW ou=shadow,dc=example,dc=com' ],
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf+nss_base_shadow').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => 'set NSS_BASE_SHADOW ou=shadow,dc=example,dc=com',
+            :changes => [ 'set NSS_BASE_SHADOW ou=shadow,dc=example,dc=com' ],
           })
           }
         end
@@ -559,37 +337,20 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+base') }
-        it { is_expected.not_to contain_augeas('ldap.conf+bind_policy') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ldap_version') }
-        it { is_expected.not_to contain_augeas('ldap.conf+scope') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ssl') }
-        it { is_expected.not_to contain_augeas('ldap.conf+suffix') }
-        it { is_expected.not_to contain_augeas('ldap.conf+uri') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_group') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_hosts') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_passwd') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_shadow') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_login_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_member_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_password') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacert') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacertdir') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_checkpeer') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_reqcert') }
+        it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf+pam_filter').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => 'set PAM_FILTER type=FILTER',
+            :changes => [ 'set PAM_FILTER type=FILTER' ],
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf+pam_filter').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => 'set PAM_FILTER type=FILTER',
+            :changes => [ 'set PAM_FILTER type=FILTER' ],
           })
           }
         end
@@ -602,37 +363,20 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+base') }
-        it { is_expected.not_to contain_augeas('ldap.conf+bind_policy') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ldap_version') }
-        it { is_expected.not_to contain_augeas('ldap.conf+scope') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ssl') }
-        it { is_expected.not_to contain_augeas('ldap.conf+suffix') }
-        it { is_expected.not_to contain_augeas('ldap.conf+uri') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_group') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_hosts') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_passwd') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_shadow') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_filter') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_member_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_password') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacert') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacertdir') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_checkpeer') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_reqcert') }
+        it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf+pam_login_attribute').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => 'set PAM_LOGIN_ATTRIBUTE uid',
+            :changes => [ 'set PAM_LOGIN_ATTRIBUTE uid' ],
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf+pam_login_attribute').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => 'set PAM_LOGIN_ATTRIBUTE uid',
+            :changes => [ 'set PAM_LOGIN_ATTRIBUTE uid' ],
           })
           }
         end
@@ -645,37 +389,20 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+base') }
-        it { is_expected.not_to contain_augeas('ldap.conf+bind_policy') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ldap_version') }
-        it { is_expected.not_to contain_augeas('ldap.conf+scope') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ssl') }
-        it { is_expected.not_to contain_augeas('ldap.conf+suffix') }
-        it { is_expected.not_to contain_augeas('ldap.conf+uri') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_group') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_hosts') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_passwd') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_shadow') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_filter') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_login_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_password') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacert') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacertdir') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_checkpeer') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_reqcert') }
+        it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf+pam_member_attribute').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => 'set PAM_MEMBER_ATTRIBUTE memberUid',
+            :changes => [ 'set PAM_MEMBER_ATTRIBUTE memberUid' ],
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf+pam_member_attribute').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => 'set PAM_MEMBER_ATTRIBUTE memberUid',
+            :changes => [ 'set PAM_MEMBER_ATTRIBUTE memberUid' ],
           })
           }
         end
@@ -688,37 +415,20 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+base') }
-        it { is_expected.not_to contain_augeas('ldap.conf+bind_policy') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ldap_version') }
-        it { is_expected.not_to contain_augeas('ldap.conf+scope') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ssl') }
-        it { is_expected.not_to contain_augeas('ldap.conf+suffix') }
-        it { is_expected.not_to contain_augeas('ldap.conf+uri') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_group') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_hosts') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_passwd') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_shadow') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_filter') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_login_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_member_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacert') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacertdir') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_checkpeer') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_reqcert') }
+        it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf+pam_password').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => 'set PAM_PASSWORD md5',
+            :changes => [ 'set PAM_PASSWORD md5' ],
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf+pam_password').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => 'set PAM_PASSWORD md5',
+            :changes => [ 'set PAM_PASSWORD md5' ],
           })
           }
         end
@@ -739,37 +449,19 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+base') }
-        it { is_expected.not_to contain_augeas('ldap.conf+bind_policy') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ldap_version') }
-        it { is_expected.not_to contain_augeas('ldap.conf+scope') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ssl') }
-        it { is_expected.not_to contain_augeas('ldap.conf+suffix') }
-        it { is_expected.not_to contain_augeas('ldap.conf+uri') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_group') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_hosts') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_passwd') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_shadow') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_filter') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_login_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_member_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_password') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacertdir') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_checkpeer') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_reqcert') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf+tls_cacert').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => 'set TLS_CACERT /etc/ssl/certs/ca-certificates.crt',
+            :changes => [ 'set TLS_CACERT /etc/ssl/certs/ca-certificates.crt' ],
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf+tls_cacert').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => 'set TLS_CACERT /etc/ssl/certs/ca-certificates.crt',
+            :changes => [ 'set TLS_CACERT /etc/ssl/certs/ca-certificates.crt' ],
           })
           }
         end
@@ -790,37 +482,20 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+base') }
-        it { is_expected.not_to contain_augeas('ldap.conf+bind_policy') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ldap_version') }
-        it { is_expected.not_to contain_augeas('ldap.conf+scope') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ssl') }
-        it { is_expected.not_to contain_augeas('ldap.conf+suffix') }
-        it { is_expected.not_to contain_augeas('ldap.conf+uri') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_group') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_hosts') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_passwd') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_shadow') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_filter') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_login_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_member_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_password') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacert') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_checkpeer') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_reqcert') }
+        it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf+tls_cacertdir').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => 'set TLS_CACERTDIR /etc/ssl/certs/',
+            :changes => [ 'set TLS_CACERTDIR /etc/ssl/certs/' ],
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf+tls_cacertdir').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => 'set TLS_CACERTDIR /etc/ssl/certs/',
+            :changes => [ 'set TLS_CACERTDIR /etc/ssl/certs/' ],
           })
           }
         end
@@ -833,37 +508,20 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+base') }
-        it { is_expected.not_to contain_augeas('ldap.conf+bind_policy') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ldap_version') }
-        it { is_expected.not_to contain_augeas('ldap.conf+scope') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ssl') }
-        it { is_expected.not_to contain_augeas('ldap.conf+suffix') }
-        it { is_expected.not_to contain_augeas('ldap.conf+uri') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_group') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_hosts') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_passwd') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_shadow') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_filter') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_login_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_member_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_password') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacert') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacertdir') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_reqcert') }
+        it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf+tls_checkpeer').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => 'set TLS_CHECKPEER no',
+            :changes => [ 'set TLS_CHECKPEER no' ],
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf+tls_checkpeer').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => 'set TLS_CHECKPEER no',
+            :changes => [ 'set TLS_CHECKPEER no' ],
           })
           }
         end
@@ -876,37 +534,20 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.not_to contain_augeas('ldap.conf+base') }
-        it { is_expected.not_to contain_augeas('ldap.conf+bind_policy') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ldap_version') }
-        it { is_expected.not_to contain_augeas('ldap.conf+scope') }
-        it { is_expected.not_to contain_augeas('ldap.conf+ssl') }
-        it { is_expected.not_to contain_augeas('ldap.conf+suffix') }
-        it { is_expected.not_to contain_augeas('ldap.conf+uri') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_group') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_hosts') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_passwd') }
-        it { is_expected.not_to contain_augeas('ldap.conf+nss_base_shadow') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_filter') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_login_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_member_attribute') }
-        it { is_expected.not_to contain_augeas('ldap.conf+pam_password') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacert') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_cacertdir') }
-        it { is_expected.not_to contain_augeas('ldap.conf+tls_checkpeer') }
+        it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf+tls_reqcert').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
             :context => '/files/etc/ldap/ldap.conf',
-            :changes => 'set TLS_REQCERT never',
+            :changes => [ 'set TLS_REQCERT never' ],
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf+tls_reqcert').with({
+          it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
             :context => '/files/etc/openldap/ldap.conf',
-            :changes => 'set TLS_REQCERT never',
+            :changes => [ 'set TLS_REQCERT never' ],
           })
           }
         end
