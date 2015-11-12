@@ -4,9 +4,9 @@ def ldapsearch(cmd, exit_codes = [0,1], &block)
   shell("ldapsearch #{cmd}", :acceptable_exit_codes => exit_codes, &block)
 end
 
+install_puppet_agent_on hosts, {}
+
 hosts.each do |host|
-  # Install Puppet
-  install_puppet()
   # Install ruby-augeas
   case fact('osfamily')
   when 'Debian'
