@@ -26,7 +26,7 @@ Puppet::Type.
         when /^olcAccess: /
           position, what, bys = line.match(/^olcAccess:\s+\{(\d+)\}to\s+(\S+(?:\s+filter=\S+)?(?:\s+attrs=\S+)?)(\s+by\s+.*)+$/).captures
           bys.split(' by ')[1..-1].each { |b|
-            by, access, control = b.strip.match(/^(\S+)\s+(\S+)(\s+\S+)?$/).captures
+            by, access, control = b.strip.match(/^(\S+\"[^\"]+\"|\S+)\s+(\S+)(\s+\S+)?$/).captures
             i << new(
               :name     => "to #{what} by #{by} on #{suffix}",
               :ensure   => :present,
