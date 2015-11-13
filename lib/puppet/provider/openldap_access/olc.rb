@@ -24,8 +24,8 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
       position = nil
       paragraph.gsub("\n ", '').split("\n").collect do |line|
         case line
-        when /^olcSuffix: /
-          suffix = line.split(' ')[1]
+        when /^olc(Suffix|Database): /
+          suffix = line.split(' ')[1].gsub(/\{\d+\}/, '')
         when /^olcAccess: /
           position, what, bys = line.match(/^olcAccess:\s+\{(\d+)\}to\s+(\S+)(\s+by\s+.*)+$/).captures
           bys.split(' by ')[1..-1].each { |b|
@@ -62,7 +62,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
       '-b',
       'cn=config',
       '-H',
-      "ldap:///???(olcSuffix=#{suffix})"
+      "ldap:///???(|(olcSuffix=#{suffix})(olcDatabase=#{suffix}))"
     ).split("\n").collect do |line|
       if line =~ /^dn: /
         return line.split(' ')[1]
