@@ -174,6 +174,58 @@ describe 'openldap::client::config' do
         end
       end
 
+      context 'with timelimit set' do
+        let :pre_condition do
+          "class {'openldap::client': timelimit => '10', }"
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('openldap::client::config') }
+        it { is_expected.to contain_augeas('ldap.conf') }
+        case facts[:osfamily]
+        when 'Debian'
+          it { is_expected.to contain_augeas('ldap.conf').with({
+            :incl    => '/etc/ldap/ldap.conf',
+            :context => '/files/etc/ldap/ldap.conf',
+            :changes => [ 'set TIMELIMIT 10' ],
+          })
+          }
+        when 'RedHat'
+          it { is_expected.to contain_augeas('ldap.conf').with({
+            :incl    => '/etc/openldap/ldap.conf',
+            :context => '/files/etc/openldap/ldap.conf',
+            :changes => [ 'set TIMELIMIT 10' ],
+          })
+          }
+        end
+      end
+
+      context 'with timeout set' do
+        let :pre_condition do
+          "class {'openldap::client': timeout => '10', }"
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('openldap::client::config') }
+        it { is_expected.to contain_augeas('ldap.conf') }
+        case facts[:osfamily]
+        when 'Debian'
+          it { is_expected.to contain_augeas('ldap.conf').with({
+            :incl    => '/etc/ldap/ldap.conf',
+            :context => '/files/etc/ldap/ldap.conf',
+            :changes => [ 'set TIMEOUT 10' ],
+          })
+          }
+        when 'RedHat'
+          it { is_expected.to contain_augeas('ldap.conf').with({
+            :incl    => '/etc/openldap/ldap.conf',
+            :context => '/files/etc/openldap/ldap.conf',
+            :changes => [ 'set TIMEOUT 10' ],
+          })
+          }
+        end
+      end
+
       context 'with uri set' do
         let :pre_condition do
           "class {'openldap::client': uri => 'ldap://ldap.example.com', }"

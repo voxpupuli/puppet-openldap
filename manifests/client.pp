@@ -10,6 +10,8 @@ class openldap::client(
   $scope                = undef,
   $ssl                  = undef,
   $suffix               = undef,
+  $timelimit            = undef,
+  $timeout              = undef,
   $uri                  = undef,
 
   # NSS Options

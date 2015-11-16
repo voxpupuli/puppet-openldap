@@ -24,6 +24,14 @@ class openldap::client::config {
     undef   => undef,
     default => "set SUFFIX ${::openldap::client::suffix}",
   }
+  $timelimit = $::openldap::client::timelimit ? {
+    undef   => undef,
+    default => "set TIMELIMIT ${::openldap::client::timelimit}",
+  }
+  $timeout = $::openldap::client::timeout ? {
+    undef   => undef,
+    default => "set TIMEOUT ${::openldap::client::timeout}",
+  }
   $_uri = $::openldap::client::uri ? {
     undef   => undef,
     default => join(flatten([$::openldap::client::uri]), ' '),
@@ -93,6 +101,8 @@ class openldap::client::config {
     $scope,
     $ssl,
     $suffix,
+    $timelimit,
+    $timeout,
     $uri,
     $nss_base_group,
     $nss_base_hosts,
