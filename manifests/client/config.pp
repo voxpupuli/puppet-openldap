@@ -72,6 +72,14 @@ class openldap::client::config {
     undef   => undef,
     default => "set PAM_PASSWORD ${::openldap::client::pam_password}",
   }
+  $sudo_bind_timelimit = $::openldap::client::sudo_bind_timelimit ? {
+    undef   => undef,
+    default => "set BIND_TIMELIMIT ${::openldap::client::sudo_bind_timelimit}",
+  }
+  $sudo_sudoers_base = $::openldap::client::sudo_sudoers_base ? {
+    undef   => undef,
+    default => "set SUDOERS_BASE ${::openldap::client::sudo_sudoers_base}",
+  }
   $tls_checkpeer = $::openldap::client::tls_checkpeer ? {
     undef   => undef,
     default => "set TLS_CHECKPEER ${::openldap::client::tls_checkpeer}",
@@ -112,6 +120,8 @@ class openldap::client::config {
     $pam_login_attribute,
     $pam_member_attribute,
     $pam_password,
+    $sudo_bind_timelimit,
+    $sudo_sudoers_base,
     $tls_checkpeer,
     $tls_cacert,
     $tls_cacertdir,
