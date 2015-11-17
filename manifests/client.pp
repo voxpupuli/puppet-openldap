@@ -6,6 +6,8 @@ class openldap::client(
   # Options
   $base                 = undef,
   $bind_policy          = undef,
+  $binddn               = undef,
+  $bindpw               = undef,
   $ldap_version         = undef,
   $scope                = undef,
   $ssl                  = undef,

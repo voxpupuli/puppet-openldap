@@ -8,6 +8,14 @@ class openldap::client::config {
     undef   => undef,
     default => "set BIND_POLICY ${::openldap::client::bind_policy}",
   }
+  $binddn = $::openldap::client::binddn ? {
+    undef   => undef,
+    default => "set BINDDN ${::openldap::client::binddn}",
+  }
+  $bindpw = $::openldap::client::bindpw ? {
+    undef   => undef,
+    default => "set BINDPW ${::openldap::client::bindpw}",
+  }
   $ldap_version = $::openldap::client::ldap_version ? {
     undef   => undef,
     default => "set LDAP_VERSION ${::openldap::client::ldap_version}",
@@ -105,6 +113,8 @@ class openldap::client::config {
   $changes = delete_undef_values([
     $base,
     $bind_policy,
+    $binddn,
+    $bindpw,
     $ldap_version,
     $scope,
     $ssl,

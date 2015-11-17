@@ -70,6 +70,58 @@ describe 'openldap::client::config' do
         end
       end
 
+      context 'with binddn set' do
+        let :pre_condition do
+          "class {'openldap::client': binddn => 'cn=admin,dc=example,dc=com', }"
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('openldap::client::config') }
+        it { is_expected.to contain_augeas('ldap.conf') }
+        case facts[:osfamily]
+        when 'Debian'
+          it { is_expected.to contain_augeas('ldap.conf').with({
+            :incl    => '/etc/ldap/ldap.conf',
+            :context => '/files/etc/ldap/ldap.conf',
+            :changes => [ 'set BINDDN cn=admin,dc=example,dc=com' ],
+          })
+          }
+        when 'RedHat'
+          it { is_expected.to contain_augeas('ldap.conf').with({
+            :incl    => '/etc/openldap/ldap.conf',
+            :context => '/files/etc/openldap/ldap.conf',
+            :changes => [ 'set BINDDN cn=admin,dc=example,dc=com' ],
+          })
+          }
+        end
+      end
+
+      context 'with bindpw set' do
+        let :pre_condition do
+          "class {'openldap::client': bindpw => 'secret', }"
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('openldap::client::config') }
+        it { is_expected.to contain_augeas('ldap.conf') }
+        case facts[:osfamily]
+        when 'Debian'
+          it { is_expected.to contain_augeas('ldap.conf').with({
+            :incl    => '/etc/ldap/ldap.conf',
+            :context => '/files/etc/ldap/ldap.conf',
+            :changes => [ 'set BINDPW secret' ],
+          })
+          }
+        when 'RedHat'
+          it { is_expected.to contain_augeas('ldap.conf').with({
+            :incl    => '/etc/openldap/ldap.conf',
+            :context => '/files/etc/openldap/ldap.conf',
+            :changes => [ 'set BINDPW secret' ],
+          })
+          }
+        end
+      end
+
       context 'with ldap_version set' do
         let :pre_condition do
           "class {'openldap::client': ldap_version => '3', }"
