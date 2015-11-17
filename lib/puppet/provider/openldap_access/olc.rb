@@ -25,7 +25,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
       paragraph.gsub("\n ", '').split("\n").collect do |line|
         case line
         when /^olc(Suffix|Database): /
-          suffix = line.split(' ')[1].gsub(/\{\d+\}/, '')
+          suffix = line.split(' ')[1].gsub(/\{-?\d+\}/, '')
         when /^olcAccess: /
           position, what, bys = line.match(/^olcAccess:\s+\{(\d+)\}to\s+(\S+)(\s+by\s+.*)+$/).captures
           bys.split(' by ')[1..-1].each { |b|
