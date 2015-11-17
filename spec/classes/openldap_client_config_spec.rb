@@ -70,6 +70,32 @@ describe 'openldap::client::config' do
         end
       end
 
+      context 'with bind_timelimit set' do
+        let :pre_condition do
+          "class {'openldap::client': sudo_bind_timelimit => '10', }"
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('openldap::client::config') }
+        it { is_expected.to contain_augeas('ldap.conf') }
+        case facts[:osfamily]
+        when 'Debian'
+          it { is_expected.to contain_augeas('ldap.conf').with({
+            :incl    => '/etc/ldap/ldap.conf',
+            :context => '/files/etc/ldap/ldap.conf',
+            :changes => [ 'set BIND_TIMELIMIT 10' ],
+          })
+          }
+        when 'RedHat'
+          it { is_expected.to contain_augeas('ldap.conf').with({
+            :incl    => '/etc/openldap/ldap.conf',
+            :context => '/files/etc/openldap/ldap.conf',
+            :changes => [ 'set BIND_TIMELIMIT 10' ],
+          })
+          }
+        end
+      end
+
       context 'with binddn set' do
         let :pre_condition do
           "class {'openldap::client': binddn => 'cn=admin,dc=example,dc=com', }"
@@ -657,35 +683,9 @@ describe 'openldap::client::config' do
         end
       end
 
-      context 'with sudo_bind_timelimit set' do
+      context 'with sudoers_base set' do
         let :pre_condition do
-          "class {'openldap::client': sudo_bind_timelimit => '10', }"
-        end
-
-        it { is_expected.to compile.with_all_deps }
-        it { is_expected.to contain_class('openldap::client::config') }
-        it { is_expected.to contain_augeas('ldap.conf') }
-        case facts[:osfamily]
-        when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :context => '/files/etc/ldap/ldap.conf',
-            :changes => [ 'set BIND_TIMELIMIT 10' ],
-          })
-          }
-        when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :context => '/files/etc/openldap/ldap.conf',
-            :changes => [ 'set BIND_TIMELIMIT 10' ],
-          })
-          }
-        end
-      end
-
-      context 'with sudo_sudoers_base set' do
-        let :pre_condition do
-          "class {'openldap::client': sudo_sudoers_base => 'ou=sudoers,dc=example,dc=com', }"
+          "class {'openldap::client': sudoers_base => 'ou=sudoers,dc=example,dc=com', }"
         end
 
         it { is_expected.to compile.with_all_deps }

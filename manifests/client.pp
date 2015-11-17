@@ -6,6 +6,7 @@ class openldap::client(
   # Options
   $base                 = undef,
   $bind_policy          = undef,
+  $bind_timelimit       = undef,
   $binddn               = undef,
   $bindpw               = undef,
   $ldap_version         = undef,
@@ -35,8 +36,7 @@ class openldap::client(
   $tls_reqcert          = undef,
 
   # SUDO Options
-  $sudo_sudoers_base    = undef,
-  $sudo_bind_timelimit  = undef,
+  $sudoers_base         = undef,
 ) inherits ::openldap::params {
   anchor { 'openldap::client::begin': } ->
   class { '::openldap::client::install': } ->
