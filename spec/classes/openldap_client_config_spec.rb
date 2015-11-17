@@ -72,7 +72,7 @@ describe 'openldap::client::config' do
 
       context 'with bind_timelimit set' do
         let :pre_condition do
-          "class {'openldap::client': sudo_bind_timelimit => '10', }"
+          "class {'openldap::client': bind_timelimit => '10', }"
         end
 
         it { is_expected.to compile.with_all_deps }
