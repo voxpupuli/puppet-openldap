@@ -47,7 +47,9 @@ Puppet::Type.type(:openldap_dbindex).provide(:olc) do
   def self.prefetch(resources)
     dbindexes = instances
     resources.keys.each do |name|
-      if provider = dbindexes.find{ |access| access.name == name }
+      if provider = dbindexes.find{ |access|
+        access.attribute == resources[name][:attribute] && access.suffix == resources[name][:suffix]
+      }
         resources[name].provider = provider
       end
     end
