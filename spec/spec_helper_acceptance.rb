@@ -49,7 +49,7 @@ RSpec.configure do |c|
 
     # Set up Certificates
     pp = <<-EOS
-      $ssldir = '/var/lib/puppet/ssl'
+      $ssldir = '/etc/puppetlabs/puppet/ssl'
       file { '/etc/ldap':
         ensure => directory,
       }
