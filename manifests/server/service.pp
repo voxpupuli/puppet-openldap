@@ -10,8 +10,16 @@ class openldap::server::service {
     default => stopped,
   }
 
+  if $::operatingsystem == 'Debian' and $::operatingsystemmajrelease == '8' {
+    # Puppet4 fallback to init provider which does not support enableable
+    $provider = 'debian'
+  } else {
+    $provider = undef
+  }
+
   service { $::openldap::server::service:
     ensure    => $ensure,
+    provider  => $provider,
     enable    => $::openldap::server::enable,
     hasstatus => $::openldap::server::service_hasstatus,
   }
