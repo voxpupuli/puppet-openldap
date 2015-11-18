@@ -1,3 +1,10 @@
+## 2015-11-18 - Release 1.12.0
+
+Add objectClass for the unique overlay
+Support for adding access based on olcDatabase
+Fix prefetch with composite namevars
+Use puppet4 for acceptance tests
+
 ## 2015-11-09 - Release 1.11.0
 
 Do not try to hash password if it is given in "{SSHA}" form
