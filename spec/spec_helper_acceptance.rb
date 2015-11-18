@@ -7,31 +7,10 @@ end
 install_puppet_agent_on hosts, {}
 
 hosts.each do |host|
-  # Install ruby-augeas
-  case fact('osfamily')
-  when 'Debian'
-    # Fix for beaker on Docker
-    on host, 'rm /usr/sbin/policy-rc.d || true'
-    if fact('operatingsystem') == 'Debian' and fact('operatingsystemmajrelease').to_i < 7
-      on host, 'echo deb http://httpredir.debian.org/debian-backports squeeze-backports main >> /etc/apt/sources.list'
-      on host, 'apt-get update'
-      on host, 'apt-get -y -t squeeze-backports install libaugeas0 augeas-lenses'
-    end
-    install_package host, 'libaugeas-ruby'
-  when 'RedHat'
-    on host, 'setenforce 0' if fact('selinux') == 'true'
-    install_package host, 'make'
-    install_package host, 'gcc'
-    install_package host, 'ruby-devel'
-    install_package host, 'augeas-devel'
+  if fact('osfamily') == 'RedHat'
     install_package host, 'initscripts' # FIXME: openldap_database's olc provider's create method should call systemctl when using systemd
-    on host, 'gem install ruby-augeas --no-ri --no-rdoc'
-  else
-    puts 'Sorry, this osfamily is not supported.'
-    exit
   end
   on host, 'puppet cert generate $(facter fqdn)'
-  install_package host, 'net-tools'
 end
 
 RSpec.configure do |c|
