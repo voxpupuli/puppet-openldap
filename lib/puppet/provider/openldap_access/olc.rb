@@ -51,7 +51,11 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
   def self.prefetch(resources)
     accesses = instances
     resources.keys.each do |name|
-      if provider = accesses.find{ |access| access.name == name }
+      if provider = accesses.find{ |access|
+        access.what == resources[name][:what] &&
+          access.by == resources[name][:by] &&
+          access.suffix == resources[name][:suffix]
+      }
         resources[name].provider = provider
       end
     end
