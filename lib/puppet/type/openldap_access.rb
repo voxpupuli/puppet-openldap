@@ -11,6 +11,10 @@ Puppet::Type.newtype(:openldap_access) do
     desc "The slapd.conf file"
   end
 
+  newproperty(:islast) do
+    desc "Is this olcAccess the last one?"
+  end
+
   newproperty(:what) do
     desc "The entries and/or attributes to which the access applies"
   end

@@ -29,6 +29,11 @@ Puppet::Type.
           bys.split(/(?= by .+)/).each { |b|
             access << b.lstrip
           }
+          if (position.to_i + 1) == getCountOfOlcAccess(suffix)
+            islast = true
+          else
+            islast = false
+          end
           i << new(
             :name     => "#{position} on #{suffix}",
             :ensure   => :present,
@@ -36,6 +41,7 @@ Puppet::Type.
             :what     => what,
             :access   => access,
             :suffix   => suffix,
+            :islast   => islast,
           )
         end
       end
@@ -108,6 +114,15 @@ Puppet::Type.
     t << "changetype: modify\n"
     t << "delete: olcAccess\n"
     t << "olcAccess: {#{@property_hash[:position]}}\n"
+    if resource[:islast]
+      t << "\n\n"
+      t << "dn: #{getDn(resource[:suffix])}\n"
+      t << "changetype: modify\n"
+      t << "delete: olcAccess\n"
+      (resource[:position].to_i+1..getCountOfOlcAccess(resource[:suffix])).each do |n|
+        t << "olcAccess: {#{n}}\n"
+      end
+    end
     t.close
     Puppet.debug(IO.read t.path)
     slapdd('-b', 'cn=config', '-l', t.path)
@@ -145,6 +160,26 @@ Puppet::Type.
       ldapmodify(t.path)
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+  end
+
+  def islast=(value)
+    @property_flush[:islast] = value
+  end
+
+  def self.getCountOfOlcAccess(suffix)
+    countOfElement = 0
+    slapcat(
+      '-H',
+      "ldap:///#{getDn(suffix)}???(olcAccess=*)"
+    ).split("\n\n").collect do |paragraph|
+      paragraph.gsub("\n ", '').split("\n").collect do |line|
+        case line
+        when /^olcAccess: /
+          countOfElement = countOfElement + 1
+        end
+      end
+    end
+    return countOfElement
   end
 
   def getCurrentOlcAccess(suffix)
@@ -187,6 +222,14 @@ Puppet::Type.
           end
         else
           t << "olcAccess: {#{olcAccess[:position]}}#{olcAccess[:content]}\n"
+        end
+      end
+      countOfElement = self.class.getCountOfOlcAccess(resource[:suffix])
+      if resource[:islast] and countOfElement > position.to_i+1
+        t << "-\n"
+        t << "delete: olcAccess\n"
+        (position.to_i+1..countOfElement-1).each do |n|
+          t << "olcAccess: {#{n}}\n"
         end
       end
       t.close
