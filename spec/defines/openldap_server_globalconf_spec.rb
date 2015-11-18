@@ -11,7 +11,7 @@ describe 'openldap::server::globalconf' do
       end
 
       context 'without value' do
-        it { expect { is_expected.to compile }.to raise_error(/Must pass value to Openldap::Server::Globalconf\[foo\]/) }
+        it { expect { is_expected.to compile }.to raise_error }
       end
 
       context 'with a value' do
