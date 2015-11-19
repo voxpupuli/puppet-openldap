@@ -86,4 +86,47 @@ Puppet::Type.type(:openldap_dbindex).provide(:olc) do
     end
   end
 
+  def indices=(value)
+    current_olcDbIndex = getCurrentOlcDbIndex(resource[:suffix])
+
+    t = Tempfile.new('openldap_dbindex')
+    t << "dn: #{getDn(resource[:suffix])}\n"
+    t << "changetype: modify\n"
+    t << "replace: olcDbIndex\n"
+    current_olcDbIndex.each do |olcDbIndex|
+    if olcDbIndex[:attribute].to_s == resource[:attribute].to_s
+        t << "olcDbIndex: #{resource[:attribute]} #{resource[:indices]}\n"
+    else
+        t << "olcDbIndex: #{olcDbIndex[:attribute]} #{olcDbIndex[:indices]}\n"
+    end
+    end
+    t.close
+    Puppet.debug(IO.read t.path)
+    begin
+    ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+    rescue Exception => e
+    raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+    end
+  end
+
+  def getCurrentOlcDbIndex(suffix)
+    i = []
+    slapcat(
+      '-H',
+      "ldap:///#{getDn(suffix)}???(olcDbIndex=*)"
+    ).split("\n\n").collect do |paragraph|
+      paragraph.gsub("\n ", '').split("\n").collect do |line|
+        case line
+        when /^olcDbIndex: /
+          attribute, indices = line.match(/^olcDbIndex:\s+(\S+)\s+(.*)$/).captures
+          i << {
+            :attribute => attribute,
+            :indices => indices,
+          }
+        end
+      end
+    end
+    return i
+  end
+
 end
