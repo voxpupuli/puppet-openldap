@@ -41,7 +41,7 @@ Puppet::Type.
             :what     => what,
             :access   => access,
             :suffix   => suffix,
-            :islast   => islast,
+            :islast   => islast
           )
         end
       end
