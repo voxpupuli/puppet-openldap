@@ -44,7 +44,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
             :what     => what,
             :access   => access,
             :suffix   => suffix,
-            :islast   => islast,
+            :islast   => islast
           )
         end
       end
