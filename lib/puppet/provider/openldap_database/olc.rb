@@ -91,7 +91,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
         end
       end
       if backend == 'monitor' and !suffix
-        suffix = 'cn=Monitor'
+        suffix = 'cn=monitor'
       end
       if backend == 'config' and !suffix
         suffix = 'cn=config'

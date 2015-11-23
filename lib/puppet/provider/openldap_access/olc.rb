@@ -24,8 +24,10 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
       position = nil
       paragraph.gsub("\n ", '').split("\n").collect do |line|
         case line
-        when /^olc(Suffix|Database): /
-          suffix = line.split(' ')[1].gsub(/\{\d+\}/, '')
+        when /^olcDatabase: /
+          suffix = "cn=#{line.split(' ')[1].gsub(/\{-?\d+\}/, '')}"
+        when /^olcSuffix: /
+          suffix = line.split(' ')[1]
         when /^olcAccess: /
           position, what, bys = line.match(/^olcAccess:\s+\{(\d+)\}to\s+(\S+)(\s+by\s+.*)+$/).captures
           bys.split(' by ')[1..-1].each { |b|
@@ -62,14 +64,31 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
   end
 
   def getDn(suffix)
-    slapcat(
-      '-b',
-      'cn=config',
-      '-H',
-      "ldap:///???(|(olcSuffix=#{suffix})(olcDatabase=#{suffix}))"
-    ).split("\n").collect do |line|
-      if line =~ /^dn: /
-        return line.split(' ')[1]
+    if suffix == 'cn=frontend'
+      return 'olcDatabase={-1}frontend,cn=config'
+    elsif suffix == 'cn=config'
+      return 'olcDatabase={0}config,cn=config'
+    elsif suffix == 'cn=monitor'
+      slapcat(
+        '-b',
+        'cn=config',
+        '-H',
+        "ldap:///???(olcDatabase=monitor)"
+      ).split("\n").collect do |line|
+        if line =~ /^dn: /
+          return line.split(' ')[1]
+        end
+      end
+    else
+      slapcat(
+        '-b',
+        'cn=config',
+        '-H',
+        "ldap:///???(olcSuffix=#{suffix})"
+      ).split("\n").collect do |line|
+        if line =~ /^dn: /
+          return line.split(' ')[1]
+        end
       end
     end
   end

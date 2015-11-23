@@ -105,7 +105,7 @@ describe 'openldap::server::database' do
       openldap::server::module {'back_monitor':
         ensure => present,
       }
-      openldap::server::database { 'cn=Monitor':
+      openldap::server::database { 'cn=monitor':
         ensure => present,
         backend => 'monitor',
         require => Openldap::Server::Module['back_monitor'],
