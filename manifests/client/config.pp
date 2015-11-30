@@ -140,7 +140,6 @@ class openldap::client::config {
   augeas { 'ldap.conf':
     incl    => $::openldap::client::file,
     lens    => 'Spacevars.lns',
-    context => "/files${::openldap::client::file}",
     changes => $changes,
   }
 }
