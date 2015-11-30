@@ -46,6 +46,14 @@ class { 'openldap::client':
 }
 ```
 
+For an even more customized configuration you can define specific config values:
+
+```puppet
+openldap::client::conf { 'TLS_REQCERT':
+  value => 'false',
+}
+```
+
 ###Configuring the server
 
 ```puppet
