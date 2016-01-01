@@ -21,7 +21,7 @@ objectclass: olcModuleList
 }
       begin
         execute(%Q{echo -n "#{ldif}" | ldapmodify -Y EXTERNAL -H ldapi:///})
-      rescue expection => e
+      rescue Exception => e
         raise Puppet::Error, "LDIF content:\n#{ldif}\nError message: #{e.message}"
       end
     end
