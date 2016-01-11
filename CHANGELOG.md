@@ -1,3 +1,11 @@
+## 2016-01-11 - Release 1.13.0
+
+Fix for frontend and config databases
+Add serveral params for ldap.conf to openldap::client.
+Add timeout and timelimit options
+Add sudo options
+Add binddn and bindpw options to ldap client
+
 ## 2015-11-18 - Release 1.12.0
 
 Add objectClass for the unique overlay
