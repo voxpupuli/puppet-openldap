@@ -16,7 +16,7 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc, :parent => Puppet::Provid
     )
 
     resources = get_entries(items).reduce({}) do |properties, entry|
-      name, value = line.split(': ')
+      name, value = entry.split(': ')
 
       if !properties.keys.include?(name)
         properties[name] = value
