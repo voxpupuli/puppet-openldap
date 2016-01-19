@@ -1,29 +1,9 @@
 require 'tempfile'
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. openldap]))
 
-Puppet::Type.type(:openldap_global_conf).provide(:olc) do
-  get_entries = lambda { |items|
-    items.
-      gsub("\n ", "").
-      split("\n").
-      select  { |entry| entry =~ /^olc/ }.
-      collect { |entry| entry.gsub(/^olc/, '') }
-  }
-
-  temp_ldif = lambda { Tempfile.new('openldap_global_conf') }
-  dn        = lambda { |dn|         "dn: #{dn}\n" }
-  add       = lambda { |key|        "add: olc#{key}\n" }
-  del       = lambda { |key|        "delete: olc#{key}\n" }
-  replace   = lambda { |key|        "replace: olc#{key}\n" }
-  key_value = lambda { |key, value| "olc#{key}: #{value}\n" }
-
-  cn_config = dn["cn=config"]
-  delimit   = "-\n"
+Puppet::Type.type(:openldap_global_conf).provide(:olc, :parent => Puppet::Provider::Openldap) do
 
   # TODO: Use ruby bindings (can't find one that support IPC)
-
-  defaultfor :osfamily => :debian, :osfamily => :redhat
-
-  commands :slapcat => 'slapcat', :ldapmodify => 'ldapmodify'
 
   mk_resource_methods
 
@@ -35,7 +15,7 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
       'ldap:///???(objectClass=olcGlobal)'
     )
 
-    resources = get_entries[items].reduce({}) do |properties, entry|
+    resources = get_entries(items).reduce({}) do |properties, entry|
       name, value = line.split(': ')
 
       if !properties.keys.include?(name)
@@ -72,26 +52,26 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
   end
 
   def create
-    ldif = temp_ldif[]
-    ldif << dn["cn=config"]
+    ldif = temp_ldif()
+    ldif << cn_config()
 
     if resource[:value].is_a?(Hash)
       resource[:value].each do |key, value|
-        ldif << add[key]
-        ldif << key_value[key, value]
-        ldif << delimit
+        ldif << add(key)
+        ldif << key_value(key, value)
+        ldif << @delimit
       end
     else
-      ldif << add[resource[:name]]
+      ldif << add(resource[:name])
 
       if resource[:value].is_a?(Array)
         resource[:value].each do |value|
-          ldif << add[resource[:name]]
-          ldif << key_value[resource[:name], value]
-          ldif << delimit
+          ldif << add(resource[:name])
+          ldif << key_value(resource[:name], value)
+          ldif << @delimit
         end
       else
-        ldif << key_value[resource[:name], resource[:value]]
+        ldif << key_value(resource[:name], resource[:value])
       end
     end
 
@@ -111,16 +91,16 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
   end
 
   def destroy
-    ldif = temp_ldif[]
-    ldif << cn_config
+    ldif = temp_ldif()
+    ldif << cn_config()
 
     if resource[:value].is_a?(Hash)
       resource[:value].keys.each do |key|
-        ldif << del[key]
-        ldif << delimit
+        ldif << del(key)
+        ldif << @delimit
       end
     else
-      ldif << del[name]
+      ldif << del(name)
     end
 
     ldif.close
@@ -152,18 +132,18 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
   end
 
   def value=(value)
-    ldif = temp_ldif[]
-    ldif << cn_config
+    ldif = temp_ldif()
+    ldif << cn_config()
 
     if resource[:value].is_a? Hash
       resource[:value].each do |k, v|
-        ldif << replace[k]
-        ldif << key_value[k,v]
-        ldif << delimit
+        ldif << replace(k)
+        ldif << key_value(k, v)
+        ldif << @delimit
       end
     else
-      ldif << replace[name]
-      ldif << key_value[name,value]
+      ldif << replace(name)
+      ldif << key_value(name, value)
     end
 
     ldif.close
