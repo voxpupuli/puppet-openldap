@@ -11,7 +11,7 @@ describe 'openldap::server::globalconf' do
       end
 
       context 'without value' do
-        it { expect { is_expected.to compile }.to raise_error(Puppet::Error) }
+        it { expect { is_expected.to compile } }
       end
 
       context 'with a string value' do
