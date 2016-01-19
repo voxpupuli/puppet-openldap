@@ -23,6 +23,8 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc, :parent => Puppet::Provid
       else
         properties[name] = [properties[name], value].flatten
       end
+
+      properties
     end
 
     resources.each do |name, value|
