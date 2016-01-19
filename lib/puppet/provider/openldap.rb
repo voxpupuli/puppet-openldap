@@ -17,11 +17,11 @@ class Puppet::Provider::Openldap < Puppet::Provider
     return super(method_name, *args)
   end
 
-  def cn_config()
+  def self.cn_config()
     dn('cn=config')
   end
 
-  def get_entries(items)
+  def self.get_entries(items)
     items.
       gsub("\n ", "").
       split("\n").
@@ -30,28 +30,27 @@ class Puppet::Provider::Openldap < Puppet::Provider
   end
 
 
-  def temp_ldif()
+  def self.temp_ldif()
     Tempfile.new('openldap_global_conf')
   end
 
-  def dn(dn)
+  def self.dn(dn)
     "dn: #{dn}\n"
   end
 
-  def add(key)
+  def self.add(key)
     "add: olc#{key}\n"
   end
 
-  def del(key)
+  def self.del(key)
     "delete: olc#{key}\n"
   end
 
-  def replace(key)
+  def self.replace(key)
     "replace: olc#{key}\n"
   end
 
-  def key_value(key, value)
+  def self.key_value(key, value)
     "olc#{key}: #{value}\n"
   end
-
 end
