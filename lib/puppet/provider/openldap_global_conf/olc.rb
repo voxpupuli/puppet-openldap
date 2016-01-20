@@ -16,7 +16,9 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc, :parent => Puppet::Provid
     )
 
     resources = get_entries(items).reduce({}) do |properties, entry|
-      name, value = entry.split(': ')
+      # Return at most two items from split, otherwise value might end up being
+      # an array if the value holds e.g. a schema definition and has ": " in it.
+      name, value = entry.split(': ', 2)
 
       if !properties.keys.include?(name)
         properties[name] = value

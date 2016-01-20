@@ -14,6 +14,7 @@ class Puppet::Provider::Openldap < Puppet::Provider
     if self.class.respond_to?(method_name)
       return self.class.call(method_name.to_sym, *args) 
     end
+
     return super(method_name, *args)
   end
 
