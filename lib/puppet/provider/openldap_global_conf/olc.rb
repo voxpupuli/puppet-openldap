@@ -29,7 +29,7 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc, :parent => Puppet::Provid
       properties
     end
 
-    resources.each do |name, value|
+    resources.collect do |name, value|
       new(
         :name   => name,
         :ensure => :present,
