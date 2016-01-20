@@ -10,14 +10,6 @@ class Puppet::Provider::Openldap < Puppet::Provider
 
   @delimit   = "-\n"
 
-  def method_missing(method_name, *args)
-    if self.class.respond_to?(method_name)
-      return self.class.call(method_name.to_sym, *args) 
-    end
-
-    return super(method_name, *args)
-  end
-
   def self.cn_config()
     dn('cn=config')
   end
@@ -31,8 +23,11 @@ class Puppet::Provider::Openldap < Puppet::Provider
   end
 
 
-  def self.temp_ldif()
+  def self.temp_ldif
     Tempfile.new('openldap_global_conf')
+  end
+  def temp_ldif
+    self.class.temp_ldif
   end
 
   def self.dn(dn)
@@ -41,6 +36,9 @@ class Puppet::Provider::Openldap < Puppet::Provider
 
   def self.add(key)
     "add: olc#{key}\n"
+  end
+  def add(key)
+    self.class.add(key)
   end
 
   def self.del(key)
@@ -53,5 +51,8 @@ class Puppet::Provider::Openldap < Puppet::Provider
 
   def self.key_value(key, value)
     "olc#{key}: #{value}\n"
+  end
+  def key_value(key, value)
+    self.class.key_value(key, value)
   end
 end
