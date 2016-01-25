@@ -95,6 +95,8 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
       t << "objectClass: olcUniqueConfig\n"
     when 'rwm'
       t << "objectClass: olcRwmConfig\n"
+    when 'smbk5pwd'
+      t << "objectClass: olcSmbK5PwdConfig\n"
     end
     t << "olcOverlay: #{resource[:overlay]}\n"
     if resource[:options]
