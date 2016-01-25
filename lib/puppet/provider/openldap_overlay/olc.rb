@@ -21,7 +21,7 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
       suffix = nil
       index = nil
       options = {}
-      paragraph.split("\n").collect do |line|
+      paragraph.gsub("\n ", "").split("\n").collect do |line|
         case line
         when /^dn: /
           index, overlay, database = line.match(/^dn: olcOverlay=\{(\d+)\}([^,]+),olcDatabase=([^,]+),cn=config$/).captures
