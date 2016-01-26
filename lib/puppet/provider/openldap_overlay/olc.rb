@@ -21,7 +21,7 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
       suffix = nil
       index = nil
       options = {}
-      paragraph.split("\n").collect do |line|
+      paragraph.gsub("\n ", "").split("\n").collect do |line|
         case line
         when /^dn: /
           index, overlay, database = line.match(/^dn: olcOverlay=\{(\d+)\}([^,]+),olcDatabase=([^,]+),cn=config$/).captures
@@ -95,6 +95,8 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
       t << "objectClass: olcUniqueConfig\n"
     when 'rwm'
       t << "objectClass: olcRwmConfig\n"
+    when 'smbk5pwd'
+      t << "objectClass: olcSmbK5PwdConfig\n"
     end
     t << "olcOverlay: #{resource[:overlay]}\n"
     if resource[:options]
