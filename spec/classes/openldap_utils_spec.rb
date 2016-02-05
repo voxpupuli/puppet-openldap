@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'openldap::client::install' do
+describe 'openldap::utils' do
 
   on_supported_os.each do |os, facts|
     context "on #{os}" do
@@ -9,20 +9,15 @@ describe 'openldap::client::install' do
       end
 
       context 'with no parameters' do
-        let :pre_condition do
-          "class {'openldap::client':}"
-        end
-
         it { is_expected.to compile.with_all_deps }
-        it { is_expected.to contain_class('openldap::client::install') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_package('libldap-2.4-2').with({
+          it { is_expected.to contain_package('ldap-utils').with({
             :ensure => :present,
           })
           }
         when 'RedHat'
-          it { is_expected.to contain_package('openldap').with({
+          it { is_expected.to contain_package('openldap-clients').with({
             :ensure => :present,
           })
           }
@@ -31,11 +26,10 @@ describe 'openldap::client::install' do
 
       context 'when overriding package name' do
         let :pre_condition do
-          "class {'openldap::client': package => 'foo', }"
+          "class {'openldap::utils': package => 'foo', }"
         end
 
         it { is_expected.to compile.with_all_deps }
-        it { is_expected.to contain_class('openldap::client::install') }
         it { is_expected.to contain_package('foo').with({
           :ensure => :present,
         })

@@ -15,9 +15,10 @@ class openldap::params {
       } else {
         $server_service_hasstatus = true
       }
+      $utils_package            = 'ldap-utils'
     }
     'RedHat': {
-      $client_package           = 'openldap-clients'
+      $client_package           = 'openldap'
       $client_conffile          = '/etc/openldap/ldap.conf'
       $server_confdir           = '/etc/openldap/slapd.d'
       $server_conffile          = '/etc/openldap/slapd.conf'
@@ -30,6 +31,7 @@ class openldap::params {
         '7' => 'slapd',
       }
       $server_service_hasstatus = true
+      $utils_package            = 'openldap-clients'
     }
     default: {
       fail "Operating System family ${::osfamily} not supported"
