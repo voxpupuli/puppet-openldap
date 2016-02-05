@@ -29,7 +29,7 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
         when /^olcSuffix: /
           suffix = line.split(' ')[1]
         when /^olcAccess: /
-          position, what, bys = line.match(/^olcAccess:\s+\{(\d+)\}to\s+(\S+)(\s+by\s+.*)+$/).captures
+          position, what, bys = line.match(/^olcAccess:\s+\{(\d+)\}to\s+(\S+(?:\s+filter=\S+)?(?:\s+attrs=\S+)?)(\s+by\s+.*)+$/).captures
           bys.split(' by ')[1..-1].each { |b|
             by, access, control = b.strip.match(/^(\S+)\s+(\S+)(\s+\S+)?$/).captures
             i << new(
