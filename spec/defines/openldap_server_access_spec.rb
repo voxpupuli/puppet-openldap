@@ -25,8 +25,7 @@ describe 'openldap::server::access' do
         }
         it { is_expected.to compile.with_all_deps }
         it {
-          skip('Should work')
-          is_expected.to contain_openldap_access('to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" on dc=example,dc=com').that_requires('Openldap_database[dc=example,dc=com]')
+          is_expected.to contain_openldap_access('to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" on dc=example,dc=com')
         }
       end
 
@@ -36,8 +35,7 @@ describe 'openldap::server::access' do
         }
         it { is_expected.to compile.with_all_deps }
         it {
-          skip('Should work')
-          is_expected.to contain_openldap_access('to dn.one="ou=users,dc=example,dc=com" filter=(objectClass=person) by dn="cn=admin,dc=example,dc=com" on dc=example,dc=com').that_requires('Openldap_database[dc=example,dc=com]')
+          is_expected.to contain_openldap_access('to dn.one="ou=users,dc=example,dc=com" filter=(objectClass=person) by dn="cn=admin,dc=example,dc=com" on dc=example,dc=com')
         }
       end
 
@@ -47,8 +45,7 @@ describe 'openldap::server::access' do
         }
         it { is_expected.to compile.with_all_deps }
         it {
-          skip('Should work')
-          is_expected.to contain_openldap_access('to dn.one="ou=users,dc=example,dc=com" attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" on dc=example,dc=com').that_requires('Openldap_database[dc=example,dc=com]')
+          is_expected.to contain_openldap_access('to dn.one="ou=users,dc=example,dc=com" attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" on dc=example,dc=com')
         }
       end
 
@@ -58,8 +55,7 @@ describe 'openldap::server::access' do
         }
         it { is_expected.to compile.with_all_deps }
         it {
-          skip('Should work')
-          is_expected.to contain_openldap_access('to dn.one="ou=users,dc=example,dc=com" filter=(objectClass=person) attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" on dc=example,dc=com').that_requires('Openldap_database[dc=example,dc=com]')
+          is_expected.to contain_openldap_access('to dn.one="ou=users,dc=example,dc=com" filter=(objectClass=person) attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" on dc=example,dc=com')
         }
       end
     end
