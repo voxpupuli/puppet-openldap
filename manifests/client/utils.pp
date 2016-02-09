@@ -1,11 +1,4 @@
-# See README.md for details.
-class openldap::client::utils(
-  $package = $::osfamily ? {
-    'Debian' => 'ldap-utils',
-    'RedHat' => 'openldap-clients',
-  },
-) {
-  package { $package:
-    ensure => present,
-  }
+class openldap::client::utils {
+  warning('openldap::client::utils is deprecated; please use openldap::utils')
+  include ::openldap::utils
 }

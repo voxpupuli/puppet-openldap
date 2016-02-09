@@ -6,7 +6,7 @@ class openldap::server::install {
   }
 
   if $::openldap::server::provider == 'olc' {
-    include ::openldap::client::utils
+    include ::openldap::utils
   }
 
   if $::osfamily == 'Debian' {
