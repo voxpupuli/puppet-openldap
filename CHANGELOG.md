@@ -1,3 +1,10 @@
+## 2016-02-18 - Release 1.14.0
+
+Add support for the rwm overlay (issue #117)
+Manage line breaks in overlay config and add smbk5pwd overlay support (issue #122)
+Avoid duplicate declaration of openldap-clients package (issue #123)
+Allow dn, filter and attrs to be defined concurrently (issue #124)
+
 ## 2016-01-11 - Release 1.13.0
 
 Fix for frontend and config databases
