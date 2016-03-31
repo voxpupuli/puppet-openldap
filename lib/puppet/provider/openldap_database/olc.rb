@@ -84,7 +84,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
         when /^olcSyncrepl: /
           syncrepl ||= []
           optvalue = line.split(' ',2)[1]
-          syncrepl.push(optvalue.match(/^(\{\d+\})?(.+)$/).captures[1])
+          syncrepl.push(optvalue.match(/^(\{\d+\})?(.+)$/).captures[1]+"\n")
         when /^olcLimits: /
           limit = line.match(/^olcLimits:\s+(\{\d+\})?(.+)$/).captures[1]
           limits << limit
