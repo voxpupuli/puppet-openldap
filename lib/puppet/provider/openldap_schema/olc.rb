@@ -12,7 +12,7 @@ Puppet::Type.type(:openldap_schema).provide(:olc) do
 
   def self.instances
     schemas = []
-    slapcat('-H', 'ldap:///???(objectClass=olcSchemaConfig)', '-b', 'cn=config').split("\n\n").each do |paragraph|
+    slapcat('-H', 'ldap:///???(objectClass=olcSchemaConfig)', '-o', 'ldif-wrap=no', '-b', 'cn=config').split("\n\n").each do |paragraph|
       paragraph.split("\n").each do |line|
         if line =~ /^cn: \{/
           schemas.push line

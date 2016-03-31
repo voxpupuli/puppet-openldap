@@ -140,6 +140,8 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     slapcat(
       '-b',
       'cn=config',
+      '-o',
+      'ldif-wrap=no',
       '-H',
       "ldap:///???(objectClass=olc#{backend.to_s.capitalize}Config)"
     ).split("\n").select { |line| line =~ /^dn: / }.select { |dn| dn.match(/^dn: olcDatabase={(\d+)}#{backend},cn=config$/).captures[0].to_i > @property_hash[:index] }.each { |dn|
@@ -245,6 +247,8 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     slapcat(
       '-b',
       'cn=config',
+      '-o',
+      'ldif-wrap=no',
       '-H',
       "ldap:///???(&(objectClass=olc#{resource[:backend].to_s.capitalize}Config)(olcSuffix=#{resource[:suffix]}))").split("\n").collect do |line|
       if line =~ /^olcDatabase: /

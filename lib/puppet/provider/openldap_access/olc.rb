@@ -16,6 +16,8 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
     slapcat(
       '-b',
       'cn=config',
+      '-o',
+      'ldif-wrap=no',
       '-H',
       'ldap:///???(olcAccess=*)'
     ).split("\n\n").collect do |paragraph|
@@ -75,6 +77,8 @@ Puppet::Type.type(:openldap_access).provide(:olc) do
       slapcat(
         '-b',
         'cn=config',
+	'-o',
+	'ldif-wrap=no',
         '-H',
         "ldap:///???(olcDatabase=monitor)"
       ).split("\n").collect do |line|

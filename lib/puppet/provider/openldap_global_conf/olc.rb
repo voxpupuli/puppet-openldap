@@ -14,6 +14,8 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
     items = slapcat(
       '-b',
       'cn=config',
+      '-o',
+      'ldif-wrap=no',
       '-H',
       'ldap:///???(objectClass=olcGlobal)'
     )
