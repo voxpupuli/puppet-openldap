@@ -3,10 +3,9 @@ define openldap::server::access(
   $ensure   = undef,
   $position = undef,
   $what     = undef,
-  $by       = undef,
   $suffix   = undef,
-  $access   = undef,
-  $control  = undef,
+  $access   = [],
+  $islast   = false,
 ) {
 
   if ! defined(Class['openldap::server']) {
@@ -29,9 +28,8 @@ define openldap::server::access(
     provider => $::openldap::server::provider,
     target   => $::openldap::server::conffile,
     what     => $what,
-    by       => $by,
     suffix   => $suffix,
     access   => $access,
-    control  => $control,
+    islast   => $islast,
   }
 }
