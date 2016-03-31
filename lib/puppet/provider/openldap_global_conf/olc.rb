@@ -1,12 +1,9 @@
 require 'tempfile'
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. openldap]))
 
-Puppet::Type.type(:openldap_global_conf).provide(:olc) do
+Puppet::Type.type(:openldap_global_conf).provide(:olc, :parent => Puppet::Provider::Openldap) do
 
   # TODO: Use ruby bindings (can't find one that support IPC)
-
-  defaultfor :osfamily => :debian, :osfamily => :redhat
-
-  commands :slapcat => 'slapcat', :ldapmodify => 'ldapmodify'
 
   mk_resource_methods
 
@@ -17,11 +14,24 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
       '-H',
       'ldap:///???(objectClass=olcGlobal)'
     )
-    items.gsub("\n ", "").split("\n").select{|e| e =~ /^olc/}.collect do |line|
-      name, value = line.split(': ')
-      # initialize @property_hash
+
+    resources = get_entries(items).reduce({}) do |properties, entry|
+      # Return at most two items from split, otherwise value might end up being
+      # an array if the value holds e.g. a schema definition and has ": " in it.
+      name, value = entry.split(': ', 2)
+
+      if !properties.keys.include?(name)
+        properties[name] = value
+      else
+        properties[name] = [properties[name], value].flatten
+      end
+
+      properties
+    end
+
+    resources.collect do |name, value|
       new(
-        :name   => name[3, name.length],
+        :name   => name,
         :ensure => :present,
         :value  => value
       )
@@ -38,7 +48,7 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
   end
 
   def exists?
-    if resource[:value].is_a? Hash
+    if resource[:value].is_a?(Hash)
       (resource[:value].keys - self.class.instances.map { |item| item.name }).empty?
     else
       @property_hash[:ensure] == :present
@@ -46,55 +56,79 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
   end
 
   def create
-    t = Tempfile.new('openldap_global_conf')
-    t << "dn: cn=config\n"
-    if resource[:value].is_a? Hash
-      resource[:value].each do |k, v|
-        t << "add: olc#{k}\n"
-        t << "olc#{k}: #{v}\n"
-        t << "-\n"
+    ldif = temp_ldif()
+    ldif << cn_config()
+
+    if resource[:value].is_a?(Hash)
+      resource[:value].each do |key, value|
+        ldif << add(key)
+        ldif << key_value(key, value)
+        ldif << @delimit
       end
     else
-      t << "add: olc#{resource[:name]}\n"
-      t << "olc#{resource[:name]}: #{resource[:value]}\n"
+      ldif << add(resource[:name])
+
+      if resource[:value].is_a?(Array)
+        resource[:value].each do |value|
+          ldif << add(resource[:name])
+          ldif << key_value(resource[:name], value)
+          ldif << @delimit
+        end
+      else
+        ldif << key_value(resource[:name], resource[:value])
+      end
     end
-    t.close
-    Puppet.debug(IO.read t.path)
+
+    ldif.close
+
+    Puppet.debug(IO.read ldif.path)
+
     begin
-      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', ldif.path)
+
     rescue Exception => e
-      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+      raise Puppet::Error,
+        "LDIF content:\n#{IO.read ldif.path}\nError message: #{e.message}"
     end
+
     @property_hash[:ensure] = :present
   end
 
   def destroy
-    t = Tempfile.new('openldap_global_conf')
-    t << "dn: cn=config\n"
-    if resource[:value].is_a? Hash
-      resource[:value].keys.each do |k|
-        t << "delete: olc#{k}\n"
-        t << "-\n"
+    ldif = temp_ldif()
+    ldif << cn_config()
+
+    if resource[:value].is_a?(Hash)
+      resource[:value].keys.each do |key|
+        ldif << del(key)
+        ldif << @delimit
       end
     else
-      t << "delete: olc#{name}\n"
+      ldif << del(name)
     end
-    t.close
-    Puppet.debug(IO.read t.path)
+
+    ldif.close
+
+    Puppet.debug(IO.read ldif.path)
+
     begin
-      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', ldif.path)
+
     rescue Exception => e
-      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+      raise Puppet::Error, "LDIF content:\n#{IO.read ldif.path}\nError message: #{e.message}"
     end
+
     @property_hash.clear
   end
 
   def value
-    if resource[:value].is_a? Hash
+    if resource[:value].is_a?(Hash)
       instances = self.class.instances
+
       values = resource[:value].map do |k, v|
         [ k, instances.find { |item| item.name == k }.get(:value) ]
       end
+
       Hash[values]
     else
       @property_hash[:value]
@@ -102,25 +136,32 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
   end
 
   def value=(value)
-    t = Tempfile.new('openldap_global_conf')
-    t << "dn: cn=config\n"
+    ldif = temp_ldif()
+    ldif << cn_config()
+
     if resource[:value].is_a? Hash
       resource[:value].each do |k, v|
-        t << "replace: olc#{k}\n"
-        t << "olc#{k}: #{v}\n"
-        t << "-\n"
+        ldif << replace(k)
+        ldif << key_value(k, v)
+        ldif << @delimit
       end
     else
-      t << "replace: olc#{name}\n"
-      t << "olc#{name}: #{value}\n"
+      ldif << replace(name)
+      ldif << key_value(name, value)
     end
-    t.close
-    Puppet.debug(IO.read t.path)
+
+    ldif.close
+
+    Puppet.debug(IO.read ldif.path)
+
     begin
-      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', ldif.path)
+
     rescue Exception => e
-      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+      raise Puppet::Error,
+        "LDIF content:\n#{IO.read ldif.path}\nError message: #{e.message}"
     end
+
     @property_hash[:value] = value
   end
 
