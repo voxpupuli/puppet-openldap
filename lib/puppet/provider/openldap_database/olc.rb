@@ -99,7 +99,7 @@ Puppet::Type.
         when /^olcSyncrepl: /
           syncrepl ||= []
           value = last_of_split(line)
-          syncrepl.push(value.match(/^(\{\d+\})?(.+)$/).captures.last)
+          syncrepl.push(value.match(/^(\{\d+\})?(.+)$/).captures.last + "\n")
 
         when /^olcLimits: /
           limit = line.match(/^olcLimits:\s+(\{\d+\})?(.+)$/).captures.last
