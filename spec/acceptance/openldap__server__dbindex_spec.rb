@@ -15,6 +15,7 @@ describe 'openldap::server::dbindex' do
         }
         Openldap::Server::Dbindex {
           suffix => 'dc=foo,dc=example,dc=com',
+          require => Openldap::Server::Database['dc=foo,dc=example,dc=com'],
         }
         ::openldap::server::dbindex {
           'cn':
@@ -28,6 +29,9 @@ describe 'openldap::server::dbindex' do
 
       apply_manifest(pp, :catch_failures => true)
       apply_manifest(pp, :catch_changes => true)
+
+      #apply_manifest(pp, :catch_failures => true, :trace => true, :debug => true)
+      #apply_manifest(pp, :catch_changes => true, :trace => true, :debug => true)
     end
   end
 

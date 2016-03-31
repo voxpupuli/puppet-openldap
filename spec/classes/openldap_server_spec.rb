@@ -13,7 +13,10 @@ describe 'openldap::server' do
           "class {'openldap::server': provider => 'foo'}"
         end
 
-        it { expect { is_expected.to compile }.to raise_error(/provider must be one of "olc" or "augeas"/) }
+        it do
+          expect { is_expected.to compile }.
+          to raise_error(RSpec::Expectations::ExpectationNotMetError)
+	end
       end
 
       context 'with olc provider' do

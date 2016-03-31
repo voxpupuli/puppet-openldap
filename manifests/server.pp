@@ -23,6 +23,8 @@ class openldap::server(
   $ldaps_ifs = [],
   $ldapi_ifs = ['/'],
 ) inherits ::openldap::params {
+
+  validate_re($provider, '^(olc|augeas)$')
   validate_hash($databases)
 
   class { '::openldap::server::install': } ->
@@ -43,8 +45,6 @@ class openldap::server(
       Class['openldap::server::slapdconf'] ->
       Class['openldap::server']
     }
-    default: {
-      fail 'provider must be one of "olc" or "augeas"'
-    }
+    default: { fail('Unknown provider') }
   }
 }

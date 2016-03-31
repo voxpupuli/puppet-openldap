@@ -111,15 +111,12 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
       end
     end
     t.close
-    ldif_content = IO.read t.path
-    Puppet.debug(ldif_content)
+    Puppet.debug(IO.read t.path)
     begin
       ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end
-
-    ldif_content
   end
 
   def getDn(suffix)
@@ -179,7 +176,7 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
       if @property_flush[:options] then
         if @property_hash[:options]
           # Remove all previously options remove in the should
-          @property_hash[:options].select { |key, value| !@property_flush[:options].member?(key) }.keys.each do |k|
+          Hash[@property_hash[:options].select { |key, value| !@property_flush[:options].member?(key) }].keys.each do |k|
             t << "delete: #{k}\n-\n"
           end
         end

@@ -11,7 +11,7 @@ describe Puppet::Parser::Functions.function(:openldap_password) do
     it 'should fail' do
       expect {
         scope.function_openldap_password([])
-      }.to raise_error Puppet::ParseError, /Wrong number of arguments given/
+      }.to raise_error ArgumentError
     end
   end
 

@@ -28,27 +28,40 @@ class openldap::server::slapdconf {
     }
   }
 
+  if $::openldap::server::ssl_cert and empty($::openldap::server::ssl_key) {
+    fail 'You must specify a ssl_cert'
+  }
+
+  $has_ca = ! empty($::openldap::server::ssl_ca)
+  $has_key = ! empty($::openldap::server::ssl_key)
+
+
   if $::openldap::server::ssl_cert {
-    if $::openldap::server::ssl_key {
-      validate_absolute_path($::openldap::server::ssl_cert)
-      validate_absolute_path($::openldap::server::ssl_key)
-      openldap::server::globalconf { 'TLSCertificate':
-        value => {
-          'TLSCertificateFile'    => $::openldap::server::ssl_cert,
-          'TLSCertificateKeyFile' => $::openldap::server::ssl_key,
-        },
-      }
-      if $::openldap::server::ssl_ca {
-        validate_absolute_path($::openldap::server::ssl_ca)
-        openldap::server::globalconf { 'TLSCACertificateFile':
-          value => $::openldap::server::ssl_ca,
-        }
-      }
-    } else {
+    if ! $has_key {
       fail 'You must specify a ssl_key'
     }
-  } elsif $::openldap::server::ssl_key {
-    fail 'You must specify a ssl_cert'
+
+    validate_absolute_path($::openldap::server::ssl_cert)
+    validate_absolute_path($::openldap::server::ssl_key)
+
+    if $has_ca {
+      validate_absolute_path($::openldap::server::ssl_ca)
+
+      $tls_settings = {
+        'TLSCertificateFile'    => $::openldap::server::ssl_cert,
+        'TLSCertificateKeyFile' => $::openldap::server::ssl_key,
+        'TLSCACertificateFile'  => $::openldap::server::ssl_ca,
+      }
+    } else {
+      $tls_settings = {
+          'TLSCertificateFile'    => $::openldap::server::ssl_cert,
+          'TLSCertificateKeyFile' => $::openldap::server::ssl_key,
+      }
+    }
+
+    openldap::server::config_hash { 'TLS Settings':
+      value => $tls_settings,
+    }
   }
 
   openldap::server::database { 'dc=my-domain,dc=com':

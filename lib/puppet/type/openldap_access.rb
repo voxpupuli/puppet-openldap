@@ -3,6 +3,25 @@ Puppet::Type.newtype(:openldap_access) do
 
   ensurable
 
+  def self.title_patterns
+    [
+      [
+        /^((\S+)\s+on\s+(.+))$/,
+        [
+          [ :name, lambda{|x| x} ],
+          [ :position, lambda{|x| x} ],
+          [ :suffix, lambda{|x| x} ],
+        ],
+      ],
+      [
+        /(.*)/,
+        [
+          [ :name, lambda{|x| x} ],
+        ],
+      ],
+    ]
+  end
+
   newparam(:name) do
     desc "The default namevar"
   end
@@ -23,31 +42,16 @@ Puppet::Type.newtype(:openldap_access) do
     desc "The suffix to which the access applies"
   end
 
-  def self.title_patterns
-    [
-      [
-        /^((\S+)\s+on\s+(.+))$/,
-        [
-          [ :name, lambda{|x| x} ],
-          [ :position, lambda{|x| x} ],
-          [ :suffix, lambda{|x| x} ],
-        ],
-      ],
-      [
-        /(.*)/,
-        [
-          [ :name, lambda{|x| x} ],
-        ],
-      ],
-    ]
-  end
-
   newproperty(:position) do
     desc "Where to place the new entry"
   end
 
-  newproperty(:access, :array_matching => :all) do
+  newproperty(:access, :array_matching => :first) do
     desc "Access rule."
+
+    munge do |rules|
+      [rules].flatten.compact.reject { |rule| rule.empty? }
+    end
   end
 
   autorequire(:openldap_database) do

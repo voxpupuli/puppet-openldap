@@ -1,101 +1,115 @@
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. openldap]))
+
 require 'base64'
 require 'tempfile'
 
-Puppet::Type.type(:openldap_database).provide(:olc) do
-
-  # TODO: Use ruby bindings (can't find one that support IPC)
+Puppet::Type.
+  type(:openldap_database).
+  provide(:olc, :parent => Puppet::Provider::Openldap) do
 
   defaultfor :osfamily => :debian, :osfamily => :redhat
-
-  commands :slapcat => 'slapcat', :ldapmodify => 'ldapmodify'
 
   mk_resource_methods
 
   def self.instances
-    databases = slapcat(
-      '-b',
-      'cn=config',
-      '-H',
-      'ldap:///???(|(olcDatabase=monitor)(olcDatabase={0}config)(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)(objectClass=olcMonitorConfig))))'
-    )
-    databases.split("\n\n").collect do |paragraph|
-      suffix = nil
-      index = nil
-      backend = nil
-      directory = nil
-      rootdn = nil
-      rootpw = nil
-      readonly = nil
-      sizelimit = nil
-      timelimit = nil
-      updateref = nil
-      dboptions = {}
-      mirrormode = nil
+    databases = get_entries(slapcat("(|(olcDatabase=monitor)(olcDatabase={0}config)(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)(objectClass=olcMonitorConfig))))"))
+
+    databases.collect do |database|
+      suffix          = nil
+      index           = nil
+      backend         = nil
+      directory       = nil
+      rootdn          = nil
+      rootpw          = nil
+      readonly        = nil
+      sizelimit       = nil
+      timelimit       = nil
+      updateref       = nil
+      dboptions       = {}
+      mirrormode      = nil
       syncusesubentry = nil
-      syncrepl = nil
-      limits = []
-      paragraph.gsub("\n ", "").split("\n").collect do |line|
+      syncrepl        = nil
+      limits          = []
+
+      database.collect do |line|
         case line
         when /^olcDatabase: /
-          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor|config)$/).captures
+          index, backend = line.
+            match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor|config)$/).
+            captures
+
         when /^olcDbDirectory: /
-          directory = line.split(' ')[1]
+          directory = last_of_split(line)
+
         when /^olcRootDN: /
-          rootdn = line.split(' ')[1]
+          rootdn = last_of_split(line)
+
         when /^olcRootPW:: /
-          rootpw = Base64.decode64(line.split(' ')[1])
+          rootpw = Base64.decode64(last_of_split(line))
+
         when /^olcSuffix: /
-          suffix = line.split(' ')[1]
+          suffix = last_of_split(line)
+
         when /^olcReadOnly: /i
-          readonly = line.split(' ')[1]
+          readonly = last_of_split(line)
+
         when /^olcSizeLimit: /i
-          sizelimit = line.split(' ')[1]
+          sizelimit = last_of_split(line)
+
         when /^olcTimeLimit: /i
-          timelimit = line.split(' ')[1]
+          timelimit = last_of_split(line)
+
         when /^olcUpdateref: /i
-          updateref = line.split(' ')[1]
+          updateref = last_of_split(line)
+
         when /^olcDb\S+: /i
-          optname, optvalue = line.split(': ',2)
-          optname.downcase!
-          case optname
-          when 'olcdbconfig'
-            dboptions['dbconfig'] = [] if !dboptions['dbconfig']
-            optvalue = optvalue.match(/^\{\d+\}(.+)$/).captures[0] if optvalue =~ /^\{\d+\}.+$/
-            dboptions['dbconfig'].push(optvalue)
-          when 'olcdbnosync'
-            dboptions['dbnosync'] = optvalue
-          when 'olcdbpasesize'
-            dboptions['dbpagesize'] = optvalue
+          attribute, value = line.split(': ', 2)
+          attribute.downcase!
+
+          case attribute.to_sym
+          when :olcdbnosync
+            dboptions['dbnosync'] = value
+
+          when :olcdbpasesize
+            dboptions['dbpagesize'] = value
+
+          when :olcdbconfig
+            dboptions['dbconfig'] ||= []
+
+	    if value =~ /^\{\d+\}.+$/
+	      dboptions['dbconfig'].push value.
+                match(/^\{\d+\}(.+)$/).
+                captures.
+                first
+	    end
+
           else
-            ldifoptname = optname.match(/^olcDb(\S+)$/i).captures[0]
-            if dboptions[ldifoptname] and !dboptions[ldifoptname].is_a?(Array)
-              dboptions[ldifoptname] = [dboptions[ldifoptname]]
-              dboptions[ldifoptname].push(optvalue)
-            elsif dboptions[ldifoptname]
-              dboptions[ldifoptname].push(optvalue)
-            else
-              dboptions[optname.match(/^olcDb(\S+)$/i).captures[0]] = optvalue
-            end
+            attribute_name = attribute.match(/^olcDb(\S+)$/i).captures.first
+
+            dboptions[attribute_name] ||= []
+            dboptions[attribute_name].push(value)
           end
+
         when /^olcMirrorMode: /
-          mirrormode = line.split(' ')[1] == 'TRUE' ? :true : :false
+          mirrormode = last_of_split(line) == 'TRUE' ? :true : :false
+
         when /^olcSyncUseSubentry: /
-          syncusesubentry = line.split(' ', 2)[1]
+          syncusesubentry = last_of_split(line)
+
         when /^olcSyncrepl: /
           syncrepl ||= []
-          optvalue = line.split(' ',2)[1]
-          syncrepl.push(optvalue.match(/^(\{\d+\})?(.+)$/).captures[1]+"\n")
+          value = last_of_split(line)
+          syncrepl.push(value.match(/^(\{\d+\})?(.+)$/).captures.last)
+
         when /^olcLimits: /
-          limit = line.match(/^olcLimits:\s+(\{\d+\})?(.+)$/).captures[1]
+          limit = line.match(/^olcLimits:\s+(\{\d+\})?(.+)$/).captures.last
           limits << limit
         end
       end
-      if backend == 'monitor' and !suffix
-        suffix = 'cn=monitor'
-      end
-      if backend == 'config' and !suffix
-        suffix = 'cn=config'
-      end
+
+      suffix ||= 'cn=monitor' if backend == 'monitor'
+      suffix ||= 'cn=config'  if backend == 'config'
+
       new(
         :ensure          => :present,
         :name            => suffix,
@@ -131,133 +145,164 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     @property_hash[:ensure] == :present
   end
 
+  def default_confdir
+    directories = { 'Debian' => '/etc/ldap/slapd.d',
+                    'RedHat' => '/etc/openldap/slapd.d' }
+
+    osfamily = Facter.value(:osfamily)
+
+    directories[osfamily] if directories.keys.include?(osfamily)
+  end
+
+  # TODO: REPLACE THIS WITH AN LDIF AND LDAPMODIFY CALL. URGENT.
   def destroy
-    default_confdir = Facter.value(:osfamily) == 'Debian' ? '/etc/ldap/slapd.d' : Facter.value(:osfamily) == 'RedHat' ? '/etc/openldap/slapd.d' : nil
     backend = @property_hash[:backend]
 
     `service slapd stop`
     File.delete("#{default_confdir}/cn=config/olcDatabase={#{@property_hash[:index]}}#{backend}.ldif")
-    slapcat(
-      '-b',
-      'cn=config',
-      '-o',
-      'ldif-wrap=no',
-      '-H',
-      "ldap:///???(objectClass=olc#{backend.to_s.capitalize}Config)"
-    ).split("\n").select { |line| line =~ /^dn: / }.select { |dn| dn.match(/^dn: olcDatabase={(\d+)}#{backend},cn=config$/).captures[0].to_i > @property_hash[:index] }.each { |dn|
+
+    lines = get_lines(slapcat("(objectClass=olc#{backend.to_s.capitalize}Config)"))
+
+    dn_lines = lines.select do |dn|
+      index = dn.
+        match(/^dn: olcDatabase={(\d+)}#{backend},cn=config$/).
+        captures.
+        first.
+        to_i
+
+      index > @property_hash[:index]
+    end
+
+    dn_lines.each do |dn|
       index = dn[/\d+/].to_i
+
       old_filename = "#{default_confdir}/cn=config/olcDatabase={#{index}}#{backend}.ldif"
       new_filename = "#{default_confdir}/cn=config/olcDatabase={#{index - 1}}#{backend}.ldif"
+
       File.rename(old_filename, new_filename)
       text = File.read(new_filename)
       replace = text.gsub!("{#{index}}#{backend}", "{#{index - 1}}#{backend}")
       File.open(new_filename, "w") { |file| file.puts replace }
-    }
+    end
+
     `service slapd start`
     @property_hash.clear
   end
 
   def initdb
-    t = Tempfile.new('openldap_database')
-    t << "dn: #{resource[:suffix]}\n"
-    t << "changetype: add\n"
-    t << "objectClass: top\n"
-    t << "objectClass: dcObject\n" if resource[:suffix].start_with?("dc=")
-    t << "objectClass: organization\n"
-    t << "dc: #{resource[:suffix].split(/,?dc=/).delete_if { |c| c.empty? }[0]}\n" if resource[:suffix].start_with?("dc=")
-    t << "o: #{resource[:suffix].split(/,?dc=/).delete_if { |c| c.empty? }.join('.')}\n" if resource[:suffix].start_with?("dc=")
-    t << "\n"
-    t << "dn: cn=admin,#{resource[:suffix]}\n"
-    t << "objectClass: simpleSecurityObject\n" if resource[:rootpw]
-    t << "objectClass: organizationalRole\n"
-    t << "cn: admin\n"
-    t << "description: LDAP administrator\n"
-    t << "userPassword: #{resource[:rootpw]}\n" if resource[:rootpw]
-    t.close
-    Puppet.debug(IO.read t.path)
+    ldif = temp_ldif('openldap_database')
+
+    ldif << dn(resource[:suffix])
+    ldif << changetype(:add)
+    ldif << "objectClass: top\n"
+    ldif << "objectClass: dcObject\n" if resource[:suffix].start_with?("dc=")
+    ldif << "objectClass: organization\n"
+    ldif << "dc: #{resource[:suffix].split(/,?dc=/).delete_if { |c| c.empty? }[0]}\n" if resource[:suffix].start_with?("dc=")
+    ldif << "o: #{resource[:suffix].split(/,?dc=/).delete_if { |c| c.empty? }.join('.')}\n" if resource[:suffix].start_with?("dc=")
+    ldif << "\n"
+    ldif << "dn: cn=admin,#{resource[:suffix]}\n"
+    ldif << changetype(:add)
+    ldif << "objectClass: simpleSecurityObject\n" if resource[:rootpw]
+    ldif << "objectClass: organizationalRole\n"
+    ldif << "cn: admin\n"
+    ldif << "description: LDAP administrator\n"
+    ldif << "userPassword: #{resource[:rootpw]}\n" if resource[:rootpw]
+    ldif.close
+
+    ldif_content = IO.read(ldif.path)
+
+    Puppet.debug(ldif_content)
+
     begin
-      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-a', '-f', t.path)
+      ldapmodify(ldif.path)
+
     rescue Exception => e
-      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+      raise Puppet::Error, "LDIF content:\n#{ldif_content}\nError message: #{e.message}"
     end
-    t.delete
   end
 
   def create
-    t = Tempfile.new('openldap_database')
-    t << "dn: olcDatabase=#{resource[:backend]},cn=config\n"
-    t << "changetype: add\n"
-    t << "objectClass: olcDatabaseConfig\n"
-    t << "objectClass: olc#{resource[:backend].to_s.capitalize}Config\n"
-    t << "olcDatabase: #{resource[:backend]}\n"
+    ldif = temp_ldif('openldap_database')
+    ldif << dn("olcDatabase=#{resource[:backend]},cn=config")
+    ldif << changetype(:add)
+    ldif << "objectClass: olcDatabaseConfig\n"
+    ldif << "objectClass: olc#{resource[:backend].to_s.capitalize}Config\n"
+    ldif << "olcDatabase: #{resource[:backend]}\n"
+
     if "#{resource[:backend]}" != "monitor"
-      t << "olcDbDirectory: #{resource[:directory]}\n" if resource[:directory]
-      t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
-      t << "olcDbIndex: objectClass eq\n" if !resource[:dboptions] or !resource[:dboptions]['index']
+      ldif << "olcDbDirectory: #{resource[:directory]}\n" if resource[:directory]
+      ldif << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
+      ldif << "olcDbIndex: objectClass eq\n" if !resource[:dboptions] or !resource[:dboptions]['index']
     end
-    t << "olcRootDN: #{resource[:rootdn]}\n" if resource[:rootdn]
-    t << "olcRootPW: #{resource[:rootpw]}\n" if resource[:rootpw]
-    t << "olcReadOnly: #{resource[:readonly] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:readonly]
-    t << "olcSizeLimit: #{resource[:sizelimit]}\n" if resource[:sizelimit]
-    t << "olcTimeLimit: #{resource[:timelimit]}\n" if resource[:timelimit]
-    t << "olcUpdateref: #{resource[:updateref]}\n" if resource[:updateref]
+
+    ldif << "olcRootDN: #{resource[:rootdn]}\n" if resource[:rootdn]
+    ldif << "olcRootPW: #{resource[:rootpw]}\n" if resource[:rootpw]
+    ldif << "olcReadOnly: #{resource[:readonly] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:readonly]
+    ldif << "olcSizeLimit: #{resource[:sizelimit]}\n" if resource[:sizelimit]
+    ldif << "olcTimeLimit: #{resource[:timelimit]}\n" if resource[:timelimit]
+    ldif << "olcUpdateref: #{resource[:updateref]}\n" if resource[:updateref]
+
     if resource[:dboptions]
       resource[:dboptions].each do |k, v|
         case k
         when 'dbnosync'
-          t << "olcDbNosync: #{v}\n"
+          ldif << "olcDbNosync: #{v}\n"
         when 'dbpagesize'
-          t << "olcDbPagesize: #{v}\n"
+          ldif << "olcDbPagesize: #{v}\n"
         when 'dbconfig'
-          t << v.collect { |x| "olcDbConfig: #{x}" }.join("\n") + "\n"
+          ldif << v.collect { |x| "olcDbConfig: #{x}" }.join("\n") + "\n"
         else
           if v.is_a?(Array)
-            t << v.collect { |x| "olcDb#{k}: #{x}" }.join("\n") + "\n"
+            ldif << v.collect { |x| "olcDb#{k}: #{x}" }.join("\n") + "\n"
           else
-            t << "olcDb#{k}: #{v}\n"
+            ldif << "olcDb#{k}: #{v}\n"
           end
         end
       end
     end
-    t << resource[:syncrepl].collect { |x| "olcSyncrepl: #{x}" }.join("\n") + "\n" if resource[:syncrepl]
-    t << "olcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:mirrormode]
-    t << "olcSyncUseSubentry: #{resource[:syncusesubentry]}\n" if resource[:syncusesubentry]
-    t << "#{resource[:limits].collect { |x| "olcLimits: #{x}" }.join("\n")}\n" if resource[:limits] and !resource[:limits].empty?
-    t << "olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break\n"
-    t << "olcAccess: to attrs=userPassword\n"
-    t << "  by self write\n"
-    t << "  by anonymous auth\n"
-    t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
-    t << "  by * none\n"
-    t << "olcAccess: to dn.base=\"\" by * read\n"
-    t << "olcAccess: to *\n"
-    t << "  by self write\n"
-    t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
-    t << "  by * read\n"
-    t.close
-    Puppet.debug(IO.read t.path)
+
+    ldif << resource[:syncrepl].collect { |x| "olcSyncrepl: #{x}" }.join("\n") + "\n" if resource[:syncrepl]
+    ldif << "olcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:mirrormode]
+    ldif << "olcSyncUseSubentry: #{resource[:syncusesubentry]}\n" if resource[:syncusesubentry]
+    ldif << "#{resource[:limits].collect { |x| "olcLimits: #{x}" }.join("\n")}\n" if resource[:limits] and !resource[:limits].empty?
+    ldif << "olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break\n"
+    ldif << "olcAccess: to attrs=userPassword\n"
+    ldif << "  by self write\n"
+    ldif << "  by anonymous auth\n"
+    ldif << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
+    ldif << "  by * none\n"
+    ldif << "olcAccess: to dn.base=\"\" by * read\n"
+    ldif << "olcAccess: to *\n"
+    ldif << "  by self write\n"
+    ldif << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
+    ldif << "  by * read\n"
+    ldif.close
+
+    ldif_content = IO.read(ldif.path)
+
+    Puppet.debug(ldif_content)
+
     begin
-      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+      ldapmodify(ldif.path)
+
     rescue Exception => e
-      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+      raise Puppet::Error, "LDIF content:\n#{ldif_content}\nError message: #{e.message}"
     end
-    t.delete
+
     initdb if resource[:initdb] == :true
+
     @property_hash[:ensure] = :present
-    slapcat(
-      '-b',
-      'cn=config',
-      '-o',
-      'ldif-wrap=no',
-      '-H',
-      "ldap:///???(&(objectClass=olc#{resource[:backend].to_s.capitalize}Config)(olcSuffix=#{resource[:suffix]}))").split("\n").collect do |line|
+
+    objectClass = "olc#{resource[:backend].to_s.capitalize}Config"
+
+    slapcat("(&(objectClass=#{objectClass})(olcSuffix=#{resource[:suffix]}))").split("\n").collect do |line|
       if line =~ /^olcDatabase: /
-        @property_hash[:index] = line.match(/^olcDatabase: \{(\d+)\}#{resource[:backend]}$/).captures[0]
+        @property_hash[:index] = line.match(/^olcDatabase: \{(\d+)\}#{resource[:backend]}$/).captures.first
       end
     end
   end
 
-  def initialize(value={})
+  def initialize(value = {})
     super(value)
     @property_flush = {}
   end
@@ -316,63 +361,76 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
 
   def flush
     if not @property_flush.empty?
-      t = Tempfile.new('openldap_database')
-      t << "dn: olcDatabase={#{@property_hash[:index]}}#{resource[:backend]},cn=config\n"
-      t << "changetype: modify\n"
-      t << "replace: olcDbDirectory\nolcDbDirectory: #{resource[:directory]}\n-\n" if @property_flush[:directory]
-      t << "replace: olcRootDN\nolcRootDN: #{resource[:rootdn]}\n-\n" if @property_flush[:rootdn]
-      t << "replace: olcRootPW\nolcRootPW: #{resource[:rootpw]}\n-\n" if @property_flush[:rootpw]
-      t << "replace: olcSuffix\nolcSuffix: #{resource[:suffix]}\n-\n" if @property_flush[:suffix]
-      t << "replace: olcReadOnly\nolcReadOnly: #{resource[:readonly] == :true ? 'TRUE' : 'FALSE'}\n-\n" if @property_flush[:readonly]
-      t << "replace: olcSizeLimit\nolcSizeLimit: #{resource[:sizelimit]}\n-\n" if @property_flush[:sizelimit]
-      t << "replace: olcTimeLimit\nolcTimeLimit: #{resource[:timelimit]}\n-\n" if @property_flush[:timelimit]
-      t << "replace: olcUpdateref\nolcUpdateref: #{resource[:updateref]}\n-\n" if @property_flush[:updateref]
+      ldif = temp_ldif('openldap_database')
+      ldif << dn("olcDatabase={#{@property_hash[:index]}}#{resource[:backend]},cn=config")
+      ldif << changetype(:modify)
+      ldif << "replace: olcDbDirectory\nolcDbDirectory: #{resource[:directory]}\n-\n" if @property_flush[:directory]
+      ldif << "replace: olcRootDN\nolcRootDN: #{resource[:rootdn]}\n-\n" if @property_flush[:rootdn]
+      ldif << "replace: olcRootPW\nolcRootPW: #{resource[:rootpw]}\n-\n" if @property_flush[:rootpw]
+      ldif << "replace: olcSuffix\nolcSuffix: #{resource[:suffix]}\n-\n" if @property_flush[:suffix]
+      ldif << "replace: olcReadOnly\nolcReadOnly: #{resource[:readonly] == :true ? 'TRUE' : 'FALSE'}\n-\n" if @property_flush[:readonly]
+      ldif << "replace: olcSizeLimit\nolcSizeLimit: #{resource[:sizelimit]}\n-\n" if @property_flush[:sizelimit]
+      ldif << "replace: olcTimeLimit\nolcTimeLimit: #{resource[:timelimit]}\n-\n" if @property_flush[:timelimit]
+      ldif << "replace: olcUpdateref\nolcUpdateref: #{resource[:updateref]}\n-\n" if @property_flush[:updateref]
+
       if @property_flush[:dboptions]
         if "#{resource[:synctype]}" == "inclusive" and !@property_hash[:dboptions].empty?
-          @property_hash[:dboptions].keys.each do |k|
-            case k
+          @property_hash[:dboptions].keys.each do |key|
+            case key
             when 'dbnosync'
-              t << "delete: olcDbNosync\n-\n"
+              ldif << "delete: olcDbNosync\n-\n"
             when 'dbpagesize'
-              t << "delete: olcDbPagesize\n-\n"
+              ldif << "delete: olcDbPagesize\n-\n"
             when 'dbconfig'
-              t << "delete: olcDbConfig\n-\n"
+              ldif << "delete: olcDbConfig\n-\n"
             else
-              t << "delete: olcDb#{k}\n-\n"
+              ldif << "delete: olcDb#{key}\n-\n"
             end
           end
         end
-        @property_flush[:dboptions].each do |k, v|
-          case k
+
+        @property_flush[:dboptions].each do |key, value|
+          case key
           when 'dbnosync'
-            t << "replace: olcDbNosync\nolcDbNosync: #{v}\n-\n"
+            ldif << "replace: olcDbNosync\nolcDbNosync: #{value}\n-\n"
           when 'dbpagesize'
-            t << "replace: olcDbPagesize\nolcDbPagesize: #{v}\n-\n"
+            ldif << "replace: olcDbPagesize\nolcDbPagesize: #{value}\n-\n"
           when 'dbconfig'
-            t << "replace: olcDbConfig\n" + v.collect { |x| "olcDbConfig: #{x}" }.join("\n") + "\n-\n"
+            ldif << "replace: olcDbConfig\n"
+            ldif << value.collect { |x| "olcDbConfig: #{x}" }.join("\n")
+            ldif << "\n-\n"
           else
             if v.is_a?(Array)
-              t << "replace: olcDb#{k}\n" + v.collect { |x| "olcDb#{k}: #{x}" }.join("\n") + "\n-\n"
+              ldif << "replace: olcDb#{k}\n"
+              ldif << value.collect { |x| "olcDb#{key}: #{x}" }.join("\n")
+              ldif << "\n-\n"
             else
-              t << "replace: olcDb#{k}\nolcDb#{k}: #{v}\n-\n"
+              ldif << "replace: olcDb#{key}\nolcDb#{key}: #{value}\n-\n"
             end
           end
         end
       end
-      t << "replace: olcSyncrepl\n#{resource[:syncrepl].collect { |x| "olcSyncrepl: #{x}" }.join("\n")}\n-\n" if @property_flush[:syncrepl]
-      t << "replace: olcMirrorMode\nolcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n-\n" if @property_flush[:mirrormode]
-      t << "replace: olcSyncUseSubentry\nolcSyncUseSubentry: #{resource[:syncusesubentry]}\n-\n" if @property_flush[:syncusesubentry]
-      t << "replace: olcLimits\n#{@property_flush[:limits].collect { |x| "olcLimits: #{x}" }.join("\n")}\n-\n" if @property_flush[:limits]
-      t.close
-      Puppet.debug(IO.read t.path)
+
+      ldif << "replace: olcSyncrepl\n#{resource[:syncrepl].collect { |x| "olcSyncrepl: #{x}" }.join("\n")}\n-\n" if @property_flush[:syncrepl]
+      ldif << "replace: olcMirrorMode\nolcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n-\n" if @property_flush[:mirrormode]
+      ldif << "replace: olcSyncUseSubentry\nolcSyncUseSubentry: #{resource[:syncusesubentry]}\n-\n" if @property_flush[:syncusesubentry]
+      ldif << "replace: olcLimits\n#{@property_flush[:limits].collect { |x| "olcLimits: #{x}" }.join("\n")}\n-\n" if @property_flush[:limits]
+      ldif.close
+
+      ldif_content = IO.read(ldif.path)
+
+      Puppet.debug(ldif_content)
+
       begin
-        ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+        ldapmodify(ldif.path)
+
       rescue Exception => e
-        raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+        raise Puppet::Error, "LDIF content:\n#{ldif_content}\nError message: #{e.message}"
       end
+
       initdb if @property_flush[:directory]
     end
+
     @property_hash = resource.to_hash
   end
-
 end
