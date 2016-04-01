@@ -11,14 +11,20 @@ class Puppet::Provider::Openldap < Puppet::Provider
            :original_ldapmodify => 'ldapmodify'
 
   def self.slapcat(filter, dn = '')
-    original_slapcat(
-      '-b',
-      'cn=config',
-      '-o',
-      'ldif-wrap=no',
-      '-H',
-      "ldap:///#{dn}???#{filter}"
-    )
+    arguments = [
+      '-b', 'cn=config',
+      '-o', 'ldif-wrap=no',
+      '-H', "ldap:///#{dn}???#{filter}"
+    ]
+
+    unless 'squeeze' == Facter.value(:lsbdistcodename)
+      arguments = [
+        '-b', 'cn=config',
+        '-H', "ldap:///#{dn}???#{filter}"
+      ]
+    end
+
+    original_slapcat(*arguments)
   end
   def slapcat(*args); self.class.slapcat(*args); end
 
