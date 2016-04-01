@@ -17,7 +17,7 @@ class Puppet::Provider::Openldap < Puppet::Provider
       '-H', "ldap:///#{dn}???#{filter}"
     ]
 
-    unless 'squeeze' == Facter.value(:lsbdistcodename)
+    if 'squeeze' == Facter.value(:lsbdistcodename)
       arguments = [
         '-b', 'cn=config',
         '-H', "ldap:///#{dn}???#{filter}"
