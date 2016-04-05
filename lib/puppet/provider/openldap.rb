@@ -32,7 +32,7 @@ class Puppet::Provider::Openldap < Puppet::Provider
   def self.ldapadd(path)
     original_ldapadd('-cQY', 'EXTERNAL', '-H', 'ldapi:///', '-f', path)
   end
-  def ldapadd(*args); self.class.slapcat(*args); end
+  def ldapadd(*args); self.class.ldapadd(*args); end
 
   # Unwrap LDIF and return each attribute beginning with "olc" also removing
   # that occurance of "olc" at the beginning.
