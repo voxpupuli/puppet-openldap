@@ -8,18 +8,19 @@ class Puppet::Provider::Openldap < Puppet::Provider
              :osfamily => :redhat
 
   commands :original_slapcat    => 'slapcat',
-           :original_ldapmodify => 'ldapmodify'
+           :original_ldapmodify => 'ldapmodify',
+           :original_ldapadd    => 'ldapadd'
 
-  def self.slapcat(filter, dn = '')
+  def self.slapcat(filter, dn = '', base = 'cn=config')
     arguments = [
-      '-b', 'cn=config',
+      '-b', base,
       '-o', 'ldif-wrap=no',
       '-H', "ldap:///#{dn}???#{filter}"
     ]
 
     if 'squeeze' == Facter.value(:lsbdistcodename)
       arguments = [
-        '-b', 'cn=config',
+        '-b', base,
         '-H', "ldap:///#{dn}???#{filter}"
       ]
     end
@@ -27,6 +28,11 @@ class Puppet::Provider::Openldap < Puppet::Provider
     original_slapcat(*arguments)
   end
   def slapcat(*args); self.class.slapcat(*args); end
+
+  def self.ldapadd(path)
+    original_ldapadd('-cQY', 'EXTERNAL', '-H', 'ldapi:///', '-f', path)
+  end
+  def ldapadd(*args); self.class.slapcat(*args); end
 
   # Unwrap LDIF and return each attribute beginning with "olc" also removing
   # that occurance of "olc" at the beginning.

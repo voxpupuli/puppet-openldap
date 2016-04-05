@@ -1,24 +1,17 @@
-require 'tempfile'
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. openldap]))
 
-Puppet::Type.type(:openldap_overlay).provide(:olc) do
+Puppet::Type.
+  type(:openldap_overlay).
+  provide(:olc, :parent => Puppet::Provider::Openldap) do
 
   # TODO: Use ruby bindings (can't find one that support IPC)
 
   defaultfor :osfamily => :debian, :osfamily => :redhat
 
-  commands :slapcat => 'slapcat', :ldapmodify => 'ldapmodify'
-
   mk_resource_methods
 
   def self.instances
-    slapcat(
-      '-b',
-      'cn=config',
-      '-o',
-      'ldif-wrap=no',
-      '-H',
-      'ldap:///???(olcOverlay=*)'
-    ).split("\n\n").collect do |paragraph|
+    slapcat('(olcOverlay=*)').split("\n\n").collect do |paragraph|
       overlay = nil
       suffix = nil
       index = nil
@@ -114,7 +107,7 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
     ldif_content = IO.read t.path
     Puppet.debug(ldif_content)
     begin
-      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+      ldapmodify(t.path)
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end
@@ -126,14 +119,7 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
     if suffix == 'cn=config'
       return 'olcDatabase={0}config,cn=config'
     else
-      slapcat(
-        '-b',
-        'cn=config',
-        '-o',
-        'ldif-wrap=no',
-        '-H',
-        "ldap:///???(olcSuffix=#{suffix})"
-      ).split("\n").collect do |line|
+      slapcat("(olcSuffix=#{suffix})").split("\n").collect do |line|
         if line =~ /^dn: /
           return line.split(' ')[1]
         end
@@ -143,14 +129,7 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
 
   def self.getSuffix(database)
     found = false
-    slapcat(
-      '-b',
-      'cn=config',
-      '-o',
-      'ldif-wrap=no',
-      '-H',
-      "ldap:///???(olcDatabase=#{database})"
-    ).split("\n").collect do |line|
+    slapcat("(olcDatabase=#{database})").split("\n").collect do |line|
       if line =~ /^dn: olcDatabase=#{database.gsub('{', '\{').gsub('}','\}')},/
         found = true
       end
@@ -195,7 +174,7 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
       t.close
       Puppet.debug(IO.read t.path)
       begin
-        ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+        ldapmodify(t.path)
       rescue Exception => e
         raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
       end
@@ -214,19 +193,24 @@ Puppet::Type.type(:openldap_overlay).provide(:olc) do
     path = default_confdir  + "/" + getPath("olcOverlay={#{@property_hash[:index]}}#{resource[:overlay]},#{getDn(resource[:suffix])}")
     File.delete(path)
     
-    slapcat('-b', "#{getDn(resource[:suffix])}", '-o', 'ldif-wrap=no', '-H', "ldap:///???objectClass=olcOverlayConfig"
-           ).split("\n").select { |line| line =~ /^dn: / }.select { |dn| dn.match(/^dn: olcOverlay=\{(\d+)\}(.+),#{Regexp.quote(getDn(resource[:suffix]))}$/).captures[0].to_i > @property_hash[:index] }.each { |dn|
-             index, type = dn.match(/^dn: olcOverlay=\{(\d+)\}(.+),#{Regexp.quote(getDn(resource[:suffix]))}$/).captures
-             index = index.to_i
-             old_filename = "#{default_confdir}/#{getPath(dn.split(' ',2)[1])}"
-             new_filename = "#{default_confdir}/#{getPath("olcOverlay={#{index - 1}}#{type},#{getDn(@property_hash[:suffix])}")}"
+    slapcat("ldap:///(objectClass=olcOverlayConfig)", getDn(resource[:suffix])).
+      split("\n").
+      select { |line| line =~ /^dn: / }.
+      select { |dn| dn.match(/^dn: olcOverlay=\{(\d+)\}(.+),#{Regexp.quote(getDn(resource[:suffix]))}$/).captures[0].to_i > @property_hash[:index] }.
+      each do |dn|
+        index, type = dn.match(/^dn: olcOverlay=\{(\d+)\}(.+),#{Regexp.quote(getDn(resource[:suffix]))}$/).captures
+        index = index.to_i
+        old_filename = "#{default_confdir}/#{getPath(dn.split(' ',2)[1])}"
+        new_filename = "#{default_confdir}/#{getPath("olcOverlay={#{index - 1}}#{type},#{getDn(@property_hash[:suffix])}")}"
 
-             File.rename(old_filename, new_filename)
-             text = File.read(new_filename)
-             replace = text.gsub("{#{index}}#{type}", "{#{index - 1}}#{type}")
-             File.open(new_filename, "w") { |file| file.puts replace }
-           }
+        File.rename(old_filename, new_filename)
+        text = File.read(new_filename)
+        replace = text.gsub("{#{index}}#{type}", "{#{index - 1}}#{type}")
+        File.open(new_filename, "w") { |file| file.puts replace }
+    end
+
     `service slapd start`
+
     @property_hash.clear
   end
 

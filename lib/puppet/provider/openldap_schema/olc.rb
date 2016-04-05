@@ -1,18 +1,18 @@
-require 'tempfile'
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. openldap]))
 
-Puppet::Type.type(:openldap_schema).provide(:olc) do
+Puppet::Type.
+  type(:openldap_schema).
+  provide(:olc, :parent => Puppet::Provider::Openldap) do
 
   # TODO: Use ruby bindings (can't find one that support IPC)
 
   defaultfor :osfamily => :debian, :osfamily => :redhat
 
-  commands :slapcat => 'slapcat', :ldapadd => 'ldapadd'
-
   mk_resource_methods
 
   def self.instances
     schemas = []
-    slapcat('-H', 'ldap:///???(objectClass=olcSchemaConfig)', '-o', 'ldif-wrap=no', '-b', 'cn=config').split("\n\n").each do |paragraph|
+    slapcat('(objectClass=olcSchemaConfig)').split("\n\n").each do |paragraph|
       paragraph.split("\n").each do |line|
         if line =~ /^cn: \{/
           schemas.push line
@@ -75,7 +75,7 @@ Puppet::Type.type(:openldap_schema).provide(:olc) do
         t << schema
       end
       t.close
-      ldapadd('-cQY', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+      ldapadd(t.path)
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end

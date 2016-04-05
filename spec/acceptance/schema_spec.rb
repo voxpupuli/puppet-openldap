@@ -6,7 +6,7 @@ describe 'openldap::server::schema' do
     it 'creates an overlay' do
       pp = <<-EOS
       class { 'openldap::server': }
-      openldap::server::schema { 'misc':
+      openldap::server::schema { 'cosine':
         ensure => present,
       }
       EOS
