@@ -1,18 +1,18 @@
-require 'tempfile'
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. openldap]))
 
-Puppet::Type.type(:openldap_module).provide(:olc) do
+Puppet::Type.
+  type(:openldap_module).
+  provide(:olc, :parent => Puppet::Provider::Openldap) do
 
   # TODO: Use ruby bindings (can't find one that support IPC)
 
   defaultfor :osfamily => :debian, :osfamily => :redhat
 
-  commands :slapcat => 'slapcat', :ldapmodify => 'ldapmodify'
-
   mk_resource_methods
 
   def self.instances
     # Create dn: cn=Module{0},cn=config if not exists
-    dn = slapcat('-b', 'cn=config', '-o', 'ldif-wrap=no', '-H', 'ldap:///???(objectClass=olcModuleList)')
+    dn = slapcat('(objectClass=olcModuleList)')
     if dn == ''
       ldif = %Q{dn: cn=module{0},cn=config
 changetype: add
@@ -62,7 +62,7 @@ objectclass: olcModuleList
     t.close
     Puppet.debug(IO.read t.path)
     begin
-      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+      ldapmodify(t.path)
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end
