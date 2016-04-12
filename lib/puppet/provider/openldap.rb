@@ -106,24 +106,95 @@ class Puppet::Provider::Openldap < Puppet::Provider
     #         -e "s|' SYNTAX.*||g" \
     #         -e "s|' EQUALITY.*||g" \
     #         -e "s|' DESC.*||g"
-
-    single_value_attributes = %w[ConfigFile ConfigDir AddContentAcl ArgsFile
-      AuthzPolicy Backend Concurrency ConnMaxPending ConnMaxPendingAuth Database
-      DefaultSearchBase GentleHUP Hidden IdleTimeout IndexSubstrIfMinLen
-      IndexSubstrIfMaxLen IndexSubstrAnyLen IndexSubstrAnyStep IndexIntLen LastMod
-      ListenerThreads LocalSSF LogFile MaxDerefDepth MirrorMode ModulePath Monitoring
-      Overlay PasswordCryptSaltFormat PidFile PluginLogFile ReadOnly Referral
-      ReplicaArgsFile ReplicaPidFile ReplicationInterval ReplogFile ReverseLookup
-      RootDN RootPW SaslAuxprops SaslHost SaslRealm SaslSecProps SchemaDN SizeLimit
-      SockbufMaxIncoming SockbufMaxIncomingAuth Subordinate SyncUseSubentry Threads
-      TLSCACertificateFile TLSCACertificatePath TLSCertificateFile
-      TLSCertificateKeyFile TLSCipherSuite TLSCRLCheck TLSCRLFile TLSRandFile
-      TLSVerifyClient TLSDHParamFile TLSProtocolMin ToolThreads UpdateDN WriteTimeout
-      DbDirectory DbCheckpoint DbNoSync DbMaxReaders DbMaxSize DbMode DbSearchStack
-      PPolicyDefault PPolicyHashCleartext PPolicyForwardUpdates PPolicyUseLockout
-      MemberOfDN MemberOfDangling MemberOfRefInt MemberOfGroupOC MemberOfMemberAD
-      MemberOfMemberOfAD MemberOfDanglingError SpCheckpoint SpSessionlog SpNoPresent
-      SpReloadHint]
+    single_value_attributes = %w[
+      ConfigFile
+      ConfigDir
+      AddContentAcl
+      ArgsFile
+      AuthzPolicy
+      Backend
+      Concurrency
+      ConnMaxPending
+      ConnMaxPendingAuth
+      Database
+      DefaultSearchBase
+      GentleHUP
+      Hidden
+      IdleTimeout
+      IndexSubstrIfMinLen
+      IndexSubstrIfMaxLen
+      IndexSubstrAnyLen
+      IndexSubstrAnyStep
+      IndexIntLen
+      LastMod
+      ListenerThreads
+      LocalSSF
+      LogFile
+      MaxDerefDepth
+      MirrorMode
+      ModulePath
+      Monitoring
+      Overlay
+      PasswordCryptSaltFormat
+      PidFile
+      PluginLogFile
+      ReadOnly
+      Referral
+      ReplicaArgsFile
+      ReplicaPidFile
+      ReplicationInterval
+      ReplogFile
+      ReverseLookup
+      RootDN
+      RootPW
+      SaslAuxprops
+      SaslHost
+      SaslRealm
+      SaslSecProps
+      SchemaDN
+      SizeLimit
+      SockbufMaxIncoming
+      SockbufMaxIncomingAuth
+      Subordinate
+      SyncUseSubentry
+      Threads
+      TLSCACertificateFile
+      TLSCACertificatePath
+      TLSCertificateFile
+      TLSCertificateKeyFile
+      TLSCipherSuite
+      TLSCRLCheck
+      TLSCRLFile
+      TLSRandFile
+      TLSVerifyClient
+      TLSDHParamFile
+      TLSProtocolMin
+      ToolThreads
+      UpdateDN
+      WriteTimeout
+      DbDirectory
+      DbCheckpoint
+      DbNoSync
+      DbMaxReaders
+      DbMaxSize
+      DbMode
+      DbSearchStack
+      PPolicyDefault
+      PPolicyHashCleartext
+      PPolicyForwardUpdates
+      PPolicyUseLockout
+      MemberOfDN
+      MemberOfDangling
+      MemberOfRefInt
+      MemberOfGroupOC
+      MemberOfMemberAD
+      MemberOfMemberOfAD
+      MemberOfDanglingError
+      SpCheckpoint
+      SpSessionlog
+      SpNoPresent
+      SpReloadHint
+    ]
 
     use_replace = single_value_attributes.include?(key.to_s) || force_replace == :true
 
