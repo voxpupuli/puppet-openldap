@@ -252,11 +252,9 @@ Puppet::Type.
         when 'dbconfig'
           ldif << value.collect { |dbconfig_value| "olcDbConfig: #{dbconfig_value}" }.join("\n") + "\n"
         else
-          if value.is_a?(Array)
-            ldif << value.collect { |value_n| "olcDb#{key}: #{value_n}" }.join("\n") + "\n"
-          else
-            ldif << "olcDb#{key}: #{value}\n"
-          end
+          value = [value]if !value.is_a?(Array)
+
+          ldif << value.collect { |value_n| "olcDb#{key}: #{value_n}" }.join("\n") + "\n"
         end
       end
     end
