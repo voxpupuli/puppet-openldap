@@ -397,12 +397,12 @@ Puppet::Type.
             ldif << "replace: olcDbPagesize\nolcDbPagesize: #{value}\n-\n"
           when 'dbconfig'
             ldif << "replace: olcDbConfig\n"
-            ldif << value.collect { |x| "olcDbConfig: #{x}" }.join("\n")
+            ldif << value.collect { |value_n| "olcDbConfig: #{value_n}" }.join("\n")
             ldif << "\n-\n"
           else
-            if v.is_a?(Array)
-              ldif << "replace: olcDb#{k}\n"
-              ldif << value.collect { |x| "olcDb#{key}: #{x}" }.join("\n")
+            if value.is_a?(Array)
+              ldif << "replace: olcDb#{key}\n"
+              ldif << value.collect { |value_n| "olcDb#{key}: #{value_n}" }.join("\n")
               ldif << "\n-\n"
             else
               ldif << "replace: olcDb#{key}\nolcDb#{key}: #{value}\n-\n"
