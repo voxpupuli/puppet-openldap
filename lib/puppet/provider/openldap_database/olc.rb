@@ -76,12 +76,12 @@ Puppet::Type.
           when :olcdbconfig
             dboptions['dbconfig'] ||= []
 
-	    if value =~ /^\{\d+\}.+$/
-	      dboptions['dbconfig'].push value.
-                match(/^\{\d+\}(.+)$/).
-                captures.
-                first
-	    end
+	          if value =~ /^\{\d+\}.+$/
+	            dboptions['dbconfig'].push value.
+                      match(/^\{\d+\}(.+)$/).
+                      captures.
+                      first
+	          end
 
           else
             attribute_name = attribute.match(/^olcDb(\S+)$/i).captures.first
