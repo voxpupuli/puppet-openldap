@@ -7,7 +7,7 @@ Puppet::Type.
   type(:openldap_database).
   provide(:olc, :parent => Puppet::Provider::Openldap) do
 
-  defaultfor :osfamily => :debian, :osfamily => :redhat
+  defaultfor :osfamily => [:debian, :redhat]
 
   mk_resource_methods
 
