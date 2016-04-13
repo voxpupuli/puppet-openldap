@@ -144,6 +144,13 @@ Puppet::Type.newtype(:openldap_database) do
   newproperty(:dboptions) do
     desc "Hash to pass specific backend options for the database"
 
+    munge do |hash|
+      hash.reduce({}) do |result, (key, value)|
+        result[key] = [value].compact.flatten
+        result
+      end
+    end
+
     def insync?(is)
       if resource[:synctype] == :inclusive
         is == should
