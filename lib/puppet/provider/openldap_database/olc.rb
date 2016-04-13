@@ -243,19 +243,19 @@ Puppet::Type.
     ldif << "olcUpdateref: #{resource[:updateref]}\n" if resource[:updateref]
 
     if resource[:dboptions]
-      resource[:dboptions].each do |k, v|
-        case k
+      resource[:dboptions].each do |key, value|
+        case key
         when 'dbnosync'
-          ldif << "olcDbNosync: #{v}\n"
+          ldif << "olcDbNosync: #{value}\n"
         when 'dbpagesize'
-          ldif << "olcDbPagesize: #{v}\n"
+          ldif << "olcDbPagesize: #{value}\n"
         when 'dbconfig'
-          ldif << v.collect { |x| "olcDbConfig: #{x}" }.join("\n") + "\n"
+          ldif << value.collect { |dbconfig_value| "olcDbConfig: #{dbconfig_value}" }.join("\n") + "\n"
         else
-          if v.is_a?(Array)
-            ldif << v.collect { |x| "olcDb#{k}: #{x}" }.join("\n") + "\n"
+          if value.is_a?(Array)
+            ldif << value.collect { |value_n| "olcDb#{key}: #{value_n}" }.join("\n") + "\n"
           else
-            ldif << "olcDb#{k}: #{v}\n"
+            ldif << "olcDb#{key}: #{value}\n"
           end
         end
       end
