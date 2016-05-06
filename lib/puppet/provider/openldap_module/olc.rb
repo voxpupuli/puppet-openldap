@@ -1,31 +1,38 @@
-require 'tempfile'
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. openldap]))
 
-Puppet::Type.type(:openldap_module).provide(:olc) do
+Puppet::Type.
+  type(:openldap_module).
+  provide(:olc, :parent => Puppet::Provider::Openldap) do
 
   # TODO: Use ruby bindings (can't find one that support IPC)
 
   defaultfor :osfamily => :debian, :osfamily => :redhat
 
-  commands :slapcat => 'slapcat', :ldapmodify => 'ldapmodify'
-
   mk_resource_methods
 
-  def self.instances
-    # Create dn: cn=Module{0},cn=config if not exists
-    dn = slapcat('-b', 'cn=config', '-H', 'ldap:///???(objectClass=olcModuleList)')
-    if dn == ''
-      ldif = %Q{dn: cn=module{0},cn=config
-changetype: add
-cn: module
-objectclass: olcModuleList
-}
-      begin
-        execute(%Q{echo -n "#{ldif}" | ldapmodify -Y EXTERNAL -H ldapi:///})
-      rescue Exception => e
-        raise Puppet::Error, "LDIF content:\n#{ldif}\nError message: #{e.message}"
-      end
+  def self.create_module_list
+    ldif = temp_ldif('openldap_module')
+    ldif << "dn: cn=module{0},cn=config\n"
+    ldif << "changetype: add\n"
+    ldif << "cn: module\n"
+    ldif << "objectclass: olcModuleList\n"
+
+    ldif.close
+
+    begin
+      ldapmodify(ldif.path)
+
+    rescue Exception => e
+      raise Puppet::Error, "LDIF content:\n#{ldif}\nError message: #{e.message}"
     end
+  end
+
+  def self.instances
+    dn = slapcat('(objectClass=olcModuleList)')
+    create_module_list() if dn.empty?
+
     i = []
+
     dn.split("\n\n").collect do |paragraph|
       name = nil
       paragraph.split("\n").collect do |line|
@@ -62,7 +69,7 @@ objectclass: olcModuleList
     t.close
     Puppet.debug(IO.read t.path)
     begin
-      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+      ldapmodify(t.path)
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end

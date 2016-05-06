@@ -1,22 +1,17 @@
-require 'tempfile'
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. openldap]))
 
-Puppet::Type.type(:openldap_global_conf).provide(:olc) do
+Puppet::Type.
+  type(:openldap_global_conf).
+  provide(:olc, :parent => Puppet::Provider::Openldap) do
 
   # TODO: Use ruby bindings (can't find one that support IPC)
 
   defaultfor :osfamily => :debian, :osfamily => :redhat
 
-  commands :slapcat => 'slapcat', :ldapmodify => 'ldapmodify'
-
   mk_resource_methods
 
   def self.instances
-    items = slapcat(
-      '-b',
-      'cn=config',
-      '-H',
-      'ldap:///???(objectClass=olcGlobal)'
-    )
+    items = slapcat('(objectClass=olcGlobal)')
     items.gsub("\n ", "").split("\n").select{|e| e =~ /^olc/}.collect do |line|
       name, value = line.split(': ')
       # initialize @property_hash
@@ -61,7 +56,7 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
     t.close
     Puppet.debug(IO.read t.path)
     begin
-      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+      ldapmodify(t.path)
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end
@@ -82,7 +77,7 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
     t.close
     Puppet.debug(IO.read t.path)
     begin
-      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+      ldapmodify(t.path)
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end
@@ -117,7 +112,7 @@ Puppet::Type.type(:openldap_global_conf).provide(:olc) do
     t.close
     Puppet.debug(IO.read t.path)
     begin
-      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+      ldapmodify(t.path)
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end

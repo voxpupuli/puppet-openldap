@@ -1,23 +1,19 @@
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. openldap]))
 require 'base64'
-require 'tempfile'
 
-Puppet::Type.type(:openldap_database).provide(:olc) do
+Puppet::Type.
+  type(:openldap_database).
+  provide(:olc, :parent => Puppet::Provider::Openldap) do
 
   # TODO: Use ruby bindings (can't find one that support IPC)
 
   defaultfor :osfamily => :debian, :osfamily => :redhat
 
-  commands :slapcat => 'slapcat', :ldapmodify => 'ldapmodify'
-
   mk_resource_methods
 
   def self.instances
-    databases = slapcat(
-      '-b',
-      'cn=config',
-      '-H',
-      'ldap:///???(|(olcDatabase=monitor)(olcDatabase={0}config)(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)(objectClass=olcMonitorConfig))))'
-    )
+    databases = slapcat("(|(olcDatabase=monitor)(olcDatabase={0}config)(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)(objectClass=olcMonitorConfig))))")
+
     databases.split("\n\n").collect do |paragraph|
       suffix = nil
       index = nil
@@ -137,20 +133,19 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
 
     `service slapd stop`
     File.delete("#{default_confdir}/cn=config/olcDatabase={#{@property_hash[:index]}}#{backend}.ldif")
-    slapcat(
-      '-b',
-      'cn=config',
-      '-H',
-      "ldap:///???(objectClass=olc#{backend.to_s.capitalize}Config)"
-    ).split("\n").select { |line| line =~ /^dn: / }.select { |dn| dn.match(/^dn: olcDatabase={(\d+)}#{backend},cn=config$/).captures[0].to_i > @property_hash[:index] }.each { |dn|
-      index = dn[/\d+/].to_i
-      old_filename = "#{default_confdir}/cn=config/olcDatabase={#{index}}#{backend}.ldif"
-      new_filename = "#{default_confdir}/cn=config/olcDatabase={#{index - 1}}#{backend}.ldif"
-      File.rename(old_filename, new_filename)
-      text = File.read(new_filename)
-      replace = text.gsub!("{#{index}}#{backend}", "{#{index - 1}}#{backend}")
-      File.open(new_filename, "w") { |file| file.puts replace }
-    }
+    slapcat("(objectClass=olc#{backend.to_s.capitalize}Config)").
+      split("\n").
+      select { |line| line =~ /^dn: / }.
+      select { |dn| dn.match(/^dn: olcDatabase={(\d+)}#{backend},cn=config$/).captures[0].to_i > @property_hash[:index] }.
+      each do |dn|
+        index = dn[/\d+/].to_i
+        old_filename = "#{default_confdir}/cn=config/olcDatabase={#{index}}#{backend}.ldif"
+        new_filename = "#{default_confdir}/cn=config/olcDatabase={#{index - 1}}#{backend}.ldif"
+        File.rename(old_filename, new_filename)
+        text = File.read(new_filename)
+        replace = text.gsub!("{#{index}}#{backend}", "{#{index - 1}}#{backend}")
+        File.open(new_filename, "w") { |file| file.puts replace }
+    end
     `service slapd start`
     @property_hash.clear
   end
@@ -174,7 +169,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     t.close
     Puppet.debug(IO.read t.path)
     begin
-      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-a', '-f', t.path)
+      ldapadd(t.path)
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end
@@ -235,18 +230,15 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     t.close
     Puppet.debug(IO.read t.path)
     begin
-      ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+      ldapmodify(t.path)
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end
     t.delete
     initdb if resource[:initdb] == :true
     @property_hash[:ensure] = :present
-    slapcat(
-      '-b',
-      'cn=config',
-      '-H',
-      "ldap:///???(&(objectClass=olc#{resource[:backend].to_s.capitalize}Config)(olcSuffix=#{resource[:suffix]}))").split("\n").collect do |line|
+    slapcat("(&(objectClass=olc#{resource[:backend].to_s.capitalize}Config)(olcSuffix=#{resource[:suffix]}))").
+      split("\n").collect do |line|
       if line =~ /^olcDatabase: /
         @property_hash[:index] = line.match(/^olcDatabase: \{(\d+)\}#{resource[:backend]}$/).captures[0]
       end
@@ -362,7 +354,7 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
       t.close
       Puppet.debug(IO.read t.path)
       begin
-        ldapmodify('-Y', 'EXTERNAL', '-H', 'ldapi:///', '-f', t.path)
+        ldapmodify(t.path)
       rescue Exception => e
         raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
       end
