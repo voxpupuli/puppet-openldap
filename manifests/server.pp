@@ -18,6 +18,7 @@ class openldap::server(
   $ssl_ca    = undef,
 
   $databases = {},
+  $remove_default_databases = true,
 
   $ldap_ifs  = ['/'],
   $ldaps_ifs = [],

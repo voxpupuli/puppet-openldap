@@ -51,8 +51,10 @@ class openldap::server::slapdconf {
     fail 'You must specify a ssl_cert'
   }
 
-  openldap::server::database { 'dc=my-domain,dc=com':
-    ensure => absent,
+  if $::openldap::server::remove_default_databases {
+    openldap::server::database { 'dc=my-domain,dc=com':
+      ensure => absent,
+    }
   }
 
   create_resources('openldap::server::database', $::openldap::server::databases)
