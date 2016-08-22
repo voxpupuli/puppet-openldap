@@ -128,11 +128,7 @@ Puppet::Type.
   end
 
   def fetch_index
-    slapcat(
-      '-b',
-      'cn=config',
-      '-H',
-      "ldap:///???(&(objectClass=olc#{@property_hash[:backend].to_s.capitalize}Config)(olcSuffix=#{@property_hash[:suffix]}))").split("\n").collect do |line|
+    slapcat("(&(objectClass=olc#{@property_hash[:backend].to_s.capitalize}Config)(olcSuffix=#{@property_hash[:suffix]}))").split("\n").collect do |line|
       if line =~ /^olcDatabase: /
         @property_hash[:index] = line.match(/^olcDatabase: \{(\d+)\}#{@property_hash[:backend]}$/).captures[0].to_i
       end
