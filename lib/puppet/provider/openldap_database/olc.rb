@@ -127,23 +127,9 @@ Puppet::Type.
     @property_hash[:ensure] == :present
   end
 
-  def fetch_index
-    slapcat(
-      '-b',
-      'cn=config',
-      '-H',
-      "ldap:///???(&(objectClass=olc#{@property_hash[:backend].to_s.capitalize}Config)(olcSuffix=#{@property_hash[:suffix]}))").split("\n").collect do |line|
-      if line =~ /^olcDatabase: /
-        @property_hash[:index] = line.match(/^olcDatabase: \{(\d+)\}#{@property_hash[:backend]}$/).captures[0].to_i
-      end
-    end
-  end
-
   def destroy
     default_confdir = Facter.value(:osfamily) == 'Debian' ? '/etc/ldap/slapd.d' : Facter.value(:osfamily) == 'RedHat' ? '/etc/openldap/slapd.d' : nil
     backend = @property_hash[:backend]
-
-    fetch_index
 
     `service slapd stop`
     File.delete("#{default_confdir}/cn=config/olcDatabase={#{@property_hash[:index]}}#{backend}.ldif")
