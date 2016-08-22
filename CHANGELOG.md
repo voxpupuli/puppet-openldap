@@ -1,3 +1,9 @@
+## 2016-08-22 - Release 1.15.0
+
+Add base provider that implements common commands and methods and use it
+Fixed an idempotency issue on the syncrepl variable
+Fix idempotency issue when ensuring absent of multiple databases
+
 ## 2016-02-18 - Release 1.14.0
 
 Add support for the rwm overlay (issue #117)
