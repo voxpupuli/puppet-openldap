@@ -1,3 +1,4 @@
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. openldap]))
 require 'tempfile'
 
 Puppet::Type.
@@ -81,6 +82,7 @@ Puppet::Type.
       end
     end
   end
+  def getDn(*args); self.class.getDn(*args); end
 
   def exists?
     @property_hash[:ensure] == :present
@@ -89,7 +91,7 @@ Puppet::Type.
   def create
     position = "{#{resource[:position]}}" if resource[:position]
     t = Tempfile.new('openldap_access')
-    t << "dn: #{self.class.getDn(resource[:suffix])}\n"
+    t << "dn: #{getDn(resource[:suffix])}\n"
     t << "add: olcAccess\n"
     if resource[:position]
       t << "olcAccess: {#{resource[:position]}}to #{resource[:what]}\n"
@@ -110,7 +112,7 @@ Puppet::Type.
 
   def destroy
     t = Tempfile.new('openldap_access')
-    t << "dn: #{self.class.getDn(@property_hash[:suffix])}\n"
+    t << "dn: #{getDn(@property_hash[:suffix])}\n"
     t << "changetype: modify\n"
     t << "delete: olcAccess\n"
     t << "olcAccess: {#{@property_hash[:position]}}\n"
@@ -169,10 +171,7 @@ Puppet::Type.
 
   def self.getCountOfOlcAccess(suffix)
     countOfElement = 0
-    slapcat(
-      '-H',
-      "ldap:///#{getDn(suffix)}???(olcAccess=*)"
-    ).split("\n\n").collect do |paragraph|
+    slapcat("(olcAccess=*)","#{getDn(suffix)}").split("\n\n").collect do |paragraph|
       paragraph.gsub("\n ", '').split("\n").collect do |line|
         case line
         when /^olcAccess: /
@@ -185,10 +184,7 @@ Puppet::Type.
 
   def getCurrentOlcAccess(suffix)
     i = []
-    slapcat(
-      '-H',
-      "ldap:///#{self.class.getDn(suffix)}???(olcAccess=*)"
-    ).split("\n\n").collect do |paragraph|
+    slapcat("(olcAccess=*)","#{getDn(suffix)}").split("\n\n").collect do |paragraph|
       paragraph.gsub("\n ", '').split("\n").collect do |line|
         case line
         when /^olcAccess: /
@@ -207,7 +203,7 @@ Puppet::Type.
     if not @property_flush.empty?
       current_olcAccess = getCurrentOlcAccess(resource[:suffix])
       t = Tempfile.new('openldap_access')
-      t << "dn: #{self.class.getDn(resource[:suffix])}\n"
+      t << "dn: #{getDn(resource[:suffix])}\n"
       t << "changetype: modify\n"
       t << "replace: olcAccess\n"
       if resource[:position]
