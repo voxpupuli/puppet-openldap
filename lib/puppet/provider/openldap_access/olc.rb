@@ -160,6 +160,7 @@ Puppet::Type.
       ldapmodify(t.path)
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+    end
   end
 
   def islast=(value)
