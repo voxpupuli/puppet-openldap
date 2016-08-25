@@ -155,7 +155,10 @@ Puppet::Type.
     t << "olcAccess: {#{@property_hash[:position]}}\n"
     t << "-\n"
     t << "add: olcAccess\n"
-    t << "olcAccess: {#{@property_hash[:position]}}to #{resource[:what]} by #{resource[:by]} #{resource[:access]}\n"
+    t << "olcAccess: {#{@property_hash[:position]}}to #{resource[:what]}\n"
+    resource[:access].each do |a|
+      t << "  #{a}\n"
+    end
     t.close
     Puppet.debug(IO.read t.path)
     begin
