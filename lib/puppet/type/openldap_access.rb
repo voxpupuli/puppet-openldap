@@ -23,6 +23,14 @@ Puppet::Type.newtype(:openldap_access) do
     desc "The suffix to which the access applies"
   end
 
+  newproperty(:position) do
+    desc "Where to place the new entry"
+  end
+
+  newproperty(:access, :array_matching => :all ) do
+    desc "Access rule."
+  end
+
   def self.title_patterns
     [
       [
@@ -76,14 +84,7 @@ Puppet::Type.newtype(:openldap_access) do
         ],
       ],
     ]
-  end
 
-  newproperty(:position) do
-    desc "Where to place the new entry"
-  end
-
-  newproperty(:access, :array_matching => :all) do
-    desc "Access rule."
   end
 
   autorequire(:openldap_database) do
