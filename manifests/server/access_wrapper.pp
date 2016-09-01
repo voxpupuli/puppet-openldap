@@ -44,6 +44,14 @@ define openldap::server::access_wrapper (
   $hash = parseyaml($acl_yaml)
   $hash_keys = keys($hash)
 
+  iterate_access { $hash_keys :
+    hash => $hash,
+  }
+}
+
+define iterate_access(
+  $hash,
+) {
 
   # Call individual openldap::server::access
   $position = $hash[$name]['position']
