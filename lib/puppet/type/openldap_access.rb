@@ -70,7 +70,7 @@ Puppet::Type.newtype(:openldap_access) do
         ],
       ],
       [
-        /^((\S+)\s+on\s+(.+))$/,
+        /^((\d+)\s+on\s+(.+))$/,
         [
           [ :name, lambda{|x| x} ],
           [ :position, lambda{|x| x} ],
