@@ -33,7 +33,7 @@ define openldap::server::access_wrapper (
       {
         "#{position} on #{suffix}" => {
           "position" => position,
-          "what"     => to[/.*to (.*),1],
+          "what"     => to[/.*to (.*)/,1],
           "access"   => access,
           "suffix"   => "#{suffix}",
         }
