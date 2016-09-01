@@ -4,7 +4,7 @@ define openldap::server::access(
   $position = undef,
   $what     = undef,
   $suffix   = undef,
-  $access   = [],
+  $access   = undef,
   $islast   = false,
 ) {
 
