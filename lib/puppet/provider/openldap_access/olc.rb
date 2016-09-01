@@ -168,24 +168,7 @@ Puppet::Type.
   end
 
   def access=(value)
-    t = Tempfile.new('openldap_access')
-    t << "dn: #{getDn(@property_hash[:suffix])}\n"
-    t << "changetype: modify\n"
-    t << "delete: olcAccess\n"
-    t << "olcAccess: {#{@property_hash[:position]}}\n"
-    t << "-\n"
-    t << "add: olcAccess\n"
-    t << "olcAccess: {#{@property_hash[:position]}}to #{resource[:what]}\n"
-    resource[:access].each do |a|
-      t << "  #{a}\n"
-    end
-    t.close
-    Puppet.debug(IO.read t.path)
-    begin
-      ldapmodify(t.path)
-    rescue Exception => e
-      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
-    end
+    @property_flush[:access] = value
   end
 
   def islast=(value)
