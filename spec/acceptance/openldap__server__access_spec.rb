@@ -30,7 +30,7 @@ describe 'openldap::server::access' do
         class { 'openldap::server': }
         openldap::server::database { 'dc=example,dc=com' : }
         ::openldap::server::access { 'admin':
-          what    => 'attrs=userPassword,shadowLastChange',
+          what    => 'attrs=userPassword,distinguishedName',
           access  => ['by dn="cn=admin,dc=example,dc=com" write'],
           suffix  => 'dc=example,dc=com',
           require => Openldap::Server::Database['dc=example,dc=com'],
