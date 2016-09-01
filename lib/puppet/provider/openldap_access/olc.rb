@@ -74,10 +74,10 @@ Puppet::Type.
     islast = {}
     resources.keys.each do |name|
       if resources[name][:islast] == true
-        if islast[:suffix].nil?
-          islast[:suffix] = resources[name][:suffix]
+        if islast[resources[name][:suffix]].nil?
+          islast[resources[name][:suffix]] = resources[name][:name]
         else
-          raise Puppet::Error, "Multiple 'islast' found for suffix '#{islast[:suffix]}'"
+          raise Puppet::Error, "Multiple 'islast' found for suffix '#{resources[name][:suffix]}': #{resources[name][:name]} and #{islast[:suffix]}"
         end
       end
     end
