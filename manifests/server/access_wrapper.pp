@@ -21,8 +21,8 @@
 #     }
 #
 define openldap::server::access_wrapper (
-  $suffix = $name,
   $acl,
+  $suffix = $name,
 ) {
 
   # Parse ACL
