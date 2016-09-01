@@ -66,6 +66,20 @@ Puppet::Type.
       }
         resources[name].provider = provider
       end
+      validate_islast(resources)
+    end
+  end
+
+  def self.validate_islast(resources)
+    islast = {}
+    resources.keys.each do |name|
+      if resources[name][:islast] == true
+        if islast[:suffix].nil?
+          islast[:suffix] = resources[name][:suffix]
+        else
+          raise Puppet::Error, "Multiple 'islast' found for suffix '#{islast[:suffix]}'"
+        end
+      end
     end
   end
 
