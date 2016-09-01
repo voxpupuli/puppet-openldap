@@ -127,33 +127,39 @@ openldap::server::overlay { 'memberof on dc=example,dc=com':
 
 ###Configuring ACPs/ACLs
 
+[Documentation](http://www.openldap.org/devel/admin/slapdconf2.html) about olcAcces state the following spec:
+> 5.2.5.2. olcAccess: to &lt;what&gt; [ by &lt;who&gt; [&lt;accesslevel&gt;] [&lt;control&gt;] ]+
+
+So we supports natively this way of writing in the title:
+```puppet
+openldap::server::access { 'to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" write by anonymous auth' :
+  suffix   => 'dc=example,dc=com',
+}
+```
+
+Also is supported writing priority in title like olcAccess in ldap
+```puppet
+openldap::server::access { '{0}to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" write by anonymous auth' :
+  suffix   => 'dc=example,dc=com',
+}
+```
+
+As a single line with suffix:
+```puppet
+openldap::server::access { '{0}to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" write by anonymous auth on dc=example,dc=com' : }
+```
+
+Defining priority and suffix in the title:
 ```puppet
 openldap::server::access { '0 on dc=example,dc=com':
-  what   => 'attrs=userPassword,shadowLastChange',
-  access => [
+  what     => 'attrs=userPassword,shadowLastChange',
+  access   => [
     'by dn="cn=admin,dc=example,dc=com" write',
     'by anonymous auth',
     'by self write',
     'by * none',
   ],
-} ->
-
-openldap::server::access { '1 on dc=example,dc=com' :
-  what   => 'dn.base=""'
-  access => [
-    'by * read'
-  ],
-} ->
-
-openldap::server::access { '2 on dc=example,dc=com' :
-  islast => true,
-  what   => '*'
-  access => [
-    'by dn="cn=admin,dc=example,dc=com" write',
-    'by * read',
-  ],
 }
-
 ```
 
 from the openldap [documentation](http://www.openldap.org/doc/admin24/slapdconf2.html)
@@ -192,8 +198,7 @@ So if you got in your ldap:
 ```
 
 ####Note #2:
-  The parameter `islast` is used for purging remaining entries
-  So if you got in your ldap:
+  The parameter `islast` is used for purging remaining entries. Only one `islast` is allowed per suffix. If you got in your ldap:
 ```
  olcAccess: {0}to ...
  olcAccess: {1}to ...
@@ -201,46 +206,23 @@ So if you got in your ldap:
  olcAccess: {3}to ...
 ```
 
-And set `islast => true` in `position => 1`, entries 2 and 3 will get deleted.
-
-####Call your acl from a hash:
-
+And set :
 ```puppet
-$acl_hash = {
-  'acl 1' => {
-    suffix   => 'dc=example,dc=com',
-    position => '1',
-    what     => 'attrs=userPassword,shadowLastChange',
-    by       => 'dn="cn=admin,dc=example,dc=com"',
-    access   => 'write',
-  },
-  'acl 2' => {
-    suffix   => 'dc=example,dc=com',
-    position => '2',
-    what     => 'attrs=userPassword,shadowLastChange',
-    by       => 'anonymous',
-    access   => 'auth',
-  },
-  'acl 3' => {
-    suffix   => 'dc=example,dc=com',
-    position => '3',
-    what     => 'attrs=userPassword,shadowLastChange',
-    by       => 'self',
-    access   => 'write',
-  },
-}
-
-$acl_hash_keys = keys($acl_hash)
-openldap::server::access_wrapper { $acl_hash_keys :
-  hash => $acl_hash,
+openldap::server::access { '1 on dc=example,dc=com':
+  what   => ...,
+  access => [...],
+  islast => true,
 }
 ```
 
-And with a little help of an inline\_template, you can auto-generate your list
-of acl like so:
+entries 2 and 3 will get deleted.
+
+####Call your acl from a hash:
+The class `openldap::server::access_wrapper` was designed to simplify creating ACL.
+If you have multiple `what` (`to *` in this example), you can order them by adding number to it.
 
 ```puppet
-$acl = {
+$example_acl = {
   '1 to *' => [
     'by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage',
     'by dn.exact=cn=admin,dc=example,dc=com write',
@@ -257,26 +239,8 @@ $acl = {
   ],
 }
 
-$acl_hash_yaml = inline_template('<%=
-  position = -1
-  acl.map { |to,access|
-    position = position + 1
-    {
-      "#{position} on dc=example,dc=com" => {
-        "position" => position,
-        "what"     => to[/.*to (.*),1],
-        "access"   => access,
-        "suffix"   => "dc=example,dc=com",
-      }
-    }
-}.flatten.reduce({}, :update).to_yaml
-%>')
-
-$acl_hash = parseyaml($acl_hash_yaml)
-$acl_hash_keys = keys($acl_hash)
-
-openldap::server::access_wrapper { $acl_hash_keys :
-  hash => $acl_hash,
+openldap::server::access_wrapper { 'dc=example,dc=com' :
+  acl => $example_acl,
 }
 ```
 
