@@ -26,6 +26,42 @@ Puppet::Type.newtype(:openldap_access) do
   def self.title_patterns
     [
       [
+        /^({(\d+)}to\s+(\S+)\s+(by\s+.+)\s+on\s+(.+))$/,
+        [
+          [ :name, lambda{|x| x} ],
+          [ :position, lambda{|x| x} ],
+          [ :what, lambda{|x| x} ],
+          [ :access, lambda{ |x| a=[]; x.split(/(?= by .+)/).each { |b| a << b.lstrip }; a } ],
+          [ :suffix, lambda{|x| x} ],
+        ],
+      ],
+      [
+        /^({(\d+)}to\s+(\S+)\s+(by\s+.+)\s+)$/,
+        [
+          [ :name, lambda{|x| x} ],
+          [ :position, lambda{|x| x} ],
+          [ :what, lambda{|x| x} ],
+          [ :access, lambda{ |x| a=[]; x.split(/(?= by .+)/).each { |b| a << b.lstrip }; a } ],
+        ],
+      ],
+      [
+        /^(to\s+(\S+)\s+(by\s+.+)\s+on\s+(.+))$/,
+        [
+          [ :name, lambda{|x| x} ],
+          [ :what, lambda{|x| x} ],
+          [ :access, lambda{ |x| a=[]; x.split(/(?= by .+)/).each { |b| a << b.lstrip }; a } ],
+          [ :suffix, lambda{|x| x} ],
+        ],
+      ],
+      [
+        /^(to\s+(\S+)\s+(by\s+.+))$/,
+        [
+          [ :name, lambda{|x| x} ],
+          [ :what, lambda{|x| x} ],
+          [ :access, lambda{ |x| a=[]; x.split(/(?= by .+)/).each { |b| a << b.lstrip }; a } ],
+        ],
+      ],
+      [
         /^((\S+)\s+on\s+(.+))$/,
         [
           [ :name, lambda{|x| x} ],

@@ -36,7 +36,7 @@ Puppet::Type.
             islast = false
           end
           i << new(
-            :name     => "#{position} on #{suffix}",
+            :name     => "{#{position}}to #{what} #{access.join(' ')} on #{suffix}",
             :ensure   => :present,
             :position => position,
             :what     => what,
@@ -55,8 +55,14 @@ Puppet::Type.
     accesses = instances
     resources.keys.each do |name|
       if provider = accesses.find{ |access|
-        access.suffix == resources[name][:suffix] &&
-        access.position == resources[name][:position]
+        if resources[name][:position]
+          access.suffix == resources[name][:suffix] &&
+          access.position == resources[name][:position]
+        else
+          access.suffix == resources[name][:suffix] &&
+          access.access == resources[name][:access] &&
+          access.what == resources[name][:what]
+        end
       }
         resources[name].provider = provider
       end
