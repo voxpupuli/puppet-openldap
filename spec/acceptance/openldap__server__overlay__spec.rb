@@ -10,12 +10,14 @@ describe 'openldap::server::overlay' do
         openldap::server::database { 'dc=foo,dc=bar':
           ensure => present,
         }
+        ->
         openldap::server::module { 'syncprov':
           ensure => present,
         }
         openldap::server::module { 'ppolicy':
           ensure => present,
         }
+        ->
         create_resources('::openldap::server::overlay', $opnldap_overlay)
       EOS
 
