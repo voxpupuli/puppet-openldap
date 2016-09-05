@@ -34,7 +34,7 @@ Puppet::Type.
       paragraph.gsub("\n ", "").split("\n").collect do |line|
         case line
         when /^olcDatabase: /
-          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor|config|relay)$/).captures 
+          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor|config|relay)$/).captures
         when /^olcDbDirectory: /
           directory = line.split(' ')[1]
         when /^olcRootDN: /
@@ -231,22 +231,22 @@ Puppet::Type.
           end
         end
       end
-      t << resource[:syncrepl].collect { |x| "olcSyncrepl: #{x}" }.join("\n") + "\n" if resource[:syncrepl]
-      t << "olcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:mirrormode]
-      t << "olcSyncUseSubentry: #{resource[:syncusesubentry]}\n" if resource[:syncusesubentry]
-      t << "#{resource[:limits].collect { |x| "olcLimits: #{x}" }.join("\n")}\n" if resource[:limits] and !resource[:limits].empty?
-      t << "olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break\n"
-      t << "olcAccess: to attrs=userPassword\n"
-      t << "  by self write\n"
-      t << "  by anonymous auth\n"
-      t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
-      t << "  by * none\n"
-      t << "olcAccess: to dn.base=\"\" by * read\n"
-      t << "olcAccess: to *\n"
-      t << "  by self write\n"
-      t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
-      t << "  by * read\n"
     end
+    t << resource[:syncrepl].collect { |x| "olcSyncrepl: #{x}" }.join("\n") + "\n" if resource[:syncrepl]
+    t << "olcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:mirrormode]
+    t << "olcSyncUseSubentry: #{resource[:syncusesubentry]}\n" if resource[:syncusesubentry]
+    t << "#{resource[:limits].collect { |x| "olcLimits: #{x}" }.join("\n")}\n" if resource[:limits] and !resource[:limits].empty?
+    t << "olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break\n"
+    t << "olcAccess: to attrs=userPassword\n"
+    t << "  by self write\n"
+    t << "  by anonymous auth\n"
+    t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
+    t << "  by * none\n"
+    t << "olcAccess: to dn.base=\"\" by * read\n"
+    t << "olcAccess: to *\n"
+    t << "  by self write\n"
+    t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
+    t << "  by * read\n"    
     t.close
     Puppet.debug(IO.read t.path)
     begin
