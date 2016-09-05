@@ -3,6 +3,7 @@ define openldap::server::database(
   $ensure          = present,
   $directory       = undef,
   $suffix          = $title,
+  $relay           = undef,
   $backend         = undef,
   $rootdn          = undef,
   $rootpw          = undef,
@@ -60,6 +61,7 @@ define openldap::server::database(
   openldap_database { $title:
     ensure          => $ensure,
     suffix          => $suffix,
+    relay           => $relay,
     provider        => $::openldap::server::provider,
     target          => $::openldap::server::conffile,
     backend         => $backend,
