@@ -34,7 +34,7 @@ Puppet::Type.
       paragraph.gsub("\n ", "").split("\n").collect do |line|
         case line
         when /^olcDatabase: /
-          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor|config|relay)$/).captures 
+          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor|config|relay)$/).captures
         when /^olcDbDirectory: /
           directory = line.split(' ')[1]
         when /^olcRootDN: /
@@ -197,13 +197,15 @@ Puppet::Type.
     t << "objectClass: olcDatabaseConfig\n"
     t << "objectClass: olc#{resource[:backend].to_s.capitalize}Config\n"
     t << "olcDatabase: #{resource[:backend]}\n"
-    case "#{resource[:backend]}"
-    when "relay"
+    if "#{resource[:backend]}" == "relay"
       t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
       t << "olcRelay: #{resource[:relay]}\n" if resource[:relay]
-    when "monitor"
-      # WRITE HERE FOR MONITOR BACKEND
     else
+      if "#{resource[:backend]}" != "monitor"
+        t << "olcDbDirectory: #{resource[:directory]}\n" if resource[:directory]
+        t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
+        t << "olcDbIndex: objectClass eq\n" if !resource[:dboptions] or !resource[:dboptions]['index']
+      end
       t << "olcDbDirectory: #{resource[:directory]}\n" if resource[:directory]
       t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
       t << "olcDbIndex: objectClass eq\n" if !resource[:dboptions] or !resource[:dboptions]['index']
