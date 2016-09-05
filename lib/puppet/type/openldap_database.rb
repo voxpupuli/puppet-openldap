@@ -9,6 +9,10 @@ Puppet::Type.newtype(:openldap_database) do
     desc "The default namevar."
   end
 
+  newparam(:relay) do
+    desc "The relay configuration."
+  end
+
   newparam(:target) do
   end
 
@@ -18,7 +22,7 @@ Puppet::Type.newtype(:openldap_database) do
 
   newproperty(:backend) do
     desc "The name of the backend."
-    newvalues('bdb', 'hdb', 'mdb', 'monitor', 'config')
+    newvalues('bdb', 'hdb', 'mdb', 'monitor', 'config', 'relay')
     defaultto do
       case Facter.value(:osfamily)
       when 'Debian'
@@ -47,7 +51,7 @@ Puppet::Type.newtype(:openldap_database) do
   newproperty(:directory) do
     desc "The directory where the BDB files containing this database and associated indexes live."
     defaultto do
-      if "#{@resource[:backend]}" != "monitor" and "#{@resource[:backend]}" != "config"
+      if "#{@resource[:backend]}" != "monitor" and "#{@resource[:backend]}" != "config" and "#{@resource[:backend]}" != "relay"
         '/var/lib/ldap'
       end
     end
@@ -117,7 +121,7 @@ Puppet::Type.newtype(:openldap_database) do
 
     newvalues(:true, :false)
     defaultto do
-      if "#{@resource[:backend]}" == "monitor" or "#{@resource[:backend]}" == "config"
+      if "#{@resource[:backend]}" == "monitor" or "#{@resource[:backend]}" == "config" or "#{@resource[:backend]}" == "relay"
         :false
       else
         :true
