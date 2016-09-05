@@ -12,10 +12,11 @@ Puppet::Type.
   mk_resource_methods
 
   def self.instances
-    databases = slapcat("(|(olcDatabase=monitor)(olcDatabase={0}config)(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)(objectClass=olcMonitorConfig))))")
+    databases = slapcat("(|(olcDatabase=monitor)(olcDatabase={0}config)(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)(objectClass=olcMonitorConfig)(objectClass=olcRelayConfig))))")
 
     databases.split("\n\n").collect do |paragraph|
       suffix = nil
+      relay = nil
       index = nil
       backend = nil
       directory = nil
@@ -33,7 +34,7 @@ Puppet::Type.
       paragraph.gsub("\n ", "").split("\n").collect do |line|
         case line
         when /^olcDatabase: /
-          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor|config)$/).captures
+          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor|config|relay)$/).captures 
         when /^olcDbDirectory: /
           directory = line.split(' ')[1]
         when /^olcRootDN: /
@@ -42,6 +43,8 @@ Puppet::Type.
           rootpw = Base64.decode64(line.split(' ')[1])
         when /^olcSuffix: /
           suffix = line.split(' ')[1]
+        when /^olcRelay: /
+          relay = line.split(' ')[1]
         when /^olcReadOnly: /i
           readonly = line.split(' ')[1]
         when /^olcSizeLimit: /i
@@ -96,6 +99,7 @@ Puppet::Type.
         :ensure          => :present,
         :name            => suffix,
         :suffix          => suffix,
+        :relay           => relay,
         :index           => index.to_i,
         :backend         => backend,
         :directory       => directory,
@@ -193,50 +197,56 @@ Puppet::Type.
     t << "objectClass: olcDatabaseConfig\n"
     t << "objectClass: olc#{resource[:backend].to_s.capitalize}Config\n"
     t << "olcDatabase: #{resource[:backend]}\n"
-    if "#{resource[:backend]}" != "monitor"
+    case "#{resource[:backend]}"
+    when "relay"
+      t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
+      t << "olcRelay: #{resource[:relay]}\n" if resource[:relay]
+    when "monitor"
+      # WRITE HERE FOR MONITOR BACKEND
+    else
       t << "olcDbDirectory: #{resource[:directory]}\n" if resource[:directory]
       t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
       t << "olcDbIndex: objectClass eq\n" if !resource[:dboptions] or !resource[:dboptions]['index']
-    end
-    t << "olcRootDN: #{resource[:rootdn]}\n" if resource[:rootdn]
-    t << "olcRootPW: #{resource[:rootpw]}\n" if resource[:rootpw]
-    t << "olcReadOnly: #{resource[:readonly] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:readonly]
-    t << "olcSizeLimit: #{resource[:sizelimit]}\n" if resource[:sizelimit]
-    t << "olcTimeLimit: #{resource[:timelimit]}\n" if resource[:timelimit]
-    t << "olcUpdateref: #{resource[:updateref]}\n" if resource[:updateref]
-    if resource[:dboptions]
-      resource[:dboptions].each do |k, v|
-        case k
-        when 'dbnosync'
-          t << "olcDbNosync: #{v}\n"
-        when 'dbpagesize'
-          t << "olcDbPagesize: #{v}\n"
-        when 'dbconfig'
-          t << v.collect { |x| "olcDbConfig: #{x}" }.join("\n") + "\n"
-        else
-          if v.is_a?(Array)
-            t << v.collect { |x| "olcDb#{k}: #{x}" }.join("\n") + "\n"
+      t << "olcRootDN: #{resource[:rootdn]}\n" if resource[:rootdn]
+      t << "olcRootPW: #{resource[:rootpw]}\n" if resource[:rootpw]
+      t << "olcReadOnly: #{resource[:readonly] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:readonly]
+      t << "olcSizeLimit: #{resource[:sizelimit]}\n" if resource[:sizelimit]
+      t << "olcTimeLimit: #{resource[:timelimit]}\n" if resource[:timelimit]
+      t << "olcUpdateref: #{resource[:updateref]}\n" if resource[:updateref]
+      if resource[:dboptions]
+        resource[:dboptions].each do |k, v|
+          case k
+          when 'dbnosync'
+            t << "olcDbNosync: #{v}\n"
+          when 'dbpagesize'
+            t << "olcDbPagesize: #{v}\n"
+          when 'dbconfig'
+            t << v.collect { |x| "olcDbConfig: #{x}" }.join("\n") + "\n"
           else
-            t << "olcDb#{k}: #{v}\n"
+            if v.is_a?(Array)
+              t << v.collect { |x| "olcDb#{k}: #{x}" }.join("\n") + "\n"
+            else
+              t << "olcDb#{k}: #{v}\n"
+            end
           end
         end
       end
+      t << resource[:syncrepl].collect { |x| "olcSyncrepl: #{x}" }.join("\n") + "\n" if resource[:syncrepl]
+      t << "olcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:mirrormode]
+      t << "olcSyncUseSubentry: #{resource[:syncusesubentry]}\n" if resource[:syncusesubentry]
+      t << "#{resource[:limits].collect { |x| "olcLimits: #{x}" }.join("\n")}\n" if resource[:limits] and !resource[:limits].empty?
+      t << "olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break\n"
+      t << "olcAccess: to attrs=userPassword\n"
+      t << "  by self write\n"
+      t << "  by anonymous auth\n"
+      t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
+      t << "  by * none\n"
+      t << "olcAccess: to dn.base=\"\" by * read\n"
+      t << "olcAccess: to *\n"
+      t << "  by self write\n"
+      t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
+      t << "  by * read\n"
     end
-    t << resource[:syncrepl].collect { |x| "olcSyncrepl: #{x}" }.join("\n") + "\n" if resource[:syncrepl]
-    t << "olcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:mirrormode]
-    t << "olcSyncUseSubentry: #{resource[:syncusesubentry]}\n" if resource[:syncusesubentry]
-    t << "#{resource[:limits].collect { |x| "olcLimits: #{x}" }.join("\n")}\n" if resource[:limits] and !resource[:limits].empty?
-    t << "olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break\n"
-    t << "olcAccess: to attrs=userPassword\n"
-    t << "  by self write\n"
-    t << "  by anonymous auth\n"
-    t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
-    t << "  by * none\n"
-    t << "olcAccess: to dn.base=\"\" by * read\n"
-    t << "olcAccess: to *\n"
-    t << "  by self write\n"
-    t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
-    t << "  by * read\n"
     t.close
     Puppet.debug(IO.read t.path)
     begin
@@ -274,6 +284,10 @@ Puppet::Type.
 
   def suffix=(value)
     @property_flush[:suffix] = value
+  end
+
+  def relay=(value)
+    @property_flush[:relay] = value
   end
 
   def readonly=(value)
@@ -321,6 +335,7 @@ Puppet::Type.
       t << "replace: olcRootDN\nolcRootDN: #{resource[:rootdn]}\n-\n" if @property_flush[:rootdn]
       t << "replace: olcRootPW\nolcRootPW: #{resource[:rootpw]}\n-\n" if @property_flush[:rootpw]
       t << "replace: olcSuffix\nolcSuffix: #{resource[:suffix]}\n-\n" if @property_flush[:suffix]
+      t << "replace: olcRelay\nolcRelay: #{resource[:relay]}\n-\n" if @property_flush[:relay]
       t << "replace: olcReadOnly\nolcReadOnly: #{resource[:readonly] == :true ? 'TRUE' : 'FALSE'}\n-\n" if @property_flush[:readonly]
       t << "replace: olcSizeLimit\nolcSizeLimit: #{resource[:sizelimit]}\n-\n" if @property_flush[:sizelimit]
       t << "replace: olcTimeLimit\nolcTimeLimit: #{resource[:timelimit]}\n-\n" if @property_flush[:timelimit]
