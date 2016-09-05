@@ -51,7 +51,7 @@ Puppet::Type.newtype(:openldap_database) do
   newproperty(:directory) do
     desc "The directory where the BDB files containing this database and associated indexes live."
     defaultto do
-      if "#{@resource[:backend]}" != "monitor" and "#{@resource[:backend]}" != "config" and "#{@resource[:backend]}" != "relay"
+      unless [ "monitor" , "config", "relay" ].include? "#{@resource[:backend]}"
         '/var/lib/ldap'
       end
     end
@@ -121,7 +121,7 @@ Puppet::Type.newtype(:openldap_database) do
 
     newvalues(:true, :false)
     defaultto do
-      if "#{@resource[:backend]}" == "monitor" or "#{@resource[:backend]}" == "config" or "#{@resource[:backend]}" == "relay"
+      if [ "monitor" , "config", "relay" ].include? "#{@resource[:backend]}"
         :false
       else
         :true

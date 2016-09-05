@@ -197,39 +197,38 @@ Puppet::Type.
     t << "objectClass: olcDatabaseConfig\n"
     t << "objectClass: olc#{resource[:backend].to_s.capitalize}Config\n"
     t << "olcDatabase: #{resource[:backend]}\n"
-    if "#{resource[:backend]}" == "relay"
+
+    case "#{resource[:backend]}"
+    when "relay"
+      t << "olcRelay: #{resource[:relay]}\n" if !resource[:relay].empty?
       t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
-      t << "olcRelay: #{resource[:relay]}\n" if resource[:relay]
+    when "monitor"
+      # WRITE HERE FOR MONITOR ONLY
     else
-      if "#{resource[:backend]}" != "monitor"
-        t << "olcDbDirectory: #{resource[:directory]}\n" if resource[:directory]
-        t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
-        t << "olcDbIndex: objectClass eq\n" if !resource[:dboptions] or !resource[:dboptions]['index']
-      end
       t << "olcDbDirectory: #{resource[:directory]}\n" if resource[:directory]
       t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
       t << "olcDbIndex: objectClass eq\n" if !resource[:dboptions] or !resource[:dboptions]['index']
-      t << "olcRootDN: #{resource[:rootdn]}\n" if resource[:rootdn]
-      t << "olcRootPW: #{resource[:rootpw]}\n" if resource[:rootpw]
-      t << "olcReadOnly: #{resource[:readonly] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:readonly]
-      t << "olcSizeLimit: #{resource[:sizelimit]}\n" if resource[:sizelimit]
-      t << "olcTimeLimit: #{resource[:timelimit]}\n" if resource[:timelimit]
-      t << "olcUpdateref: #{resource[:updateref]}\n" if resource[:updateref]
-      if resource[:dboptions]
-        resource[:dboptions].each do |k, v|
-          case k
-          when 'dbnosync'
-            t << "olcDbNosync: #{v}\n"
-          when 'dbpagesize'
-            t << "olcDbPagesize: #{v}\n"
-          when 'dbconfig'
-            t << v.collect { |x| "olcDbConfig: #{x}" }.join("\n") + "\n"
+    end
+    t << "olcRootDN: #{resource[:rootdn]}\n" if resource[:rootdn]
+    t << "olcRootPW: #{resource[:rootpw]}\n" if resource[:rootpw]
+    t << "olcReadOnly: #{resource[:readonly] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:readonly]
+    t << "olcSizeLimit: #{resource[:sizelimit]}\n" if resource[:sizelimit]
+    t << "olcTimeLimit: #{resource[:timelimit]}\n" if resource[:timelimit]
+    t << "olcUpdateref: #{resource[:updateref]}\n" if resource[:updateref]
+    if resource[:dboptions]
+      resource[:dboptions].each do |k, v|
+        case k
+        when 'dbnosync'
+          t << "olcDbNosync: #{v}\n"
+        when 'dbpagesize'
+          t << "olcDbPagesize: #{v}\n"
+        when 'dbconfig'
+          t << v.collect { |x| "olcDbConfig: #{x}" }.join("\n") + "\n"
+        else
+          if v.is_a?(Array)
+            t << v.collect { |x| "olcDb#{k}: #{x}" }.join("\n") + "\n"
           else
-            if v.is_a?(Array)
-              t << v.collect { |x| "olcDb#{k}: #{x}" }.join("\n") + "\n"
-            else
-              t << "olcDb#{k}: #{v}\n"
-            end
+            t << "olcDb#{k}: #{v}\n"
           end
         end
       end
