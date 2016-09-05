@@ -26,10 +26,9 @@ class openldap::params {
       $server_owner             = 'ldap'
       $server_package           = 'openldap-servers'
       $server_service           = $::operatingsystemmajrelease ? {
-        '5'     => 'ldap',
-        '6'     => 'slapd',
-        '7'     => 'slapd',
-        default => 'slapd',
+        '5' => 'ldap',
+        '6' => 'slapd',
+        '7' => 'slapd',
       }
       $server_service_hasstatus = true
       $utils_package            = 'openldap-clients'
