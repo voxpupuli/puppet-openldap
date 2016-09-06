@@ -115,6 +115,12 @@ Puppet::Type.
   def getDn(suffix)
     if suffix == 'cn=config'
       return 'olcDatabase={0}config,cn=config'
+    elsif suffix == 'relay'
+      slapcat("(olcDatabase=#{suffix})").split("\n").collect do |line|
+        if line =~ /^dn: /
+          return line.split(' ')[1]
+        end
+      end
     else
       slapcat("(olcSuffix=#{suffix})").split("\n").collect do |line|
         if line =~ /^dn: /
@@ -132,6 +138,8 @@ Puppet::Type.
       end
       if database == '{0}config'
         return 'cn=config'
+      elsif database =~ /\{\d+\}relay$/
+        return database # returns origin: {x}relay
       elsif line =~ /^olcSuffix: / and found
         return line.split(' ')[1]
       end

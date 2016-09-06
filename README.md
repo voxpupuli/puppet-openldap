@@ -165,3 +165,24 @@ openldap::server::schema { 'nis':
   require => Openldap::Server::Schema["inetorgperson"],
 }
 ```
+
+###Configuring Rewrite-overlay
+```puppet
+openldap::server::database { 'relay':
+  ensure  => present,
+  backend => 'relay',
+  suffix  => 'o=example',
+  relay   => 'dc=example,dc=com',
+}->
+
+openldap::server::overlay { "rwm on relay":
+  ensure  => present,
+  suffix  => 'relay',
+  overlay => 'rwm',
+  options => {
+    'olcRwmRewrite' => [
+      '{0}rwm-rewriteEngine "on"',
+      '{1}rwm-suffixmassage , "dc=example,dc=com"]',
+  },
+}
+```
