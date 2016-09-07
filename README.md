@@ -177,7 +177,7 @@ openldap::server::database { 'relay':
 
 openldap::server::overlay { "rwm on relay":
   ensure  => present,
-  suffix  => 'relay',
+  suffix  => 'cn=config',
   overlay => 'rwm',
   options => {
     'olcRwmRewrite' => [
