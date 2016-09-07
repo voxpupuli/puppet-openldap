@@ -114,12 +114,14 @@ Puppet::Type.
 
   def getDn(suffix)
     if suffix == 'cn=config'
-      return 'olcDatabase={0}config,cn=config'
-    elsif suffix == 'relay'
-      slapcat("(olcDatabase=#{suffix})").split("\n").collect do |line|
-        if line =~ /^dn: /
-          return line.split(' ')[1]
+      if "#{resource[:overlay]}" == "rwm"
+        slapcat("(olcDatabase=relay)").split("\n").collect do |line|
+          if line =~ /^dn: /
+            return line.split(' ')[1]
+          end
         end
+      else
+        return 'olcDatabase={0}config,cn=config'
       end
     else
       slapcat("(olcSuffix=#{suffix})").split("\n").collect do |line|
@@ -139,7 +141,7 @@ Puppet::Type.
       if database == '{0}config'
         return 'cn=config'
       elsif database =~ /\{\d+\}relay$/
-        return database # returns origin: {x}relay
+        return 'cn=config'
       elsif line =~ /^olcSuffix: / and found
         return line.split(' ')[1]
       end
@@ -197,7 +199,7 @@ Puppet::Type.
     `service slapd stop`
     path = default_confdir  + "/" + getPath("olcOverlay={#{@property_hash[:index]}}#{resource[:overlay]},#{getDn(resource[:suffix])}")
     File.delete(path)
-    
+
     slapcat("ldap:///(objectClass=olcOverlayConfig)", getDn(resource[:suffix])).
       split("\n").
       select { |line| line =~ /^dn: / }.
