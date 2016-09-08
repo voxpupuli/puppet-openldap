@@ -97,6 +97,20 @@ openldap::server::globalconf { 'security':
 }
 ```
 
+Configuring server ID for the multi master architecture
+
+```puppet
+openldap::server::globalconf { 'ServerID':
+  ensure  => present,
+  value   => {
+    'ServerID' => [
+      '1 ldap://ldap1.example.com',
+      '2 ldap://ldap2.example.com'
+    ]
+  }
+}
+```
+
 ###Configuring a database
 
 ```puppet

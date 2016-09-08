@@ -46,7 +46,11 @@ Puppet::Type.
     if resource[:value].is_a? Hash
       resource[:value].each do |k, v|
         t << "add: olc#{k}\n"
-        t << "olc#{k}: #{v}\n"
+        if v.is_a? Array
+          v.each { |x| t << "olc#{k}: #{x}\n" }
+        else
+          t << "olc#{k}: #{v}\n"
+        end
         t << "-\n"
       end
     else
@@ -102,7 +106,11 @@ Puppet::Type.
     if resource[:value].is_a? Hash
       resource[:value].each do |k, v|
         t << "replace: olc#{k}\n"
-        t << "olc#{k}: #{v}\n"
+        if v.is_a? Array
+          v.each { |x| t << "olc#{k}: #{x}\n" }
+        else
+          t << "olc#{k}: #{v}\n"
+        end
         t << "-\n"
       end
     else
