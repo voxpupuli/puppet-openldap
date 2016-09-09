@@ -181,8 +181,8 @@ openldap::server::overlay { "rwm on relay":
   overlay => 'rwm',
   options => {
     'olcRwmRewrite' => [
-      '{0}rwm-rewriteEngine "on"',
-      '{1}rwm-suffixmassage , "dc=example,dc=com"]',
+      'rwm-rewriteEngine "on"',
+      'rwm-suffixmassage , "dc=example,dc=com"]',
   },
 }
 ```
