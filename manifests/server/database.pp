@@ -20,6 +20,7 @@ define openldap::server::database(
   $mirrormode      = undef,
   $syncusesubentry = undef,
   $syncrepl        = undef,
+  $security        = undef,
 ) {
 
   if ! defined(Class['openldap::server']) {
@@ -80,6 +81,7 @@ define openldap::server::database(
     syncusesubentry => $syncusesubentry,
     syncrepl        => $syncrepl,
     limits          => $limits,
+    security        => $security,
   }
 
 }
