@@ -11,35 +11,70 @@ Puppet::Type.newtype(:openldap_access) do
     desc "The slapd.conf file"
   end
 
-  newparam(:what, :namevar => true) do
+  newproperty(:islast) do
+    desc "Is this olcAccess the last one?"
+  end
+
+  newproperty(:what) do
     desc "The entries and/or attributes to which the access applies"
   end
 
-  newparam(:by, :namevar => true) do
-    desc "To whom the access applies"
+  newproperty(:suffix) do
+    desc "The suffix to which the access applies"
   end
 
-  newparam(:suffix, :namevar => true) do
-    desc "The suffix to which the access applies"
+  newproperty(:position) do
+    desc "Where to place the new entry"
+  end
+
+  newproperty(:access, :array_matching => :all ) do
+    desc "Access rule."
   end
 
   def self.title_patterns
     [
       [
-        /^(to\s+(\S+)\s+by\s+(.+)\s+on\s+(.+))$/,
+        /^(\{(\d+)\}to\s+(\S+)\s+(by\s+.+)\s+on\s+(.+))$/,
         [
           [ :name, lambda{|x| x} ],
+          [ :position, lambda{|x| x} ],
           [ :what, lambda{|x| x} ],
-          [ :by, lambda{|x| x} ],
+          [ :access, lambda{ |x| a=[]; x.split(/(?= by .+)/).each { |b| a << b.lstrip }; a } ],
           [ :suffix, lambda{|x| x} ],
         ],
       ],
       [
-        /^(to\s+(\S+)\s+by\s+(.+))$/,
+        /^(\{(\d+)\}to\s+(\S+)\s+(by\s+.+)\s+)$/,
+        [
+          [ :name, lambda{|x| x} ],
+          [ :position, lambda{|x| x} ],
+          [ :what, lambda{|x| x} ],
+          [ :access, lambda{ |x| a=[]; x.split(/(?= by .+)/).each { |b| a << b.lstrip }; a } ],
+        ],
+      ],
+      [
+        /^(to\s+(\S+)\s+(by\s+.+)\s+on\s+(.+))$/,
         [
           [ :name, lambda{|x| x} ],
           [ :what, lambda{|x| x} ],
-          [ :by, lambda{|x| x} ],
+          [ :access, lambda{ |x| a=[]; x.split(/(?= by .+)/).each { |b| a << b.lstrip }; a } ],
+          [ :suffix, lambda{|x| x} ],
+        ],
+      ],
+      [
+        /^(to\s+(\S+)\s+(by\s+.+))$/,
+        [
+          [ :name, lambda{|x| x} ],
+          [ :what, lambda{|x| x} ],
+          [ :access, lambda{ |x| a=[]; x.split(/(?= by .+)/).each { |b| a << b.lstrip }; a } ],
+        ],
+      ],
+      [
+        /^((\d+)\s+on\s+(.+))$/,
+        [
+          [ :name, lambda{|x| x} ],
+          [ :position, lambda{|x| x} ],
+          [ :suffix, lambda{|x| x} ],
         ],
       ],
       [
@@ -49,18 +84,7 @@ Puppet::Type.newtype(:openldap_access) do
         ],
       ],
     ]
-  end
 
-  newparam(:position) do
-    desc "Where to place the new entry"
-  end
-
-  newproperty(:access) do
-    desc "Access rule."
-  end
-
-  newproperty(:control) do
-    desc "Control rule."
   end
 
   autorequire(:openldap_database) do

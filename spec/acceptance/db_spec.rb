@@ -135,7 +135,7 @@ describe 'openldap::server::database' do
     end
 
     it 'can connect with ldapsearch to the new password' do
-      ldapsearch('-LLL -x -b "cn=config" -D "cn=newadmin,cn=config" -w newsecret') do |r|
+      ldapsearch('-LLL -s base -x -b "cn=config" -D "cn=newadmin,cn=config" -w newsecret') do |r|
         expect(r.stdout).to match(/dn: cn=config/)
       end
     end
