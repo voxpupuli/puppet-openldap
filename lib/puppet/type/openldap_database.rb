@@ -192,4 +192,19 @@ Puppet::Type.newtype(:openldap_database) do
       end
     end
   end
+
+  newproperty(:security) do
+    desc "The olcSecurity configuration."
+    correct_keys = ['transport', 'sasl', 'simple_bind', 'ssf', 'tls', 'update_sasl', 'update_ssf', 'update_tls', 'update_transport']
+    validate do |value|
+      value.each do |k, v|
+        if ! correct_keys.include? k
+            raise ArgumentError, "Invalid security key: '#{k}' for value '#{v}'\nSecurity key must be one of these value: #{correct_keys.join(', ')}\nSee olcSecurity in `man slapd-config`"
+        end
+        if ! (Float(v) rescue false)
+            raise ArgumentError, "Invalid security value: '#{v}' for key '#{k}'\nSecurity value must be a number\nSee olcSecurity in `man slapd-config`"
+        end
+      end
+    end
+  end
 end
