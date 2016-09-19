@@ -31,6 +31,7 @@ Puppet::Type.
       syncusesubentry = nil
       syncrepl = nil
       limits = []
+      security = {}
       paragraph.gsub("\n ", "").split("\n").collect do |line|
         case line
         when /^olcDatabase: /
@@ -83,10 +84,15 @@ Puppet::Type.
         when /^olcSyncrepl: /
           syncrepl ||= []
           optvalue = line.split(' ',2)[1]
-          syncrepl.push(optvalue.match(/^(\{\d+\})?(.+)$/).captures[1]+"\n")
+          syncrepl.push(optvalue.match(/^(\{\d+\})?(.+)$/).captures[1])
         when /^olcLimits: /
           limit = line.match(/^olcLimits:\s+(\{\d+\})?(.+)$/).captures[1]
           limits << limit
+        when /^olcSecurity: /
+          line.split(': ')[1].split(' ').each do |variable|
+            values = variable.split('=')
+            security[values[0]] = values[1]
+          end
         end
       end
       if backend == 'monitor' and !suffix
@@ -113,7 +119,8 @@ Puppet::Type.
         :mirrormode      => mirrormode,
         :syncusesubentry => syncusesubentry,
         :syncrepl        => syncrepl,
-        :limits          => limits
+        :limits          => limits,
+        :security        => security
       )
     end
   end
@@ -237,6 +244,7 @@ Puppet::Type.
     t << "olcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:mirrormode]
     t << "olcSyncUseSubentry: #{resource[:syncusesubentry]}\n" if resource[:syncusesubentry]
     t << "#{resource[:limits].collect { |x| "olcLimits: #{x}" }.join("\n")}\n" if resource[:limits] and !resource[:limits].empty?
+    t << "#{resource[:security].collect { |k, v| "olcSecurity: #{k}=#{v}" }.join("\n")}\n" if resource[:security] and !resource[:security].empty?
     t << "olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break\n"
     t << "olcAccess: to attrs=userPassword\n"
     t << "  by self write\n"
@@ -327,6 +335,10 @@ Puppet::Type.
     @property_flush[:limits] = value
   end
 
+  def security=(value)
+    @property_flush[:security] = value
+  end
+
   def flush
     if not @property_flush.empty?
       t = Tempfile.new('openldap_database')
@@ -377,6 +389,7 @@ Puppet::Type.
       t << "replace: olcMirrorMode\nolcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n-\n" if @property_flush[:mirrormode]
       t << "replace: olcSyncUseSubentry\nolcSyncUseSubentry: #{resource[:syncusesubentry]}\n-\n" if @property_flush[:syncusesubentry]
       t << "replace: olcLimits\n#{@property_flush[:limits].collect { |x| "olcLimits: #{x}" }.join("\n")}\n-\n" if @property_flush[:limits]
+      t << "replace: olcSecurity\n#{@property_flush[:security].collect { |k, v| "olcSecurity: #{k}=#{v}" }.join("\n")}\n-\n" if @property_flush[:security]
       t.close
       Puppet.debug(IO.read t.path)
       begin
