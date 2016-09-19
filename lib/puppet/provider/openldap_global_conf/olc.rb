@@ -12,6 +12,7 @@ Puppet::Type.
 
   def self.instances
     items = slapcat('(objectClass=olcGlobal)')
+    options = {}
 
     # iterate olc options and removes any keys when it found any duplications
     # such as olcServerID 
@@ -29,7 +30,7 @@ Puppet::Type.
     end
     new_instances = []
 
-		# iterate options and creates new ProviderOlc instances
+    # iterate options and creates new ProviderOlc instances
     options.each do |k,v|
       new_instances << Puppet::Type::Openldap_global_conf::ProviderOlc.new(
         :name   => k,
