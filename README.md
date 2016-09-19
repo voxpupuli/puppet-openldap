@@ -97,6 +97,14 @@ openldap::server::globalconf { 'security':
 }
 ```
 
+Configuring multiple olc serverIDs for multiple master or mirror mode
+```puppet
+openldap::server::globalconf { 'ServerID':
+  ensure  => present,
+  value   => { 'ServerID' => [ '1 ldap://master1.example.com', '2 ldap://master2.example.com' ] }
+} 
+```
+
 ###Configuring a database
 
 ```puppet
