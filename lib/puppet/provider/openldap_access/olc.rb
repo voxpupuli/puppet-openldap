@@ -147,7 +147,12 @@ Puppet::Type.
     end
     t.close
     Puppet.debug(IO.read t.path)
-    slapdd('-b', 'cn=config', '-l', t.path)
+    begin
+      ldapmodify(t.path)
+    rescue Exception => e
+      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+    end
+#    slapdd('-b', 'cn=config', '-l', t.path)
   end
 
   def initialize(value={})
