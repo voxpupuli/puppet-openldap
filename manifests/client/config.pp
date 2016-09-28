@@ -130,6 +130,18 @@ class openldap::client::config {
     undef   => undef,
     default => "set SASL_NOCANON ${::openldap::client::sasl_nocanon}",
   }
+  $gssapi_sign = $::openldap::client::gssapi_sign ? {
+    undef   => undef,
+    default => "set GSSAPI_SIGN ${::openldap::client::gssapi_sign}",
+  }
+  $gssapi_encrypt = $::openldap::client::gssapi_encrypt ? {
+    undef   => undef,
+    default => "set GSSAPI_ENCRYPT ${::openldap::client::gssapi_encrypt}",
+  }
+  $gssapi_allow_remote_principal = $::openldap::client::gssapi_allow_remote_principal ? {
+    undef   => undef,
+    default => "set GSSAPI_ALLOW_REMOTE_PRINCIPAL ${::openldap::client::gssapi_allow_remote_principal}",
+  }
   $sudoers_base = $::openldap::client::sudoers_base ? {
     undef   => undef,
     default => "set SUDOERS_BASE ${::openldap::client::sudoers_base}",
@@ -164,6 +176,9 @@ class openldap::client::config {
     $sasl_authcid,
     $sasl_secprops,
     $sasl_nocanon,
+    $gssapi_sign,
+    $gssapi_encrypt,
+    $gssapi_allow_remote_principal,
     $sudoers_base,
   ])
   augeas { 'ldap.conf':
