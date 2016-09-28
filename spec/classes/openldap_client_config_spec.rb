@@ -633,6 +633,44 @@ describe 'openldap::client::config' do
         end
       end
 
+      context 'with sasl options set' do
+        let :pre_condition do
+          "class {'openldap::client':
+                   sasl_mech => 'gssapi',
+                   sasl_realm => 'TEST.REALM',
+                   sasl_authcid => 'dn:uid=test,cn=mech,cn=authzid',
+                   sasl_secprops => ['noplain','noactive'],
+                   sasl_nocanon => true,
+           }"
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('openldap::client::config') }
+        it { is_expected.to contain_augeas('ldap.conf') }
+        case facts[:osfamily]
+        when 'Debian'
+          it { is_expected.to contain_augeas('ldap.conf').with({
+            :incl    => '/etc/ldap/ldap.conf',
+            :changes => [ 'set SASL_MECH gssapi',
+                          'set SASL_REALM TEST.REALM',
+                          'set SASL_AUTHCID dn:uid=test,cn=mech,cn=authzid',
+                          'set SASL_SECPROPS noplain,noactive',
+                          'set SASL_NOCANON true'],
+          })
+          }
+        when 'RedHat'
+          it { is_expected.to contain_augeas('ldap.conf').with({
+            :incl    => '/etc/openldap/ldap.conf',
+            :changes => [ 'set SASL_MECH gssapi',
+                          'set SASL_REALM TEST.REALM',
+                          'set SASL_AUTHCID dn:uid=test,cn=mech,cn=authzid',
+                          'set SASL_SECPROPS noplain,noactive',
+                          'set SASL_NOCANON true'],
+          })
+          }
+        end
+      end
+
       context 'with sudoers_base set' do
         let :pre_condition do
           "class {'openldap::client': sudoers_base => 'ou=sudoers,dc=example,dc=com', }"
