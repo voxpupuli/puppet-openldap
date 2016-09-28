@@ -703,6 +703,38 @@ describe 'openldap::client::config' do
         end
       end
 
+      context 'with gssapi options set' do
+        let :pre_condition do
+          "class {'openldap::client':
+                   gssapi_sign => false,
+                   gssapi_encrypt => true,
+                   gssapi_allow_remote_principal => 'on'
+           }"
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('openldap::client::config') }
+        it { is_expected.to contain_augeas('ldap.conf') }
+        case facts[:osfamily]
+        when 'Debian'
+          it { is_expected.to contain_augeas('ldap.conf').with({
+            :incl    => '/etc/ldap/ldap.conf',
+            :changes => [ 'set GSSAPI_SIGN false',
+                          'set GSSAPI_ENCRYPT true',
+                          'set GSSAPI_ALLOW_REMOTE_PRINCIPAL on'],
+          })
+          }
+        when 'RedHat'
+          it { is_expected.to contain_augeas('ldap.conf').with({
+            :incl    => '/etc/openldap/ldap.conf',
+            :changes => [ 'set GSSAPI_SIGN false',
+                          'set GSSAPI_ENCRYPT true',
+                          'set GSSAPI_ALLOW_REMOTE_PRINCIPAL on'],
+          })
+          }
+        end
+      end
+
       context 'with sudoers_base set' do
         let :pre_condition do
           "class {'openldap::client': sudoers_base => 'ou=sudoers,dc=example,dc=com', }"
