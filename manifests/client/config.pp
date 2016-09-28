@@ -129,6 +129,30 @@ class openldap::client::config {
     'absent' => 'rm TLS_REQCERT',
     default  => "set TLS_REQCERT ${::openldap::client::tls_reqcert}",
   }
+  $sasl_mech = $::openldap::client::sasl_mech ? {
+    undef   => undef,
+    default => "set SASL_MECH ${::openldap::client::sasl_mech}",
+  }
+  $sasl_realm = $::openldap::client::sasl_realm ? {
+    undef   => undef,
+    default => "set SASL_REALM ${::openldap::client::sasl_realm}",
+  }
+  $sasl_authcid = $::openldap::client::sasl_authcid ? {
+    undef   => undef,
+    default => "set SASL_AUTHCID ${::openldap::client::sasl_authcid}",
+  }
+  $_sasl_secprops = $::openldap::client::sasl_secprops ? {
+    undef   => undef,
+    default => join(flatten([$::openldap::client::sasl_secprops]), ','),
+  }
+  $sasl_secprops = $_sasl_secprops ? {
+    undef   => undef,
+    default => "set SASL_SECPROPS ${_sasl_secprops}",
+  }
+  $sasl_nocanon = $::openldap::client::sasl_nocanon ? {
+    undef   => undef,
+    default => "set SASL_NOCANON ${::openldap::client::sasl_nocanon}",
+  }
   $sudoers_base = $::openldap::client::sudoers_base ? {
     undef    => undef,
     'absent' => 'rm SUDOERS_BASE',
@@ -160,6 +184,11 @@ class openldap::client::config {
     $tls_cacert,
     $tls_cacertdir,
     $tls_reqcert,
+    $sasl_mech,
+    $sasl_realm,
+    $sasl_authcid,
+    $sasl_secprops,
+    $sasl_nocanon,
     $sudoers_base,
   ])
   augeas { 'ldap.conf':
