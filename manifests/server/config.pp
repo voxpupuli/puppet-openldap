@@ -29,7 +29,7 @@ class openldap::server::config {
       }
     }
     'RedHat': {
-      if ${::operatingsystemmajrelease}.to_i <= 6 {
+      if $::operatingsystemmajrelease <= '6' {
         $ldap = empty($::openldap::server::ldap_ifs) ? {
           false => 'yes',
           true  => 'no',
