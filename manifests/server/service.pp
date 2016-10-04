@@ -10,7 +10,7 @@ class openldap::server::service {
     default => stopped,
   }
 
-  if Facter.value(:operatingsystem) == 'Debian' and Facter.value(:operatingsystemmajrelease) >= '8' {
+  if $::operatingsystem == 'Debian' and $::operatingsystemmajrelease == '8' {
     # Puppet4 fallback to init provider which does not support enableable
     $provider = 'debian'
   } else {
