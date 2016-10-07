@@ -10,7 +10,7 @@ class openldap::params {
       $server_owner             = 'openldap'
       $server_package           = 'slapd'
       $server_service           = 'slapd'
-      if $::operatingsystem == 'Debian' and $::operatingsystemmajrelease <= '5' {
+      if $::operatingsystem == 'Debian' and versioncmp($::operatingsystemmajrelease, '5') <= 0 {
         $server_service_hasstatus = false
       } else {
         $server_service_hasstatus = true
