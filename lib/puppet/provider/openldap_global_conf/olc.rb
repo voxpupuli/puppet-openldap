@@ -12,15 +12,34 @@ Puppet::Type.
 
   def self.instances
     items = slapcat('(objectClass=olcGlobal)')
+    options = {}
+
+    # iterate olc options and removes any keys when it found any duplications
+    # such as olcServerID 
     items.gsub("\n ", "").split("\n").select{|e| e =~ /^olc/}.collect do |line|
       name, value = line.split(': ')
-      # initialize @property_hash
-      new(
-        :name   => name[3, name.length],
+      name = name[3, name.length]
+      if options[name] and !options[name].is_a?(Array)
+        options[name] = [options[name]]
+        options[name].push(value)
+      elsif options[name]
+        options[name].push(value)
+      else
+        options[name] = value
+      end
+    end
+    new_instances = []
+
+    # iterate options and creates new ProviderOlc instances
+    options.each do |k,v|
+      new_instances << Puppet::Type::Openldap_global_conf::ProviderOlc.new(
+        :name   => k,
         :ensure => :present,
-        :value  => value
+        :value  => v
       )
     end
+
+    new_instances
   end
 
   def self.prefetch(resources)
@@ -46,7 +65,11 @@ Puppet::Type.
     if resource[:value].is_a? Hash
       resource[:value].each do |k, v|
         t << "add: olc#{k}\n"
-        t << "olc#{k}: #{v}\n"
+        if v.is_a? Array
+          v.each { |x| t << "olc#{k}: #{x}\n" }
+        else
+          t << "olc#{k}: #{v}\n"
+        end
         t << "-\n"
       end
     else
@@ -88,7 +111,8 @@ Puppet::Type.
     if resource[:value].is_a? Hash
       instances = self.class.instances
       values = resource[:value].map do |k, v|
-        [ k, instances.find { |item| item.name == k }.get(:value) ]
+        found = instances.find { |item| item.name == k }
+        [ k, found.get(:value) ] unless found.nil?
       end
       Hash[values]
     else
@@ -102,7 +126,11 @@ Puppet::Type.
     if resource[:value].is_a? Hash
       resource[:value].each do |k, v|
         t << "replace: olc#{k}\n"
-        t << "olc#{k}: #{v}\n"
+        if v.is_a? Array
+          v.each { |x| t << "olc#{k}: #{x}\n" }
+        else
+          t << "olc#{k}: #{v}\n"
+        end
         t << "-\n"
       end
     else
