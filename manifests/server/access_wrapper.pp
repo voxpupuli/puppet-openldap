@@ -28,14 +28,14 @@ define openldap::server::access_wrapper (
   # Parse ACL
   $acl_yaml = inline_template('<%=
     position = -1
-    acl.map { |to,access|
+    @acl.map { |to,access|
       position = position + 1
       {
-        "#{position} on #{suffix}" => {
+        "#{position} on #{@suffix}" => {
           "position" => position,
           "what"     => to[/.*to (.*)/,1],
           "access"   => access,
-          "suffix"   => "#{suffix}",
+          "suffix"   => "#{@suffix}",
         }
       }
   }.flatten.reduce({}, :update).to_yaml
