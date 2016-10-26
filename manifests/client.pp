@@ -10,6 +10,7 @@ class openldap::client(
   $binddn               = undef,
   $bindpw               = undef,
   $ldap_version         = undef,
+  $network_timeout      = undef,
   $scope                = undef,
   $ssl                  = undef,
   $suffix               = undef,
