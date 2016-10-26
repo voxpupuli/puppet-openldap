@@ -24,6 +24,10 @@ class openldap::client::config {
     undef   => undef,
     default => "set LDAP_VERSION ${::openldap::client::ldap_version}",
   }
+  $network_timeout = $::openldap::client::network_timeout ? {
+    undef   => undef,
+    default => "set NETWORK_TIMEOUT ${::openldap::client::network_timeout}",
+  }
   $scope = $::openldap::client::scope ? {
     undef   => undef,
     default => "set SCOPE ${::openldap::client::scope}",
@@ -117,6 +121,7 @@ class openldap::client::config {
     $binddn,
     $bindpw,
     $ldap_version,
+    $network_timeout,
     $scope,
     $ssl,
     $suffix,
