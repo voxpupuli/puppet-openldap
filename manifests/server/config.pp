@@ -69,6 +69,7 @@ class openldap::server::config {
         }
       }
     }
+    'Archlinux': {}
     default: {
       fail "Operating System Family ${::osfamily} not yet supported"
     }
