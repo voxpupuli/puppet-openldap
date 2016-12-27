@@ -32,6 +32,18 @@ class openldap::params {
       $server_service_hasstatus = true
       $utils_package            = 'openldap-clients'
     }
+    'Archlinux': {
+      $client_package           = 'openldap'
+      $client_conffile          = '/etc/openldap/ldap.conf'
+      $server_confdir           = '/etc/openldap/slapd.d'
+      $server_conffile          = '/etc/openldap/slapd.conf'
+      $server_group             = 'ldap'
+      $server_owner             = 'ldap'
+      $server_package           = 'openldap'
+      $server_service           = 'slapd'
+      $server_service_hasstatus = true
+      $utils_package            = undef
+    }
     default: {
       fail "Operating System family ${::osfamily} not supported"
     }
