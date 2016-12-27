@@ -48,8 +48,10 @@ class openldap::server::slapdconf {
     fail 'You must specify a ssl_cert'
   }
 
-  openldap::server::database { 'dc=my-domain,dc=com':
-    ensure => absent,
+  if $::osfamily == 'Debian' {
+    openldap::server::database { 'dc=my-domain,dc=com':
+      ensure => absent,
+    }
   }
 
   create_resources('openldap::server::database', $::openldap::server::databases)
