@@ -63,14 +63,14 @@ matrix:
     sudo: required
     dist: trusty
     services: docker
-    env: BEAKER_set="amazon-2015"
+    env: BEAKER_set="centos-2015"
     bundler_args:
     script: sudo service docker restart ; sleep 10 && bundle exec rspec spec/acceptance/*_spec.rb
   - rvm: default
     sudo: required
     dist: trusty
     services: docker
-    env: BEAKER_set="amazon-2016"
+    env: BEAKER_set="centos-2016"
     bundler_args:
     script: sudo service docker restart ; sleep 10 && bundle exec rspec spec/acceptance/*_spec.rb
 notifications:
