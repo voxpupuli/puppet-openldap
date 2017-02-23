@@ -137,6 +137,10 @@ Puppet::Type.newtype(:openldap_database) do
     desc "Specifies the maximum number of entries to return from a search operation."
   end
 
+  newproperty(:dbmaxsize) do
+    desc "Specifies the maximum size of the DB in bytes."
+  end
+
   newproperty(:timelimit) do
     desc "Specifies the maximum number of seconds (in real time) slapd will spend answering a search request."
   end
