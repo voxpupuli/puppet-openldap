@@ -24,6 +24,7 @@ Puppet::Type.
       rootpw = nil
       readonly = nil
       sizelimit = nil
+      dbmaxsize = nil
       timelimit = nil
       updateref = nil
       dboptions = {}
@@ -50,6 +51,8 @@ Puppet::Type.
           readonly = line.split(' ')[1]
         when /^olcSizeLimit: /i
           sizelimit = line.split(' ')[1]
+        when /^olcDbMaxSize: /i
+          dbmaxsize = line.split(' ')[1]
         when /^olcTimeLimit: /i
           timelimit = line.split(' ')[1]
         when /^olcUpdateref: /i
@@ -114,6 +117,7 @@ Puppet::Type.
         :readonly        => readonly,
         :sizelimit       => sizelimit,
         :timelimit       => timelimit,
+        :dbmaxsize       => dbmaxsize,
         :updateref       => updateref,
         :dboptions       => dboptions,
         :mirrormode      => mirrormode,
@@ -220,6 +224,7 @@ Puppet::Type.
     t << "olcRootPW: #{resource[:rootpw]}\n" if resource[:rootpw]
     t << "olcReadOnly: #{resource[:readonly] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:readonly]
     t << "olcSizeLimit: #{resource[:sizelimit]}\n" if resource[:sizelimit]
+    t << "olcDbMaxSize: #{resource[:dbmaxsize]}\n" if resource[:dbmaxsize]
     t << "olcTimeLimit: #{resource[:timelimit]}\n" if resource[:timelimit]
     t << "olcUpdateref: #{resource[:updateref]}\n" if resource[:updateref]
     if resource[:dboptions]
@@ -311,6 +316,10 @@ Puppet::Type.
     @property_flush[:timelimit] = value
   end
 
+  def dbmaxsize=(value)
+    @property_flush[:dbmaxsize] = value
+  end
+
   def updateref=(value)
     @property_flush[:updateref] = value
   end
@@ -352,7 +361,7 @@ Puppet::Type.
       t << "replace: olcReadOnly\nolcReadOnly: #{resource[:readonly] == :true ? 'TRUE' : 'FALSE'}\n-\n" if @property_flush[:readonly]
       t << "replace: olcSizeLimit\nolcSizeLimit: #{resource[:sizelimit]}\n-\n" if @property_flush[:sizelimit]
       t << "replace: olcTimeLimit\nolcTimeLimit: #{resource[:timelimit]}\n-\n" if @property_flush[:timelimit]
-      t << "replace: olcUpdateref\nolcUpdateref: #{resource[:updateref]}\n-\n" if @property_flush[:updateref]
+      t << "replace: olcDbMaxSize\nolcDbMaxSize: #{resource[:dbmaxsize]}\n-\n" if @property_flush[:dbmaxsize]
       if @property_flush[:dboptions]
         if "#{resource[:synctype]}" == "inclusive" and !@property_hash[:dboptions].empty?
           @property_hash[:dboptions].keys.each do |k|
@@ -386,6 +395,7 @@ Puppet::Type.
         end
       end
       t << "replace: olcSyncrepl\n#{resource[:syncrepl].collect { |x| "olcSyncrepl: #{x}" }.join("\n")}\n-\n" if @property_flush[:syncrepl]
+      t << "replace: olcUpdateref\nolcUpdateref: #{resource[:updateref]}\n-\n" if @property_flush[:updateref]
       t << "replace: olcMirrorMode\nolcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n-\n" if @property_flush[:mirrormode]
       t << "replace: olcSyncUseSubentry\nolcSyncUseSubentry: #{resource[:syncusesubentry]}\n-\n" if @property_flush[:syncusesubentry]
       t << "replace: olcLimits\n#{@property_flush[:limits].collect { |x| "olcLimits: #{x}" }.join("\n")}\n-\n" if @property_flush[:limits]
