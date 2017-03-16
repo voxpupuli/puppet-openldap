@@ -3,6 +3,7 @@ class openldap::server(
   $package           = $openldap::params::server_package,
   $confdir           = $openldap::params::server_confdir,
   $conffile          = $openldap::params::server_conffile,
+  $conffile_content  = undef,
   $service           = $openldap::params::server_service,
   $service_hasstatus = $openldap::params::server_service_hasstatus,
   $owner             = $openldap::params::server_owner,

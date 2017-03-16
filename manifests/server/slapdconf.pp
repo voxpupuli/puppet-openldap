@@ -7,12 +7,23 @@ class openldap::server::slapdconf {
 
   case $::openldap::server::provider {
     'augeas': {
-      file { $::openldap::server::conffile:
-        ensure => file,
-        owner  => $::openldap::server::owner,
-        group  => $::openldap::server::group,
-        mode   => '0640',
+      if defined($::openldap::server::conffile_content) {
+        file { $::openldap::server::conffile:
+          ensure  => file,
+          owner   => $::openldap::server::owner,
+          group   => $::openldap::server::group,
+          mode    => '0640',
+          content => $::openldap::server::conffile_content,
+        }
+      }else{
+        file { $::openldap::server::conffile:
+          ensure => file,
+          owner  => $::openldap::server::owner,
+          group  => $::openldap::server::group,
+          mode   => '0640',
+        }
       }
+
     }
     'olc': {
       file { $::openldap::server::confdir:
