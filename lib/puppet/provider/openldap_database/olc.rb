@@ -279,7 +279,7 @@ Puppet::Type.
     t << "olcSyncUseSubentry: #{resource[:syncusesubentry]}\n" if resource[:syncusesubentry]
     t << "#{resource[:limits].collect { |x| "olcLimits: #{x}" }.join("\n")}\n" if resource[:limits] and !resource[:limits].empty?
     t << "#{resource[:security].collect { |k, v| "olcSecurity: #{k}=#{v}" }.join("\n")}\n" if resource[:security] and !resource[:security].empty?
-    if resource[:initacl]
+    if @property_hash[:initacl]
       t << "olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break\n"
       t << "olcAccess: to attrs=userPassword\n"
       t << "  by self write\n"
@@ -317,10 +317,6 @@ Puppet::Type.
 
   def directory=(value)
     @property_flush[:directory] = value
-  end
-
-  def initacl=(value)
-    @property_flush[:initacl] = value
   end
 
   def perl_module_path=(value)
