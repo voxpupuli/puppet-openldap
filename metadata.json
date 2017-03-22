@@ -21,6 +21,12 @@
       "version_requirement": "2.x"
     }
   ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": "3.x"
+    }
+  ],
   "operatingsystem_support": [
     {
       "operatingsystem": "Debian",

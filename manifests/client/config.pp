@@ -114,16 +114,10 @@ class openldap::client::config {
     'absent' => 'rm TLS_CHECKPEER',
     default  => "set TLS_CHECKPEER ${::openldap::client::tls_checkpeer}",
   }
-  if $::openldap::client::tls_cacert != undef {
-    validate_absolute_path($::openldap::client::tls_cacert)
-  }
   $tls_cacert = $::openldap::client::tls_cacert ? {
     undef    => undef,
     'absent' => 'rm TLS_CACERT',
     default  => "set TLS_CACERT ${::openldap::client::tls_cacert}",
-  }
-  if $::openldap::client::tls_cacertdir != undef {
-    validate_absolute_path($::openldap::client::tls_cacertdir)
   }
   $tls_cacertdir = $::openldap::client::tls_cacertdir ? {
     undef    => undef,
