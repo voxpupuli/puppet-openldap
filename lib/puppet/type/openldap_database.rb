@@ -137,6 +137,19 @@ Puppet::Type.newtype(:openldap_database) do
     end
   end
 
+  newparam(:initacl, :boolean => true) do
+    desc "When true it initiales basic access control list(ACL) on the database. When false, it does not set any access control list(ACL) on the database, so you have to create it by other mechanism. It defaults to true"
+
+    newvalues(:true, :false)
+    defaultto do
+      if [ "perl" ].include? "#{@resource[:backend]}"
+        :false
+      else
+        :true
+      end
+    end
+  end
+
   newproperty(:readonly) do
     desc "Puts the database into read-only mode."
   end
