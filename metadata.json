@@ -21,16 +21,6 @@
       "version_requirement": "2.x"
     }
   ],
-  "requirements": [
-    {
-      "name": "pe",
-      "version_requirement": "3.x"
-    },
-    {
-      "name": "puppet",
-      "version_requirement": "3.x"
-    }
-  ],
   "operatingsystem_support": [
     {
       "operatingsystem": "Debian",
@@ -51,13 +41,6 @@
       "operatingsystemrelease": [
         "6",
         "7"
-      ]
-    },
-    {
-      "operatingsystem": "Amazon",
-      "operatingsystemrelease": [
-        "2015",
-        "2016"
       ]
     }
   ],
