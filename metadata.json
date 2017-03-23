@@ -42,13 +42,6 @@
         "6",
         "7"
       ]
-    },
-    {
-      "operatingsystem": "Amazon",
-      "operatingsystemrelease": [
-        "2015",
-        "2016"
-      ]
     }
   ],
   "puppet_version": [
