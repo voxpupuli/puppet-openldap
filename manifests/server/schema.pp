@@ -19,7 +19,7 @@ define openldap::server::schema(
     ~> Class['openldap::server::service']
     file_line{$title:
       path => $::openldap::server::conffile,
-      line => "include $path",
+      line => "include ${path}",
     }
   } else {
     Class['openldap::server::service']
