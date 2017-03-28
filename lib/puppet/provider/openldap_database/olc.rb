@@ -36,7 +36,7 @@ Puppet::Type.
       paragraph.gsub("\n ", "").split("\n").collect do |line|
         case line
         when /^olcDatabase: /
-          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor|config|relay)$/).captures
+          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor|config|relay)$/i).captures
         when /^olcDbDirectory: /
           directory = line.split(' ')[1]
         when /^olcRootDN: /
@@ -98,11 +98,11 @@ Puppet::Type.
           end
         end
       end
-      if backend == 'monitor' and !suffix
-        suffix = 'cn=monitor'
+      if backend.match(/monitor/i) and !suffix
+        suffix = "cn=#{backend}"
       end
-      if backend == 'config' and !suffix
-        suffix = 'cn=config'
+      if backend.match(/config/i) and !suffix
+        suffix = "cn=#{backend}"
       end
       new(
         :ensure          => :present,
