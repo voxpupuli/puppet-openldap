@@ -309,8 +309,10 @@ openldap::server::database { 'perl':
   ensure           => present,
   backend          => 'perl',
   suffix           => 'cn=perllog',
-  perl_module_path => '/usr/local/lib64/perl5',
-  perl_module      => 'SampleLDAP',
+  perl_options     => {
+    'perlmodulepath' => '/usr/local/lib64/perl5',
+    'perlmodule'     => 'SampleLDAP',
+  },
   require          => Openldap::Server::Module['back_perl'],
   initdb           => true,
 }
