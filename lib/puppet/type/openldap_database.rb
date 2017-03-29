@@ -57,14 +57,6 @@ Puppet::Type.newtype(:openldap_database) do
     end
   end
 
-  newproperty(:perl_module_path) do
-    desc "The directory where the perl module file containing."
-  end
-
-  newproperty(:perl_module) do
-    desc "The file name of the perl module."
-  end
-
   newproperty(:rootdn) do
     desc "The distinguished name that is not subject to access control or administrative limit restrictions for operations on this database."
   end
@@ -217,6 +209,18 @@ Puppet::Type.newtype(:openldap_database) do
       end
     end
   end
+
+  newproperty(:perl_options) do
+    desc 'The Perl backend configuration.'
+    correct_keys = ['perlmodulepath','perlmodule' ]
+    validate do |value|
+      unless correct_keys.all? { |s| value.key? s }
+        raise ArgumentError, "Perl options must set these values: #{correct_keys.join(', ')} #{value.keys.join(', ')}\n\
+        See Configuration in `man slapd-perl`"
+      end
+    end
+  end
+
 
   newproperty(:security) do
     desc "The olcSecurity configuration."

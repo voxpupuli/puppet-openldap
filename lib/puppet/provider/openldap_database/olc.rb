@@ -239,8 +239,18 @@ Puppet::Type.
       t << "olcRelay: #{resource[:relay]}\n" if !resource[:relay].empty?
       t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
     when "perl"
-      t << "olcPerlModulePath: #{resource[:perl_module_path]}\n" if resource[:perl_module_path]
-      t << "olcPerlModule: #{resource[:perl_module]}\n" if resource[:perl_module]
+      if resource[:perl_options]
+        resource[:perl_options].each do |k, v|
+          case k
+          when 'perlmodulepath'
+            t << "olcPerlModulePath: #{v}\n"
+          when 'permodule'
+            t << "olcPerlModule: #{v}\n"
+          else
+            t << "olc#{k}: #{v}\n"
+          end
+        end
+      end
       t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
     when "monitor"
       # WRITE HERE FOR MONITOR ONLY
@@ -323,12 +333,8 @@ Puppet::Type.
     @property_flush[:initacl] = value
   end
 
-  def perl_module_path=(value)
-    @property_flush[:perl_module_path] = value
-  end
-
-  def perl_module=(value)
-    @property_flush[:perl_module] = value
+  def perl_options=(value)
+    @property_flush[:perl_options] = value
   end
 
   def rootdn=(value)
