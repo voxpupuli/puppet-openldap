@@ -35,6 +35,7 @@ Puppet::Type.
       syncrepl = nil
       limits = []
       security = {}
+      perl_options = {}
       paragraph.gsub("\n ", "").split("\n").collect do |line|
         case line
         when /^olcDatabase: /
@@ -42,9 +43,9 @@ Puppet::Type.
         when /^olcDbDirectory: /
           directory = line.split(' ')[1]
         when /^olcPerlModulePath: /
-          perl_module_path = line.split(' ')[1]
+          perl_options['perlmodulepath'] = line.split(' ')[1]
         when /^olcPerlModule: /
-          perl_module = line.split(' ')[1]
+          perl_options['perlmodule'] = line.split(' ')[1]
         when /^olcRootDN: /
           rootdn = line.split(' ')[1]
         when /^olcRootPW:: /
@@ -118,8 +119,7 @@ Puppet::Type.
         :index           => index.to_i,
         :backend         => backend,
         :directory       => directory,
-        :perl_module_path=> perl_module_path,
-        :perl_module     => perl_module,
+        :perl_options    => perl_options,
         :rootdn          => rootdn,
         :rootpw          => rootpw,
         :readonly        => readonly,
