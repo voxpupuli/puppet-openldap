@@ -23,6 +23,7 @@ define openldap::server::database(
   $syncusesubentry  = undef,
   $syncrepl         = undef,
   $security         = undef,
+  # Perl options
   $perl_module      = undef,
   $perl_module_path = undef,
 ) {
