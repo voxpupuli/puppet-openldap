@@ -55,7 +55,7 @@ define openldap::server::database(
     Openldap::Server::Database['dc=my-domain,dc=com'] -> Openldap::Server::Database[$title]
   }
 
-  if $ensure == present and defined($backend) {
+  if $ensure == present and !empty($manage_directory) {
     validate_absolute_path($manage_directory)
     file { $manage_directory:
       ensure => directory,
