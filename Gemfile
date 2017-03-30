@@ -6,7 +6,7 @@ group :development, :unit_tests do
   gem 'rspec-puppet',                                      :require => false
   gem 'puppetlabs_spec_helper',                            :require => false
   gem 'metadata-json-lint',                                :require => false
-  gem 'puppet-lint',                                       :require => false
+  gem 'puppet-lint', '2.1.1',                              :require => false
   gem 'puppet-lint-unquoted_string-check',                 :require => false
   gem 'puppet-lint-empty_string-check',                    :require => false
   gem 'puppet-lint-spaceship_operator_without_tag-check',  :require => false

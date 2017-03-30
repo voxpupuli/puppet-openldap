@@ -1,27 +1,30 @@
 # See README.md for details.
 define openldap::server::database(
-  $ensure          = present,
-  $directory       = undef,
-  $suffix          = $title,
-  $relay           = undef,
-  $backend         = undef,
-  $rootdn          = undef,
-  $rootpw          = undef,
-  $initdb          = undef,
-  $readonly        = false,
-  $sizelimit       = undef,
-  $dbmaxsize       = undef,
-  $timelimit       = undef,
-  $updateref       = undef,
-  $limits          = undef,
+  $ensure           = present,
+  $directory        = undef,
+  $suffix           = $title,
+  $relay            = undef,
+  $backend          = undef,
+  $rootdn           = undef,
+  $rootpw           = undef,
+  $initdb           = undef,
+  $initacl          = true,
+  $readonly         = false,
+  $sizelimit        = undef,
+  $dbmaxsize        = undef,
+  $timelimit        = undef,
+  $updateref        = undef,
+  $limits           = undef,
   # BDB/HDB options
-  $dboptions       = undef,
-  $synctype        = undef,
+  $dboptions        = undef,
+  $synctype         = undef,
   # Synchronization options
-  $mirrormode      = undef,
-  $syncusesubentry = undef,
-  $syncrepl        = undef,
-  $security        = undef,
+  $mirrormode       = undef,
+  $syncusesubentry  = undef,
+  $syncrepl         = undef,
+  $security         = undef,
+  # Perl options
+  $perl_options     = undef,
 ) {
 
   if ! defined(Class['openldap::server']) {
@@ -32,6 +35,7 @@ define openldap::server::database(
     'monitor' => undef,
     'config'  => undef,
     'relay'   => undef,
+    'perl'    => undef,
     default   => $directory ? {
       undef   => '/var/lib/ldap',
       default => $directory,
@@ -51,7 +55,7 @@ define openldap::server::database(
     Openldap::Server::Database['dc=my-domain,dc=com'] -> Openldap::Server::Database[$title]
   }
 
-  if $ensure == present and $backend != 'monitor' and $backend != 'config' and $backend != 'relay' {
+  if $ensure == present and !empty($manage_directory) {
     validate_absolute_path($manage_directory)
     file { $manage_directory:
       ensure => directory,
@@ -72,6 +76,7 @@ define openldap::server::database(
     rootdn          => $rootdn,
     rootpw          => $rootpw,
     initdb          => $initdb,
+    initacl         => $initacl,
     readonly        => $readonly,
     sizelimit       => $sizelimit,
     timelimit       => $timelimit,
@@ -84,6 +89,7 @@ define openldap::server::database(
     syncrepl        => $syncrepl,
     limits          => $limits,
     security        => $security,
+    perl_options    => $perl_options,
   }
 
 }

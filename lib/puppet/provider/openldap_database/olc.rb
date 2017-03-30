@@ -12,7 +12,7 @@ Puppet::Type.
   mk_resource_methods
 
   def self.instances
-    databases = slapcat("(|(olcDatabase=monitor)(olcDatabase={0}config)(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)(objectClass=olcMonitorConfig)(objectClass=olcRelayConfig))))")
+    databases = slapcat("(|(olcDatabase=monitor)(olcDatabase={0}config)(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)(objectClass=olcMonitorConfig)(objectClass=olcRelayConfig)(objectClass=olcDbPerlConfig))))")
 
     databases.split("\n\n").collect do |paragraph|
       suffix = nil
@@ -20,6 +20,8 @@ Puppet::Type.
       index = nil
       backend = nil
       directory = nil
+      perl_module_path = nil
+      perl_module = nil
       rootdn = nil
       rootpw = nil
       readonly = nil
@@ -33,12 +35,17 @@ Puppet::Type.
       syncrepl = nil
       limits = []
       security = {}
+      perl_options = {}
       paragraph.gsub("\n ", "").split("\n").collect do |line|
         case line
         when /^olcDatabase: /
-          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor|config|relay)$/).captures
+          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor|config|relay|perl)$/).captures
         when /^olcDbDirectory: /
           directory = line.split(' ')[1]
+        when /^olcPerlModulePath: /
+          perl_options['perlmodulepath'] = line.split(' ')[1]
+        when /^olcPerlModule: /
+          perl_options['perlmodule'] = line.split(' ')[1]
         when /^olcRootDN: /
           rootdn = line.split(' ')[1]
         when /^olcRootPW:: /
@@ -112,6 +119,7 @@ Puppet::Type.
         :index           => index.to_i,
         :backend         => backend,
         :directory       => directory,
+        :perl_options    => perl_options,
         :rootdn          => rootdn,
         :rootpw          => rootpw,
         :readonly        => readonly,
@@ -143,7 +151,13 @@ Puppet::Type.
   end
 
   def fetch_index
-    slapcat("(&(objectClass=olc#{@property_hash[:backend].to_s.capitalize}Config)(olcSuffix=#{@property_hash[:suffix]}))").split("\n").collect do |line|
+    case "#{@property_hash[:backend]}"
+    when "perl"
+      olcDatabase = "olcDb#{backend.to_s.capitalize}"
+    else
+      olcDatabase = "olc#{backend.to_s.capitalize}"
+    end
+    slapcat("(&(objectClass=#{olcDatabase}Config)(olcSuffix=#{@property_hash[:suffix]}))").split("\n").collect do |line|
       if line =~ /^olcDatabase: /
         @property_hash[:index] = line.match(/^olcDatabase: \{(\d+)\}#{@property_hash[:backend]}$/).captures[0].to_i
       end
@@ -158,7 +172,13 @@ Puppet::Type.
 
     `service slapd stop`
     File.delete("#{default_confdir}/cn=config/olcDatabase={#{@property_hash[:index]}}#{backend}.ldif")
-    slapcat("(objectClass=olc#{backend.to_s.capitalize}Config)").
+    case "#{backend}"
+    when "perl"
+      olcDatabase = "olcDb#{backend.to_s.capitalize}"
+    else
+      olcDatabase = "olc#{backend.to_s.capitalize}"
+    end
+    slapcat("(objectClass=#{olcDatabase}Config)").
       split("\n").
       select { |line| line =~ /^dn: / }.
       select { |dn| dn.match(/^dn: olcDatabase={(\d+)}#{backend},cn=config$/).captures[0].to_i > @property_hash[:index] }.
@@ -206,12 +226,31 @@ Puppet::Type.
     t << "dn: olcDatabase=#{resource[:backend]},cn=config\n"
     t << "changetype: add\n"
     t << "objectClass: olcDatabaseConfig\n"
-    t << "objectClass: olc#{resource[:backend].to_s.capitalize}Config\n"
+    case "#{resource[:backend]}"
+    when "perl"
+      olcDatabase = "olcDb#{resource[:backend].to_s.capitalize}Config"
+    else
+      olcDatabase = "olc#{resource[:backend].to_s.capitalize}Config"
+    end
+    t << "objectClass: #{olcDatabase}\n"
     t << "olcDatabase: #{resource[:backend]}\n"
-
     case "#{resource[:backend]}"
     when "relay"
       t << "olcRelay: #{resource[:relay]}\n" if !resource[:relay].empty?
+      t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
+    when "perl"
+      if resource[:perl_options]
+        resource[:perl_options].each do |k, v|
+          case k
+          when 'perlmodulepath'
+            t << "olcPerlModulePath: #{v}\n"
+          when 'permodule'
+            t << "olcPerlModule: #{v}\n"
+          else
+            t << "olc#{k}: #{v}\n"
+          end
+        end
+      end
       t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
     when "monitor"
       # WRITE HERE FOR MONITOR ONLY
@@ -250,17 +289,19 @@ Puppet::Type.
     t << "olcSyncUseSubentry: #{resource[:syncusesubentry]}\n" if resource[:syncusesubentry]
     t << "#{resource[:limits].collect { |x| "olcLimits: #{x}" }.join("\n")}\n" if resource[:limits] and !resource[:limits].empty?
     t << "#{resource[:security].collect { |k, v| "olcSecurity: #{k}=#{v}" }.join("\n")}\n" if resource[:security] and !resource[:security].empty?
-    t << "olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break\n"
-    t << "olcAccess: to attrs=userPassword\n"
-    t << "  by self write\n"
-    t << "  by anonymous auth\n"
-    t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
-    t << "  by * none\n"
-    t << "olcAccess: to dn.base=\"\" by * read\n"
-    t << "olcAccess: to *\n"
-    t << "  by self write\n"
-    t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
-    t << "  by * read\n"
+    if resource[:initacl]
+      t << "olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break\n"
+      t << "olcAccess: to attrs=userPassword\n"
+      t << "  by self write\n"
+      t << "  by anonymous auth\n"
+      t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
+      t << "  by * none\n"
+      t << "olcAccess: to dn.base=\"\" by * read\n"
+      t << "olcAccess: to *\n"
+      t << "  by self write\n"
+      t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
+      t << "  by * read\n"
+    end
     t.close
     Puppet.debug(IO.read t.path)
     begin
@@ -271,7 +312,7 @@ Puppet::Type.
     t.delete
     initdb if resource[:initdb] == :true
     @property_hash[:ensure] = :present
-    slapcat("(&(objectClass=olc#{resource[:backend].to_s.capitalize}Config)(olcSuffix=#{resource[:suffix]}))").
+    slapcat("(&(objectClass=#{olcDatabase})(olcSuffix=#{resource[:suffix]}))").
       split("\n").collect do |line|
       if line =~ /^olcDatabase: /
         @property_hash[:index] = line.match(/^olcDatabase: \{(\d+)\}#{resource[:backend]}$/).captures[0]
@@ -286,6 +327,14 @@ Puppet::Type.
 
   def directory=(value)
     @property_flush[:directory] = value
+  end
+
+  def initacl=(value)
+    @property_flush[:initacl] = value
+  end
+
+  def perl_options=(value)
+    @property_flush[:perl_options] = value
   end
 
   def rootdn=(value)
@@ -354,6 +403,8 @@ Puppet::Type.
       t << "dn: olcDatabase={#{@property_hash[:index]}}#{resource[:backend]},cn=config\n"
       t << "changetype: modify\n"
       t << "replace: olcDbDirectory\nolcDbDirectory: #{resource[:directory]}\n-\n" if @property_flush[:directory]
+      t << "replace: olcPerlModulePath\nolcPerlModulePath: #{resource[:perl_module_path]}\n-\n" if @property_flush[:perl_module_path]
+      t << "replace: olcPerlModule\nolcPerlModule: #{resource[:perl_module]}\n-\n" if @property_flush[:perl_module]
       t << "replace: olcRootDN\nolcRootDN: #{resource[:rootdn]}\n-\n" if @property_flush[:rootdn]
       t << "replace: olcRootPW\nolcRootPW: #{resource[:rootpw]}\n-\n" if @property_flush[:rootpw]
       t << "replace: olcSuffix\nolcSuffix: #{resource[:suffix]}\n-\n" if @property_flush[:suffix]

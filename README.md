@@ -296,3 +296,43 @@ openldap::server::overlay { "rwm on relay":
   },
 }
 ```
+
+###Configuring Perl Backend(back_perl)
+```puppet
+openldap::server::module { 'back_perl' :
+  ensure  => present,
+}
+openldap::server::module { 'accesslog' :
+  ensure  => present,
+}
+openldap::server::database { 'perl':
+  ensure           => present,
+  backend          => 'perl',
+  suffix           => 'cn=perllog',
+  perl_options     => {
+    'perlmodulepath' => '/usr/local/lib64/perl5',
+    'perlmodule'     => 'SampleLDAP',
+  },
+  require          => Openldap::Server::Module['back_perl'],
+  initdb           => true,
+}
+->
+openldap::server::overlay { 'accesslog':
+  ensure  => present,
+  overlay => 'accesslog',
+  suffix  => 'dc=example,dc=com',
+  options => {
+    # Suffix of database for log content
+    'olcAccessLogDB'      => 'cn=perllog',
+    # Operation types to log
+    'olcAccessLogOps'     => 'writes',
+    # Log cleanup parameters
+    'olcAccessLogPurge'   => '30+00:00 5+00:00',
+    # Log old values when modifying entries matching the filter
+    'olcAccessLogOld'     => '(objectclass=people)',
+    # Log old values of these attributes even if unmodified
+    'olcAccessLogOldAttr' => 'uid cn',
+  },
+  require          => Openldap::Server::Module['accesslog'],
+}
+```
