@@ -25,23 +25,23 @@ class openldap::server(
 ) inherits ::openldap::params {
   validate_hash($databases)
 
-  class { '::openldap::server::install': } ->
-  class { '::openldap::server::config': } ~>
-  class { '::openldap::server::service': }
+  class { '::openldap::server::install': }
+  -> class { '::openldap::server::config': }
+  ~> class { '::openldap::server::service': }
 
   class { '::openldap::server::slapdconf': }
 
   case $provider {
     'augeas': {
-      Class['openldap::server::install'] ->
-      Class['openldap::server::slapdconf'] ~>
-      Class['openldap::server::service'] ->
-      Class['openldap::server']
+      Class['openldap::server::install']
+      -> Class['openldap::server::slapdconf']
+      ~> Class['openldap::server::service']
+      -> Class['openldap::server']
     }
     'olc': {
-      Class['openldap::server::service'] ->
-      Class['openldap::server::slapdconf'] ->
-      Class['openldap::server']
+      Class['openldap::server::service']
+      -> Class['openldap::server::slapdconf']
+      -> Class['openldap::server']
     }
     default: {
       fail 'provider must be one of "olc" or "augeas"'
