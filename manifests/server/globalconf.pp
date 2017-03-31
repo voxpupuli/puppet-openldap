@@ -11,9 +11,9 @@ define openldap::server::globalconf(
   if $::openldap::server::provider == 'augeas' {
     Openldap::Server::Globalconf[$title] ~> Class['openldap::server::service']
   } else {
-    Class['openldap::server::service'] ->
-    Openldap::Server::Globalconf[$title] ->
-    Class['openldap::server']
+    Class['openldap::server::service']
+    -> Openldap::Server::Globalconf[$title]
+    -> Class['openldap::server']
   }
 
   openldap_global_conf { $name:
