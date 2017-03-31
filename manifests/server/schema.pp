@@ -13,13 +13,13 @@ define openldap::server::schema(
   }
 
   if $::openldap::server::provider == 'augeas' {
-    Class['openldap::server::install'] ->
-    Openldap::Server::Schema[$title] ~>
-    Class['openldap::server::service']
+    Class['openldap::server::install']
+    -> Openldap::Server::Schema[$title]
+    ~> Class['openldap::server::service']
   } else {
-    Class['openldap::server::service'] ->
-    Openldap::Server::Schema[$title] ->
-    Class['openldap::server']
+    Class['openldap::server::service']
+    -> Openldap::Server::Schema[$title]
+    -> Class['openldap::server']
   }
 
   openldap_schema { $title:

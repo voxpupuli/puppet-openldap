@@ -39,8 +39,8 @@ class openldap::client(
   # SUDO Options
   $sudoers_base         = undef,
 ) inherits ::openldap::params {
-  anchor { 'openldap::client::begin': } ->
-  class { '::openldap::client::install': } ->
-  class { '::openldap::client::config': } ->
-  anchor { 'openldap::client::end': }
+  anchor { 'openldap::client::begin': }
+  -> class { '::openldap::client::install': }
+  -> class { '::openldap::client::config': }
+  -> anchor { 'openldap::client::end': }
 }
