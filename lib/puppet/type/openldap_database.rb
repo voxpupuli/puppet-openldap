@@ -44,6 +44,12 @@ Puppet::Type.newtype(:openldap_database) do
         else
           'hdb'
         end
+      when 'FreeBSD'
+	if Facter.value(:operatingsystemmajrelease).to_i <= 8
+	  'bdb'
+	else
+	  'mdb'
+	end
       end
     end
   end

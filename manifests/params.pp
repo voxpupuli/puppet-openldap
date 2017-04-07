@@ -32,6 +32,18 @@ class openldap::params {
       $server_service_hasstatus = true
       $utils_package            = 'openldap-clients'
     }
+    'FreeBSD': {
+      $client_package           = 'openldap-client'
+      $client_conffile          = '/usr/local/etc/openldap/ldap.conf'
+      $server_confdir           = '/usr/local/etc/openldap/slapd.d'
+      $server_conffile          = '/usr/local/etc/openldap/slapd.conf'
+      $server_group             = 'ldap'
+      $server_owner             = 'ldap'
+      $server_package           = 'openldap-server'
+      $server_service           = 'slapd'
+      $server_service_hasstatus = true
+      $utils_package            = undef
+    }
     default: {
       fail "Operating System family ${::osfamily} not supported"
     }

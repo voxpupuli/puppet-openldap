@@ -67,6 +67,17 @@ describe 'openldap::server' do
                 :ssl_ca   => nil,
               })}
             end
+	  when 'FreeBSD'
+            it { is_expected.to contain_class('openldap::server').with({
+              :package  => 'openldap-server',
+              :service  => 'slapd',
+              :enable   => true,
+              :start    => true,
+              :provider => 'olc',
+              :ssl_cert => nil,
+              :ssl_key  => nil,
+              :ssl_ca   => nil,
+            })}
           end
         end
       end

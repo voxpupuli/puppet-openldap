@@ -26,6 +26,12 @@ describe 'openldap::client::install' do
             :ensure => :present,
           })
           }
+	when 'FreeBSD'
+          it { is_expected.to contain_package('openldap-client').with({
+            :ensure => :present,
+          })
+          }
+
         end
       end
 

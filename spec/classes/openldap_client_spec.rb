@@ -31,6 +31,15 @@ describe 'openldap::client' do
             :tls_cacert => nil,
           })
           }
+	when 'FreeBSD'
+          it { is_expected.to contain_class('openldap::client').with({
+            :package    => 'openldap-client',
+            :file       => '/usr/local/etc/openldap/ldap.conf',
+            :base       => nil,
+            :uri        => nil,
+            :tls_cacert => nil,
+          })
+          }
         end
       end
     end
