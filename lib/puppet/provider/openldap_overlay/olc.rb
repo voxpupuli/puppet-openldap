@@ -58,11 +58,11 @@ Puppet::Type.
   end
 
   def exists?
-    # @property_hash[:ensure] == :present
-    if resource[:options].is_a? Hash
-      (resource[:options].keys - self.class.instances.map { |item| item.name }).empty?
-    else
-      @property_hash[:ensure] == :present
+    return @property_hash[:ensure] == :present unless resource[:options]
+
+    # Check overlay options
+    if @property_hash[:options] 
+      (resource[:options].keys - @property_hash[:options].keys).empty? if resource[:options].is_a? Hash
     end
   end
 
