@@ -151,8 +151,7 @@ Puppet::Type.
   end
 
   def destroy
-    default_confdir {
-    case Facter.value(:osfamily)
+    default_confdir = case Facter.value(:osfamily)
     when 'Debian'
       '/etc/ldap/slapd.d'
     when 'RedHat'
@@ -162,7 +161,6 @@ Puppet::Type.
     else
       'nil'
     end
-  }
     backend = @property_hash[:backend]
 
     fetch_index
