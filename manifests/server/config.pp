@@ -83,7 +83,7 @@ class openldap::server::config {
         value    => 'YES',
       }
       # On FreeBSD we need to bootstrap slapd.d
-			$ldif = @(EOL)
+      $ldif = @(EOL)
 dn: cn=config
 objectClass: olcGlobal
 cn: config
@@ -108,11 +108,11 @@ cn: schema
 
 include: file:///usr/local/etc/openldap/schema/core.ldif
 EOL
-			exec { 'bootstrap cn=config':
-				path    => $::path,
-				command => "echo '${ldif}' | slapadd -n 0 -F ${$::openldap::server::confdir}",
-				creates => "${$::openldap::server::confdir}/cn=config.ldif",
-			}
+      exec { 'bootstrap cn=config':
+        path    => $::path,
+        command => "echo '${ldif}' | slapadd -n 0 -F ${$::openldap::server::confdir}",
+        creates => "${$::openldap::server::confdir}/cn=config.ldif",
+      }
     }
     default: {
       fail "Operating System Family ${::osfamily} not yet supported"
