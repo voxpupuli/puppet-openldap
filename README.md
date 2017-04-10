@@ -134,6 +134,20 @@ openldap::server::module { 'memberof':
 }
 ```
 
+```puppet
+openldap::server::overlay { "memberof on dc=example,dc=com":
+  ensure  => present,
+  options => {
+    'olcMemberOfDangling'   => 'ignore',
+    'olcMemberOfRefInt'     => 'TRUE',
+    'olcMemberOfGroupOC'    => 'groupOfNames',
+    'olcMemberOfMemberAD'   => 'member',
+    'olcMemberOfMemberOfAD' => 'memberOf',
+  },
+  require => Openldap::Server::Module['memberof'],
+}
+```
+
 ###Configuring overlays
 
 ```puppet
