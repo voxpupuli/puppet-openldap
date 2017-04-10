@@ -83,6 +83,26 @@ Puppet::Type.newtype(:openldap_database) do
           "{SSHA}" + Base64.encode64("#{Digest::SHA1.digest("#{should}#{salt}")}#{salt}").chomp == is
         when /^\{SHA\}.+/
           "{SHA}" + Digest::SHA1.hexdigest(should) == is
+        when /^\{SSHA(256|384|512)\}.+/
+          matches = is.match("^(\{SSHA[\\d]{,3}\})(.*)$")
+          raise ArgumentError, "Invalid password format: #{is}" if matches.nil?
+
+          crypto = matches[1]
+          decoded = Base64.decode64(matches[2])
+          salt = decoded[20..-1]
+          crypto + Base64.encode64("#{Digest::SHA1.digest("#{should}#{salt}")}#{salt}").chomp == is
+        when /^\{(SHA(256|384|512))\}/
+          matches = is.match("^\{(SHA[\\d]{,3})\}")
+          raise ArgumentError, "Invalid password format: #{is}" if matches.nil?
+          crypto = matches[1]
+          case crypto
+          when 'SHA256'
+            '{SHA256}' + Digest::SHA256.hexdigest(should) == is
+          when 'SHA384'
+            '{SHA384}' + Digest::SHA384.hexdigest(should) == is
+          when 'SHA512'
+            '{SHA512}' + Digest::SHA512.hexdigest(should) == is
+          end
         else
           false
         end
@@ -92,7 +112,7 @@ Puppet::Type.newtype(:openldap_database) do
     def sync
       require 'securerandom'
       salt = SecureRandom.random_bytes(4)
-      if should =~ /^\{(CRYPT|MD5|SMD5|SSHA|SHA)\}.+/
+      if should =~ /^\{(CRYPT|MD5|SMD5|(S)?SHA(256|384|512)?)\}.+/
         @resource[:rootpw] = should
       else
         @resource[:rootpw] = "{SSHA}" + Base64.encode64("#{Digest::SHA1.digest("#{should}#{salt}")}#{salt}").chomp
