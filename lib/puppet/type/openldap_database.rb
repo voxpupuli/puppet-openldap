@@ -65,7 +65,7 @@ Puppet::Type.newtype(:openldap_database) do
     desc "Password (or hash of the password) for the rootdn."
 
     def insync?(is)
-      if should =~ /^\{(CRYPT|MD5|SMD5|SSHA|SHA)\}.+/
+      if should =~ /^\{(CRYPT|MD5|SMD5|SSHA|SHA(256|384|512)?)\}.+/
         should == is
       else
         case is
@@ -84,13 +84,7 @@ Puppet::Type.newtype(:openldap_database) do
         when /^\{SHA\}.+/
           "{SHA}" + Digest::SHA1.hexdigest(should) == is
         when /^\{SSHA(256|384|512)\}.+/
-          matches = is.match("^(\{SSHA[\\d]{,3}\})(.*)$")
-          raise ArgumentError, "Invalid password format: #{is}" if matches.nil?
-
-          crypto = matches[1]
-          decoded = Base64.decode64(matches[2])
-          salt = decoded[20..-1]
-          crypto + Base64.encode64("#{Digest::SHA1.digest("#{should}#{salt}")}#{salt}").chomp == is
+          # TODO implement required
         when /^\{(SHA(256|384|512))\}/
           matches = is.match("^\{(SHA[\\d]{,3})\}")
           raise ArgumentError, "Invalid password format: #{is}" if matches.nil?
@@ -112,7 +106,7 @@ Puppet::Type.newtype(:openldap_database) do
     def sync
       require 'securerandom'
       salt = SecureRandom.random_bytes(4)
-      if should =~ /^\{(CRYPT|MD5|SMD5|(S)?SHA(256|384|512)?)\}.+/
+      if should =~ /^\{(CRYPT|MD5|SMD5|SSHA|SHA(256|384|512)?)\}.+/
         @resource[:rootpw] = should
       else
         @resource[:rootpw] = "{SSHA}" + Base64.encode64("#{Digest::SHA1.digest("#{should}#{salt}")}#{salt}").chomp
