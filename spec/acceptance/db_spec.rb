@@ -21,7 +21,7 @@ describe 'openldap::server::database' do
   after :all do
     pp = <<-EOS
       class { 'openldap::server': }
-      openldap::server::database { ['dc=foo,dc=com', 'dc=bar,dc=com']:
+      openldap::server::database { ['dc=foo,dc=com', 'dc=bar,dc=com', 'cn=log']:
         ensure => absent,
       }
       openldap::server::database { 'cn=config':
@@ -92,9 +92,38 @@ describe 'openldap::server::database' do
     end
 
     it 'can connect with ldapsearch' do
-      ldapsearch('-LLL -x -b "dc=foo,dc=com" -D "cn=admin,dc=bar,dc=com" -w secret') do |r|
-        expect(r.stdout).to match(/dn: dc=foo,dc=com/)
+      ldapsearch('-LLL -x -b "dc=bar,dc=com" -D "cn=admin,dc=bar,dc=com" -w secret') do |r|
+        expect(r.stdout).to match(/dn: dc=bar,dc=com/)
       end
+    end
+  end
+
+  context 'with a log db' do
+    it 'creates a log database' do
+      pp = <<-EOS
+      class {'openldap::server': }
+      openldap::server::module {'accesslog':
+        ensure  => present,
+      }
+      openldap::server::database { 'cn=log':
+        ensure  => present,
+        initdb  => false,
+      }
+      openldap::server::overlay { 'accesslog on cn=config' :
+        ensure  => present,
+        require => [
+          Openldap::Server::Module['accesslog'],
+          Openldap::Server::Database['cn=log'],
+        ],
+        options => {
+          'olcAccessLogDB' => 'cn=log',
+        }
+      }
+
+      EOS
+
+      apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp, :catch_changes => true)
     end
   end
 
