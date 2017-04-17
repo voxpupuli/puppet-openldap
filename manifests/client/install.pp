@@ -5,7 +5,17 @@ class openldap::client::install {
     fail 'class ::openldap::client has not been evaluated'
   }
 
-  package { $::openldap::client::package:
-    ensure => present,
+  case $::osfamily {
+    'Debian': {
+      package { $::openldap::client::package:
+        ensure => present,
+      }
+    }
+    'RedHat': {
+      include ::openldap::client::utils
+    }
+    default: {
+      fail "Operating System family ${::osfamily} not supported"
+    }
   }
 }
