@@ -126,6 +126,15 @@ openldap::server::database { 'dc=example,dc=com':
 
 `rootpw` will be automatically converted to a SSHA hash with random salt.
 
+Support SHA-2 password
+```puppet
+openldap::server::database { 'dc=example,dc=com':
+  directory => '/var/lib/ldap',
+  rootdn    => 'cn=admin,dc=example,dc=com',
+  rootpw    => '{SHA384}QZdaK3FnibbilSPbthnf3cO8lBWsRyM9i1MZTUFP21RdBSLSNFgYc2eFFzJG/amX',
+}
+```
+
 ###Configuring modules
 
 ```puppet
