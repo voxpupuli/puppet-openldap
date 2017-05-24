@@ -83,8 +83,6 @@ Puppet::Type.newtype(:openldap_database) do
           "{SSHA}" + Base64.encode64("#{Digest::SHA1.digest("#{should}#{salt}")}#{salt}").chomp == is
         when /^\{SHA\}.+/
           "{SHA}" + Digest::SHA1.hexdigest(should) == is
-        when /^\{SSHA(256|384|512)\}.+/
-          # TODO implement required
         when /^\{(SHA(256|384|512))\}/
           matches = is.match("^\{(SHA[\\d]{,3})\}")
           raise ArgumentError, "Invalid password format: #{is}" if matches.nil?
