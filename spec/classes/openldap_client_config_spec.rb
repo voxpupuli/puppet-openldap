@@ -42,6 +42,30 @@ describe 'openldap::client::config' do
         end
       end
 
+      context 'with base set to absent' do
+        let :pre_condition do
+          "class {'openldap::client': base => 'absent', }"
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('openldap::client::config') }
+        it { is_expected.to contain_augeas('ldap.conf') }
+        case facts[:osfamily]
+        when 'Debian'
+          it { is_expected.to contain_augeas('ldap.conf').with({
+            :incl    => '/etc/ldap/ldap.conf',
+            :changes => [ 'rm BASE' ],
+          })
+          }
+        when 'RedHat'
+          it { is_expected.to contain_augeas('ldap.conf').with({
+            :incl    => '/etc/openldap/ldap.conf',
+            :changes => [ 'rm BASE' ],
+          })
+          }
+        end
+      end
+
       context 'with bind_policy set' do
         let :pre_condition do
           "class {'openldap::client': bind_policy => 'soft', }"
