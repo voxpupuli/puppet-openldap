@@ -22,7 +22,7 @@ Puppet::Type.newtype(:openldap_database) do
 
   newproperty(:backend) do
     desc "The name of the backend."
-    newvalues('bdb', 'hdb', 'mdb', 'monitor', 'config', 'relay')
+    newvalues('bdb', 'hdb', 'mdb', 'monitor', 'config', 'relay', 'perl')
     defaultto do
       case Facter.value(:osfamily)
       when 'Debian'
@@ -51,10 +51,18 @@ Puppet::Type.newtype(:openldap_database) do
   newproperty(:directory) do
     desc "The directory where the BDB files containing this database and associated indexes live."
     defaultto do
-      unless [ "monitor" , "config", "relay" ].include? "#{@resource[:backend]}"
+      unless [ "monitor" , "config", "relay", "perl" ].include? "#{@resource[:backend]}"
         '/var/lib/ldap'
       end
     end
+  end
+
+  newproperty(:perl_module_path) do
+    desc "The directory where the perl module file containing."
+  end
+
+  newproperty(:perl_module) do
+    desc "The file name of the perl module."
   end
 
   newproperty(:rootdn) do
@@ -133,7 +141,20 @@ Puppet::Type.newtype(:openldap_database) do
 
     newvalues(:true, :false)
     defaultto do
-      if [ "monitor" , "config", "relay" ].include? "#{@resource[:backend]}"
+      if [ "monitor" , "config", "relay", "perl" ].include? "#{@resource[:backend]}"
+        :false
+      else
+        :true
+      end
+    end
+  end
+
+  newparam(:initacl, :boolean => true) do
+    desc "When true it initiales basic access control list(ACL) on the database. When false, it does not set any access control list(ACL) on the database, so you have to create it by other mechanism. It defaults to true"
+
+    newvalues(:true, :false)
+    defaultto do
+      if [ "perl" ].include? "#{@resource[:backend]}"
         :false
       else
         :true
