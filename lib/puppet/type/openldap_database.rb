@@ -34,7 +34,11 @@ Puppet::Type.newtype(:openldap_database) do
             'mdb'
           end
         when 'Ubuntu'
-          'hdb'
+          if Facter.value(:operatingsystemmajrelease).to_i <= 15
+            'hdb'
+          else
+            'mdb'
+          end
         else
           'hdb'
         end
