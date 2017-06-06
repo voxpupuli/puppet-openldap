@@ -13,9 +13,9 @@ script: ["bundle exec rake validate", "bundle exec rake lint", "bundle exec rake
 matrix:
   fast_finish: true
   include:
-  - rvm: 2.1.9
+  - rvm: 2.1.10
     env: PUPPET_GEM_VERSION="~> 4.0"
-  - rvm: 2.3.1
+  - rvm: 2.3.4
     env: PUPPET_GEM_VERSION="~> 4"
   - rvm: default
     sudo: required
@@ -71,4 +71,4 @@ deploy:
     # all_branches is required to use tags
     all_branches: true
     # Only publish if our main Ruby target builds
-    rvm: 2.1.9
+    rvm: 2.1.10
