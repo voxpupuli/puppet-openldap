@@ -1,3 +1,26 @@
+## 2017-06-06 - Release 1.16.0
+
+Fixed bug for spaces in the "by" section of the rule
+Allow to set rewrite overlay with a relay database
+Fixes errata - puppet creates a rwm overlay every runs
+Any prefixed numbers should be absent in the options
+Refactor openldap::server::access
+Add security attribute to database resource
+Syncrepl now run idempotently
+Use ldapmodify function instead of the slapdd which is not defined
+Support Amazon linux 2015+ and make version checks more flexible
+Mod global conf
+Fix variables out of scope
+Make NETWORK_TIMEOUT a configurable option
+Use contain instead of include
+Fix ordering so that Openldap::Server::Globalconf resources will come after the openldap service
+Change updateref order to avoid error '<olcUpdateRef> must appear after syncrepl or updatedn
+Adding dbmaxsize parameter for big dbs
+Remove requirements from metadata.json
+Supports SHA2 password
+Allow openldap::client config values to have 'absent' value remove the entry from ldap.conf
+openldap_database: Default to mdb for new Ubuntus
+
 ## 2016-08-22 - Release 1.15.0
 
 Add base provider that implements common commands and methods and use it
