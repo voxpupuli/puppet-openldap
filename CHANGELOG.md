@@ -1,3 +1,7 @@
+## 2017-06-06 - Release 1.16.1
+
+Fix metadata.json
+
 ## 2017-06-06 - Release 1.16.0
 
 Fixed bug for spaces in the "by" section of the rule
