@@ -1,0 +1,7 @@
+puppet_modules:
+    script:
+        - /home/gitlab-runner/scripts/puppet-validate.sh
+        - /home/gitlab-runner/scripts/puppet-lint.sh
+        - /home/gitlab-runner/scripts/erb-syntax.sh
+    tags:
+        - puppet_modules
