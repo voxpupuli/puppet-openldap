@@ -29,39 +29,6 @@ Puppet::Type.type(:openldap_cluster_dbtree).provide(:olc) do
     # Get trees for every suffix
     suffixes.each do |suffix|
 
-      # Subdomain trees
-      subdomains = ldapsearch('-Q', '-LLL', '-Y', 'EXTERNAL', '-b', suffix, '-H', 'ldapi:///', "(description=subdomain)").split("\n\n")
-      subdomains.each do |block|
-        block.gsub("\n ", "").split("\n").each do |line|
-
-          # Get the subdomain
-          if line =~ /^dc: /
-            subdomain = line.split(": ")[1]
-            subsuffix = "dc=#{subdomain},#{suffix}"
-
-            # Subtrees
-            subtrees = ldapsearch('-Q', '-LLL', '-Y', 'EXTERNAL', '-b', subsuffix, '-H', 'ldapi:///', "(objectClass=organizationalUnit)").split("\n\n")
-            subtrees.each do |tree|
-              tree.gsub("\n ", "").split("\n").each do |tree_line|
-
-                # Get the tree DN
-                if tree_line =~ /^dn: /
-                  dn = tree_line.split(": ")[1]
-                  subtree = dn.match(/^ou=([^,]*),.*$/i).captures[0]
-
-                  # New instance
-                  instances << new(
-                    :tree => subtree,
-                    :ensure => :present,
-                    :suffix => subsuffix,
-                  )
-                end
-              end
-            end
-          end
-        end
-      end
-
       # Parent database trees
       trees = ldapsearch('-Q', '-LLL', '-Y', 'EXTERNAL', '-b', suffix, '-H', 'ldapi:///', "(objectClass=organizationalUnit)").split("\n\n")
       trees.each do |block|
