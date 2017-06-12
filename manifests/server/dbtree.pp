@@ -24,5 +24,6 @@ define openldap::server::dbtree(
   openldap_dbtree { $title:
     ensure => $ensure,
     suffix => $suffix,
+    tree   => $tree,
   }
 }
