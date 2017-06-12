@@ -51,10 +51,9 @@ Puppet::Type.type(:openldap_cluster_dbtree).provide(:olc) do
 
                   # New instance
                   instances << new(
-                    :name => "#{subsuffix} #{subtree}",
+                    :tree => subtree,
                     :ensure => :present,
                     :suffix => subsuffix,
-                    :tree => subtree
                   )
                 end
               end
@@ -75,10 +74,9 @@ Puppet::Type.type(:openldap_cluster_dbtree).provide(:olc) do
 
             # New instance
             instances << new(
-              :name => "#{suffix} #{tree}",
+              :tree => tree,
               :ensure => :present,
               :suffix => suffix,
-              :tree => tree
             )
           end
         end
