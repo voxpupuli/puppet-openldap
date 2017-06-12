@@ -13,7 +13,7 @@ Puppet::Type.type(:openldap_dbuser).provide(:olc) do
     suffixes  = []
 
     # Get all databases
-    databases = ldapsearch('-Q', '-LLL', '-Y', 'EXTERNAL', '-b', 'cn=config', '-H', 'ldapi:///', "(olcDbNoSync=*)").split("\n\n")
+    databases = ldapsearch('-Q', '-LLL', '-Y', 'EXTERNAL', '-b', 'cn=config', '-H', 'ldapi:///', "(olcDbDirectory=*)").split("\n\n")
 
     # Extract every database suffix
     databases.each do |block|
