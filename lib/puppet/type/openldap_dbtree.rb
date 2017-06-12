@@ -3,15 +3,11 @@ Puppet::Type.newtype(:openldap_dbtree) do
 
   ensurable
 
-  newparam(:name, :namevar => true) do
-    desc "The resource name."
+  newparam(:tree, :namevar => true) do
+    desc "The tree to generate."
   end
 
   newparam(:suffix) do
     desc "The database suffix."
-  end
-
-  newparam(:tree) do
-    desc "The tree DN to ensure."
   end
 end
