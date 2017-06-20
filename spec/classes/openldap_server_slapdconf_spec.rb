@@ -14,7 +14,12 @@ describe 'openldap::server::slapdconf' do
         end
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::server::slapdconf') }
-        it { is_expected.to contain_openldap__server__database('dc=my-domain,dc=com').with({:ensure => :absent,})}
+        case facts[:osfamily]
+        when 'Debian'
+          it { is_expected.to contain_openldap__server__database('dc=my-domain,dc=com').with({:ensure => :absent,})}
+        else
+          it { is_expected.not_to contain_openldap__server__database('dc=my-domain,dc=com').with({:ensure => :absent,})}
+        end
       end
     end
   end
