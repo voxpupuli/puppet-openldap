@@ -202,6 +202,12 @@ Puppet::Type.
   end
 
   def create
+    if resource[:rootpw] && resource[:rootpw] !~ /^\{(CRYPT|MD5|SMD5|SSHA|SHA(256|384|512)?)\}.+/
+      require 'securerandom'
+      salt = SecureRandom.random_bytes(4)
+      @resource[:rootpw] = "{SSHA}" + Base64.encode64("#{Digest::SHA1.digest("#{resource[:rootpw]}#{salt}")}#{salt}").chomp
+    end
+
     t = Tempfile.new('openldap_database')
     t << "dn: olcDatabase=#{resource[:backend]},cn=config\n"
     t << "changetype: add\n"
