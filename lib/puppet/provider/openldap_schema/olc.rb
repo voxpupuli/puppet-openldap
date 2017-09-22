@@ -114,6 +114,56 @@ Puppet::Type.
     ldif.join("\n")
   end
 
+  def self.ldifReplace(ldif, name)
+    new_ldif = [
+      "dn: cn=#{name},cn=schema,cn=config",
+      "changetype: modify",
+    ]
+    objId = []
+    attrType = []
+    objClass = []
+
+    current = nil
+
+    ldif.split("\n").each do |line|
+      case line
+      when /^\s*#/
+        next
+      when /^$/
+        next
+      when /^olcObjectIdentifier:\s+(.*)$/i
+        current = objId
+        current.push("olcObjectIdentifier:#{$1}")
+      when /^olcAttributeTypes:\s+(.*)$/i
+        current = attrType
+        current.push("olcAttributeTypes:#{$1}")
+      when /^olcObjectClasses:\s+(.*)$/i
+        current = objClass
+        current.push("olcObjectClasses:#{$1}")
+      when /^\s+(.*)/
+        if not current.nil?
+          current.last << " #{$1}"
+        end
+      end
+    end
+
+    if objId.length > 0
+      new_ldif.push('replace: olcObjectIdentifier')
+      new_ldif.push(*objId)
+      new_ldif.push('-')
+    end
+
+    new_ldif.push('replace: olcAttributeTypes')
+    new_ldif.push(*attrType)
+    new_ldif.push('-')
+
+    new_ldif.push('replace: olcObjectClasses')
+    new_ldif.push(*objClass)
+    new_ldif.push('-')
+
+    new_ldif.join("\n")
+  end
+
   def self.prefetch(resources)
     existing = instances
     resources.keys.each do |name|
@@ -136,7 +186,11 @@ Puppet::Type.
           t << self.class.schemaToLdif(schema, resource[:name])
         end
       else
-        t << schema
+        if @property_hash[:ensure] == :present
+          t << self.class.ldifReplace(schema, "{#{@property_hash[:index]}}#{@property_hash[:name]}")
+        else
+          t << schema
+        end
       end
       t.close
       ldapadd(t.path)
@@ -147,8 +201,15 @@ Puppet::Type.
   end
 
   def exists?
-    timeshift = File.mtime(resource[:path]) - @property_hash[:date]
-    @property_hash[:ensure] == :present and timeshift <= 0
+    if resource[:path] && File.file?(resource[:path])
+      Puppet.debug("#{@property_hash[:name]} date: #{@property_hash[:date]}")
+      Puppet.debug("#{@property_hash[:name]} mtime: #{File.mtime(resource[:path])}")
+      timeshift = File.mtime(resource[:path]) - (@property_hash[:date] || 0)
+      Puppet.debug("#{@property_hash[:name]} timeshift: #{timeshift}")
+      @property_hash[:ensure] == :present && timeshift.to_i <= 0
+    else
+      @property_hash[:ensure] == :present
+    end
   end
 
   def destroy
