@@ -14,4 +14,12 @@ Puppet::Type.newtype(:openldap_schema) do
     end
   end
 
+  newproperty(:index) do
+    desc "The index of the schema."
+  end
+
+  newproperty(:date) do
+    desc "The modifyTimestamp of the schema."
+  end
+
 end
