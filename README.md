@@ -30,7 +30,7 @@ schema      | Y             | N
 Usage
 -----
 
-###Configuring the client
+### Configuring the client
 
 ```puppet
 class { 'openldap::client': }
@@ -46,7 +46,7 @@ class { 'openldap::client':
 }
 ```
 
-###Configuring the server
+### Configuring the server
 
 ```puppet
 class { 'openldap::server': }
@@ -114,7 +114,7 @@ openldap::server::globalconf { 'Security':
 	value   => { 'Security' => [ 'simple_bind=128', 'ssf=128', 'tls=0' ] } 
 ```
 
-###Configuring a database
+### Configuring a database
 
 ```puppet
 openldap::server::database { 'dc=example,dc=com':
@@ -135,7 +135,7 @@ openldap::server::database { 'dc=example,dc=com':
 }
 ```
 
-###Configuring modules
+### Configuring modules
 
 ```puppet
 openldap::server::module { 'memberof':
@@ -143,7 +143,7 @@ openldap::server::module { 'memberof':
 }
 ```
 
-###Configuring overlays
+### Configuring overlays
 
 ```puppet
 openldap::server::overlay { 'memberof on dc=example,dc=com':
@@ -151,7 +151,7 @@ openldap::server::overlay { 'memberof on dc=example,dc=com':
 }
 ```
 
-###Configuring ACPs/ACLs
+### Configuring ACPs/ACLs
 
 [Documentation](http://www.openldap.org/devel/admin/slapdconf2.html) about olcAcces state the following spec:
 > 5.2.5.2. olcAccess: to &lt;what&gt; [ by &lt;who&gt; [&lt;accesslevel&gt;] [&lt;control&gt;] ]+
@@ -207,7 +207,7 @@ openldap::server::access { '0 on frontend' :
 ```
 
 
-####Note #1:
+#### Note #1:
 The chaining arrows `->` are importants if you want to order your entries.
 Openldap put the entry as the last available position.
 So if you got in your ldap:
@@ -223,7 +223,7 @@ So if you got in your ldap:
  olcAccess: {3}to ...
 ```
 
-####Note #2:
+#### Note #2:
   The parameter `islast` is used for purging remaining entries. Only one `islast` is allowed per suffix. If you got in your ldap:
 ```
  olcAccess: {0}to ...
@@ -243,7 +243,7 @@ openldap::server::access { '1 on dc=example,dc=com':
 
 entries 2 and 3 will get deleted.
 
-####Call your acl from a hash:
+#### Call your acl from a hash:
 The class `openldap::server::access_wrapper` was designed to simplify creating ACL.
 If you have multiple `what` (`to *` in this example), you can order them by adding number to it.
 
@@ -270,7 +270,7 @@ openldap::server::access_wrapper { 'dc=example,dc=com' :
 }
 ```
 
-###Configuring Schemas
+### Configuring Schemas
 ```puppet
 openldap::server::schema { 'samba':
   ensure  => present,
@@ -285,7 +285,7 @@ openldap::server::schema { 'nis':
 }
 ```
 
-###Configuring Rewrite-overlay
+### Configuring Rewrite-overlay
 ```puppet
 openldap::server::database { 'relay':
   ensure  => present,
