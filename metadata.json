@@ -19,7 +19,12 @@
     {
       "name": "herculesteam/augeasproviders_shellvar",
       "version_requirement": "2.x"
+    },
+    {
+      "name": "ptomulik/portsng",
+      "version_requirement": "1.x"
     }
+
   ],
   "requirements": [
     {
