@@ -23,7 +23,12 @@ describe 'openldap::server::install' do
           it { is_expected.to contain_package('openldap-servers').with({
             :ensure => :present,
           })}
+	when 'FreeBSD'
+          it { is_expected.to contain_package('openldap-server').with({
+            :ensure => :present,
+          })}
         end
+
       end
     end
   end
