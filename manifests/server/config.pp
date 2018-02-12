@@ -69,7 +69,7 @@ class openldap::server::config {
         }
       }
     }
-    'Archlinux': {},
+    'Archlinux': {}
     'FreeBSD': {
       shellvar { 'slapd_flags':
         ensure   => present,
