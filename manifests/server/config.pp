@@ -70,6 +70,51 @@ class openldap::server::config {
       }
     }
     'Archlinux': {}
+    'FreeBSD': {
+      shellvar { 'slapd_flags':
+        ensure   => present,
+        target   => '/etc/rc.conf.d/slapd',
+        variable => 'slapd_flags',
+        value    => "-h '${slapd_ldap_urls}'",
+      }
+      shellvar { 'slapd_cn_config':
+        ensure   => present,
+        target   => '/etc/rc.conf.d/slapd',
+        variable => 'slapd_cn_config',
+        value    => 'YES',
+      }
+      # On FreeBSD we need to bootstrap slapd.d
+      $ldif = @(EOL)
+dn: cn=config
+objectClass: olcGlobal
+cn: config
+olcArgsFile: /var/run/openldap/slapd.args
+olcPidFile: /var/run/openldap/slapd.pid
+
+dn: olcDatabase={0}config,cn=config
+objectClass: olcDatabaseConfig
+olcDatabase: {0}config
+olcAccess: to dn.subtree="cn=config" by dn=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * none
+
+dn: cn=module,cn=config
+objectClass: olcModuleList
+cn: module
+olcModulepath:  /usr/local/libexec/openldap
+olcModuleload:  back_mdb.la
+olcModuleload:  back_ldap.la
+
+dn: cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: schema
+
+include: file:///usr/local/etc/openldap/schema/core.ldif
+EOL
+      exec { 'bootstrap cn=config':
+        path    => $::path,
+        command => "echo '${ldif}' | slapadd -n 0 -F ${$::openldap::server::confdir}",
+        creates => "${$::openldap::server::confdir}/cn=config.ldif",
+      }
+    }
     default: {
       fail "Operating System Family ${::osfamily} not yet supported"
     }

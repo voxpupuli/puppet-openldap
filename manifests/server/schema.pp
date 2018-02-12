@@ -5,6 +5,7 @@ define openldap::server::schema(
     'Debian' => "/etc/ldap/schema/${title}.schema",
     'Redhat' => "/etc/openldap/schema/${title}.schema",
     'Archlinux' => "/etc/openldap/schema/${title}.schema",
+    'FreeBSD' => "/usr/local/etc/openldap/schema/${title}.schema",
   }
 ) {
 

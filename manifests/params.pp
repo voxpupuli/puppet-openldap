@@ -44,6 +44,21 @@ class openldap::params {
       $server_service_hasstatus = true
       $utils_package            = undef
     }
+    'FreeBSD': {
+      $client_package           = 'net/openldap24-client'
+      $client_package_settings  = {'GSSAPI'=> true}
+      $client_conffile          = '/usr/local/etc/openldap/ldap.conf'
+      $server_confdir           = '/usr/local/etc/openldap/slapd.d'
+      $server_conffile          = '/usr/local/etc/openldap/slapd.conf'
+      $server_group             = 'ldap'
+      $server_owner             = 'ldap'
+      $server_package           = 'net/openldap24-server'
+      $server_package_settings  = {'SASL' => true, 'GSSAPI'=> true}
+      $server_service           = 'slapd'
+      $server_service_hasstatus = true
+      $utils_package            = undef
+      $package_provider         = 'portsng'
+    }
     default: {
       fail "Operating System family ${::osfamily} not supported"
     }

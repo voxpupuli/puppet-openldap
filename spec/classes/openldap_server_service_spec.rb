@@ -32,7 +32,12 @@ describe 'openldap::server::service' do
               :ensure => :running,
               :enable => true,
             })}
-          end
+	  end
+	when 'FreeBSD'
+          it { is_expected.to contain_service('slapd').with({
+            :ensure => :running,
+            :enable => true,
+          })}
         end
       end
     end
