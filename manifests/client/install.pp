@@ -7,5 +7,6 @@ class openldap::client::install {
 
   package { $::openldap::client::package:
     ensure => present,
+    provider => $::openldap::params::package_provider,
   }
 }

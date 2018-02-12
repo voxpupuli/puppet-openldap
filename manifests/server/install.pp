@@ -26,5 +26,7 @@ class openldap::server::install {
   package { $::openldap::server::package:
     ensure       => present,
     responsefile => $responsefile,
+    provider => $::openldap::params::package_provider,
+    package_settings => $::openldap::params::server_package_settings
   }
 }
