@@ -36,51 +36,51 @@ Puppet::Type.newtype(:openldap_access) do
       [
         /^(\{(\d+)\}to\s+(\S+)\s+(by\s+.+)\s+on\s+(.+))$/,
         [
-          [ :name, lambda{|x| x} ],
-          [ :position, lambda{|x| x} ],
-          [ :what, lambda{|x| x} ],
+          [ :name ],
+          [ :position ],
+          [ :what ],
           [ :access, lambda{ |x| a=[]; x.split(/(?= by .+)/).each { |b| a << b.lstrip }; a } ],
-          [ :suffix, lambda{|x| x} ],
+          [ :suffix ],
         ],
       ],
       [
-        /^(\{(\d+)\}to\s+(\S+)\s+(by\s+.+)\s+)$/,
+        /^(\{(\d+)\}to\s+(\S+)\s+(by\s+.+))$/,
         [
-          [ :name, lambda{|x| x} ],
-          [ :position, lambda{|x| x} ],
-          [ :what, lambda{|x| x} ],
+          [ :name ],
+          [ :position ],
+          [ :what ],
           [ :access, lambda{ |x| a=[]; x.split(/(?= by .+)/).each { |b| a << b.lstrip }; a } ],
         ],
       ],
       [
         /^(to\s+(\S+)\s+(by\s+.+)\s+on\s+(.+))$/,
         [
-          [ :name, lambda{|x| x} ],
-          [ :what, lambda{|x| x} ],
+          [ :name ],
+          [ :what ],
           [ :access, lambda{ |x| a=[]; x.split(/(?= by .+)/).each { |b| a << b.lstrip }; a } ],
-          [ :suffix, lambda{|x| x} ],
+          [ :suffix ],
         ],
       ],
       [
         /^(to\s+(\S+)\s+(by\s+.+))$/,
         [
-          [ :name, lambda{|x| x} ],
-          [ :what, lambda{|x| x} ],
+          [ :name ],
+          [ :what ],
           [ :access, lambda{ |x| a=[]; x.split(/(?= by .+)/).each { |b| a << b.lstrip }; a } ],
         ],
       ],
       [
         /^((\d+)\s+on\s+(.+))$/,
         [
-          [ :name, lambda{|x| x} ],
-          [ :position, lambda{|x| x} ],
-          [ :suffix, lambda{|x| x} ],
+          [ :name ],
+          [ :position ],
+          [ :suffix ],
         ],
       ],
       [
         /(.*)/,
         [
-          [ :name, lambda{|x| x} ],
+          [ :name ],
         ],
       ],
     ]

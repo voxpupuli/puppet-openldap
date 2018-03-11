@@ -28,15 +28,15 @@ Puppet::Type.newtype(:openldap_overlay) do
       [
         /^((\S+)\s+on\s+(\S+))$/,
         [
-          [ :name, lambda{|x| x} ],
-          [ :overlay, lambda{|x| x} ],
-          [ :suffix, lambda{|x| x} ],
+          [ :name ],
+          [ :overlay ],
+          [ :suffix ],
         ],
       ],
       [
         /(.*)/,
         [
-          [ :name, lambda{|x| x} ],
+          [ :name ],
         ],
       ],
     ]

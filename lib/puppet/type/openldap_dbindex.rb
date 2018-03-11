@@ -25,15 +25,15 @@ Puppet::Type.newtype(:openldap_dbindex) do
       [
         /^((\S+)\s+on\s+(.+))$/,
         [
-          [ :name, lambda{|x| x} ],
-          [ :attribute, lambda{|x| x} ],
-          [ :suffix, lambda{|x| x} ],
+          [ :name ],
+          [ :attribute ],
+          [ :suffix ],
         ],
       ],
       [
         /(.*)/,
         [
-          [ :name, lambda{|x| x} ],
+          [ :name ],
         ],
       ],
     ]
