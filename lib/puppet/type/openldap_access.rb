@@ -29,6 +29,22 @@ Puppet::Type.newtype(:openldap_access) do
 
   newproperty(:access, :array_matching => :all ) do
     desc "Access rule."
+    munge do |v|
+      if v.is_a?(String)
+        a = []
+        v.split(/(?= by .+)/).each do |b|
+          a << b.lstrip
+        end
+        a
+      else
+        v
+      end
+    end
+
+    def insync?(is)
+      @should.flatten!
+      super(is)
+    end
   end
 
   def self.title_patterns
@@ -39,7 +55,7 @@ Puppet::Type.newtype(:openldap_access) do
           [ :name ],
           [ :position ],
           [ :what ],
-          [ :access, lambda{ |x| a=[]; x.split(/(?= by .+)/).each { |b| a << b.lstrip }; a } ],
+          [ :access ],
           [ :suffix ],
         ],
       ],
@@ -49,7 +65,7 @@ Puppet::Type.newtype(:openldap_access) do
           [ :name ],
           [ :position ],
           [ :what ],
-          [ :access, lambda{ |x| a=[]; x.split(/(?= by .+)/).each { |b| a << b.lstrip }; a } ],
+          [ :access ],
         ],
       ],
       [
@@ -57,7 +73,7 @@ Puppet::Type.newtype(:openldap_access) do
         [
           [ :name ],
           [ :what ],
-          [ :access, lambda{ |x| a=[]; x.split(/(?= by .+)/).each { |b| a << b.lstrip }; a } ],
+          [ :access ],
           [ :suffix ],
         ],
       ],
@@ -66,7 +82,7 @@ Puppet::Type.newtype(:openldap_access) do
         [
           [ :name ],
           [ :what ],
-          [ :access, lambda{ |x| a=[]; x.split(/(?= by .+)/).each { |b| a << b.lstrip }; a } ],
+          [ :access ],
         ],
       ],
       [
