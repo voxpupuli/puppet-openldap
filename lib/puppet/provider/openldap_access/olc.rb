@@ -25,7 +25,7 @@ Puppet::Type.
         when /^olcSuffix: /
           suffix = line.split(' ')[1]
         when /^olcAccess: /
-          position, what, bys = line.match(/^olcAccess:\s+\{(\d+)\}to\s+(\S+(?:\s+filter=\S+)?(?:\s+attrs=\S+)?)(\s+by\s+.*)+$/).captures
+          position, what, bys = line.match(/^olcAccess:\s+\{(\d+)\}\s*to\s+(\S+(?:\s+filter=\S+)?(?:\s+attrs=\S+)?)(\s+by\s+.*)+$/).captures
           access = []
           bys.split(/(?= by .+)/).each { |b|
             access << b.lstrip
@@ -88,7 +88,7 @@ Puppet::Type.
       return 'olcDatabase={-1}frontend,cn=config'
     elsif suffix == 'cn=config'
       return 'olcDatabase={0}config,cn=config'
-    elsif suffix == 'cn=monitor'
+    elsif suffix.downcase == 'cn=monitor'
       slapcat('(olcDatabase=monitor)').split("\n").collect do |line|
         if line =~ /^dn: /
           return line.split(' ')[1]
