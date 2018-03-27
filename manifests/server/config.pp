@@ -19,6 +19,29 @@ class openldap::server::config {
   }
   $slapd_ldap_urls = "${slapd_ldap_ifs} ${slapd_ldapi_ifs} ${slapd_ldaps_ifs}"
 
+  case $::openldap::server::provider {
+    'augeas': {
+      file { $::openldap::server::conffile:
+        ensure => file,
+        owner  => $::openldap::server::owner,
+        group  => $::openldap::server::group,
+        mode   => '0640',
+      }
+    }
+    'olc': {
+      file { $::openldap::server::confdir:
+        ensure => directory,
+        owner  => $::openldap::server::owner,
+        group  => $::openldap::server::group,
+        mode   => '0750',
+        force  => true,
+      }
+    }
+    default: {
+      fail 'provider must be one of "olc" or "augeas"'
+    }
+  }
+
   case $::osfamily {
     'Debian': {
       shellvar { 'slapd':
