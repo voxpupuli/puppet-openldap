@@ -171,10 +171,15 @@ Puppet::Type.
         end
         # Add current options
         @property_flush[:options].each do |k, v|
-          if v.is_a?(Array)
-            t << "replace: #{k}\n#{v.collect { |x| "#{k}: #{x}" }.join("\n")}\n-\n"
+          if (@property_hash[:options] || {}).member?(k)
+            action = 'replace'
           else
-            t << "replace: #{k}\n#{k}: #{v}\n-\n"
+            action = 'add'
+          end
+          if v.is_a?(Array)
+            t << "#{action}: #{k}\n#{v.collect { |x| "#{k}: #{x}" }.join("\n")}\n-\n"
+          else
+            t << "#{action}: #{k}\n#{k}: #{v}\n-\n"
           end
         end
       end
