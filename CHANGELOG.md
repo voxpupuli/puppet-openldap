@@ -1,3 +1,20 @@
+## 2018-09-07 - Release 1.17.0
+
+- Drop legacy PE statement and puppet_version in metadata.json
+- Bump to minimal recommended Puppet version
+- Bump stdlib to 4.13.1 to get data types
+- Replace validate\_\* calls with datatypes
+- Drop legacy tests
+- Add Archlinux support (GH #187)
+- Ensure that the password is hashed on db creation
+- Set sensible default for dbindex attribute
+- Rewrite openldap\_password to use native Ruby
+- Fix title patterns to no longer use unsupported proc (GH #222)
+- Remove Debian 6 support and add Debian 9
+- Fix openldap\_overlap to perform add operation when adding new options
+- Support schema update via OLC
+- Add support to modify openldap\_schema resources
+
 ## 2017-06-06 - Release 1.16.1
 
 - Fix metadata.json
