@@ -60,7 +60,7 @@ Puppet::Type.
           access.position == resources[name][:position]
         else
           access.suffix == resources[name][:suffix] &&
-          access.access == resources[name][:access] &&
+          access.access.flatten == resources[name][:access].flatten &&
           access.what == resources[name][:what]
         end
       }
@@ -118,7 +118,7 @@ Puppet::Type.
     else
       t << "olcAccess: to #{resource[:what]}\n"
     end
-    resource[:access].each do |a|
+    resource[:access].flatten.each do |a|
       t << "  #{a}\n"
     end
     t.close
@@ -172,7 +172,7 @@ Puppet::Type.
   end
 
   def access=(value)
-    @property_flush[:access] = value
+    @property_flush[:access] = value.flatten
   end
 
   def islast=(value)
@@ -224,7 +224,7 @@ Puppet::Type.
       current_olcAccess.each do |olcAccess|
         if olcAccess[:position].to_i == position.to_i
           t << "olcAccess: {#{position}}to #{resource[:what]}\n"
-          resource[:access].each do |a|
+          resource[:access].flatten.each do |a|
             t << "  #{a}\n"
           end
         else
