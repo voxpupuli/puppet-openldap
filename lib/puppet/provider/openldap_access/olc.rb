@@ -57,7 +57,7 @@ Puppet::Type.
       if provider = accesses.find{ |access|
         if resources[name][:position]
           access.suffix == resources[name][:suffix] &&
-          access.position == resources[name][:position]
+          access.position == resources[name][:position].to_s
         else
           access.suffix == resources[name][:suffix] &&
           access.access.flatten == resources[name][:access].flatten &&
@@ -105,7 +105,23 @@ Puppet::Type.
   def getDn(*args); self.class.getDn(*args); end
 
   def exists?
-    @property_hash[:ensure] == :present
+    if resource[:position]
+      access = {
+        :suffix   => resource[:suffix],
+        :position => resource[:position].to_s
+      }
+    else
+      access = {
+        :suffix => resource[:suffix],
+        :access => resource[:access].flatten,
+        :what   => resource[:what]
+      }
+    end
+    accesses = self.class.instances.map { |acc|
+      acc_hash = acc.instance_variable_get(:@property_hash)
+      acc_hash.select { |k,v| access.key?(k) }
+    }
+    accesses.include?(access)
   end
 
   def create
