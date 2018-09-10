@@ -35,6 +35,16 @@ describe 'openldap::server::access' do
           suffix  => 'dc=example,dc=com',
           require => Openldap::Server::Database['dc=example,dc=com'],
         }
+        ::openldap::server::access { 'root':
+          what    => '*',
+          access  => [
+            'by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage',
+            'by * break'
+          ],
+          suffix  => 'dc=example,dc=com',
+          position => 0,
+          require => Openldap::Server::Database['dc=example,dc=com'],
+        }
       EOS
 
       apply_manifest(pp, :catch_failures => true)
