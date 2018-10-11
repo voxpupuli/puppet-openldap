@@ -205,7 +205,7 @@ Puppet::Type.
     path = default_confdir  + "/" + getPath("olcOverlay={#{@property_hash[:index]}}#{resource[:overlay]},#{getDn(resource[:suffix])}")
     File.delete(path)
 
-    slapcat("ldap:///(objectClass=olcOverlayConfig)", getDn(resource[:suffix])).
+    slapcat("(objectClass=olcOverlayConfig)", getDn(resource[:suffix])).
       split("\n").
       select { |line| line =~ /^dn: / }.
       select { |dn| dn.match(/^dn: olcOverlay=\{(\d+)\}(.+),#{Regexp.quote(getDn(resource[:suffix]))}$/).captures[0].to_i > @property_hash[:index] }.
