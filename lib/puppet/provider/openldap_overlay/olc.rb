@@ -70,6 +70,8 @@ Puppet::Type.
     case resource[:overlay]
     when 'memberof'
       t << "objectClass: olcMemberOf\n"
+    when 'sock'
+      t << "objectClass: olcOvSocketConfig\n"
     when 'ppolicy'
       t << "objectClass: olcPPolicyConfig\n"
     when 'dynlist'
