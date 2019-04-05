@@ -92,6 +92,8 @@ Puppet::Type.
       t << "objectClass: olcUniqueConfig\n"
     when 'rwm'
       t << "objectClass: olcRwmConfig\n"
+    when 'sock'
+      t << "objectClass: olcOvSocketConfig\n"
     when 'smbk5pwd'
       t << "objectClass: olcSmbK5PwdConfig\n"
     end
