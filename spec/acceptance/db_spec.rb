@@ -1,4 +1,5 @@
 require 'spec_helper_acceptance'
+require 'spec_helper_acceptance_funcs'
 
 describe 'openldap::server::database' do
   before :all do
