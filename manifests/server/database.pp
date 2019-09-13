@@ -32,6 +32,7 @@ define openldap::server::database(
     'monitor' => undef,
     'config'  => undef,
     'relay'   => undef,
+    'ldap'    => undef,
     default   => $directory ? {
       undef   => '/var/lib/ldap',
       default => $directory,
@@ -51,7 +52,7 @@ define openldap::server::database(
     Openldap::Server::Database['dc=my-domain,dc=com'] -> Openldap::Server::Database[$title]
   }
 
-  if $ensure == present and $backend != 'monitor' and $backend != 'config' and $backend != 'relay' {
+  if $ensure == present and $backend != 'monitor' and $backend != 'config' and $backend != 'relay' and $backend != 'ldap' {
     file { $manage_directory:
       ensure => directory,
       owner  => $::openldap::server::owner,
