@@ -27,9 +27,9 @@ describe Puppet::Type.type(:openldap_access) do
     end
 
     it 'should handle specific value of attr' do
-      access = described_class.new(:name => 'to attrs=objectClass value=posixAccount by dn="cn=admin,dc=example,dc=com" write by anonymous auth')
-      expect(access[:name]).to eq('to attrs=objectClass value=posixAccount by dn="cn=admin,dc=example,dc=com" write by anonymous auth')
-      expect(access[:what]).to eq('attrs=objectClass value=posixAccount')
+      access = described_class.new(:name => 'to attrs=objectClass val=posixAccount by dn="cn=admin,dc=example,dc=com" write by anonymous auth')
+      expect(access[:name]).to eq('to attrs=objectClass val=posixAccount by dn="cn=admin,dc=example,dc=com" write by anonymous auth')
+      expect(access[:what]).to eq('attrs=objectClass val=posixAccount')
       expect(access[:access]).to eq([['by dn="cn=admin,dc=example,dc=com" write', 'by anonymous auth']])
     end
   end
