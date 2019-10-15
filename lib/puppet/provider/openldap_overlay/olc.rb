@@ -96,6 +96,8 @@ Puppet::Type.
       t << "objectClass: olcOvSocketConfig\n"
     when 'smbk5pwd'
       t << "objectClass: olcSmbK5PwdConfig\n"
+    when 'sssvlv'
+      t << "objectClass: olcSssVlvConfig\n"
     end
     t << "olcOverlay: #{resource[:overlay]}\n"
     if resource[:options]
