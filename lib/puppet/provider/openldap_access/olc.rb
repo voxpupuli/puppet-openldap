@@ -25,7 +25,7 @@ Puppet::Type.
         when /^olcSuffix: /
           suffix = line.split(' ')[1]
         when /^olcAccess: /
-          position, what, bys = line.match(/^olcAccess:\s+\{(\d+)\}to\s+(\S+(?:\s+filter=\S+)?(?:\s+attrs=\S+)?(?:\s+val=\S+)?)(\s+by\s+.*)+$/).captures
+          position, what, bys = line.match(/^olcAccess:\s+\{(\d+)\}to\s+(\S+(?:\s+filter=\S+)?(?:\s+attrs=\S+)?(?:\s+value=\S+)?)(\s+by\s+.*)+$/).captures
           access = []
           bys.split(/(?= by .+)/).each { |b|
             access << b.lstrip
