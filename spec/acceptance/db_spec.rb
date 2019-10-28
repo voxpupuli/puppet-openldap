@@ -117,25 +117,6 @@ describe 'openldap::server::database' do
     end
   end
 
-  context 'with a ldap db' do
-    it 'creates a ldap database' do
-      pp = <<-EOS
-      class {'openldap::server': }
-      openldap::server::module {'back_ldap':
-        ensure => present,
-      }
-      openldap::server::database { 'dc=bar,dc=com':
-        ensure => present,
-        backend => 'ldap',
-        require => Openldap::Server::Module['back_ldap'],
-      }
-      EOS
-
-      apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
-    end
-  end
-
   context 'cn=config with a rootdn and rootpw' do
     it 'change a config password database' do
       tmpdir = default.tmpdir('openldap')

@@ -52,7 +52,7 @@ describe Puppet::Type.type(:openldap_database) do
     end
 
     describe "backend" do
-      ['bdb', 'hdb', 'mdb', 'monitor', 'config', 'relay', 'ldap'].each do |b|
+      ['bdb', 'hdb', 'mdb', 'monitor', 'config', 'relay'].each do |b|
         it "should support #{b} as a value for backend" do
           expect { described_class.new(:name => 'foo', :backend => b) }.to_not raise_error
         end
