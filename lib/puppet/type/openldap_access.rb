@@ -48,9 +48,10 @@ Puppet::Type.newtype(:openldap_access) do
   end
 
   def self.title_patterns
+    what_re = %r{\S+=\S+(?:\s+\S+=\S+)*}
     [
       [
-        /^(\{(\d+)\}to\s+(\S+)\s+(by\s+.+)\s+on\s+(.+))$/,
+        /^(\{(\d+)\}to\s+(#{what_re})\s+(by\s+.+)\s+on\s+(.+))$/,
         [
           [ :name ],
           [ :position ],
@@ -60,7 +61,7 @@ Puppet::Type.newtype(:openldap_access) do
         ],
       ],
       [
-        /^(\{(\d+)\}to\s+(\S+)\s+(by\s+.+))$/,
+        /^(\{(\d+)\}to\s+(#{what_re})\s+(by\s+.+))$/,
         [
           [ :name ],
           [ :position ],
@@ -69,7 +70,7 @@ Puppet::Type.newtype(:openldap_access) do
         ],
       ],
       [
-        /^(to\s+(\S+)\s+(by\s+.+)\s+on\s+(.+))$/,
+        /^(to\s+(#{what_re})\s+(by\s+.+)\s+on\s+(.+))$/,
         [
           [ :name ],
           [ :what ],
@@ -78,7 +79,7 @@ Puppet::Type.newtype(:openldap_access) do
         ],
       ],
       [
-        /^(to\s+(\S+)\s+(by\s+.+))$/,
+        /^(to\s+(#{what_re})\s+(by\s+.+))$/,
         [
           [ :name ],
           [ :what ],
