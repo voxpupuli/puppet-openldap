@@ -474,6 +474,30 @@ describe 'openldap::client::config' do
         end
       end
 
+      context 'with nss_initgroups_ignoreusers set' do
+        let :pre_condition do
+          "class {'openldap::client': nss_initgroups_ignoreusers => 'ovahi,backup,games', }"
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('openldap::client::config') }
+        it { is_expected.to contain_augeas('ldap.conf') }
+        case facts[:osfamily]
+        when 'Debian'
+          it { is_expected.to contain_augeas('ldap.conf').with({
+            :incl    => '/etc/ldap/ldap.conf',
+            :changes => [ 'set NSS_INITGROUPS_IGNOREUSERS ovahi,backup,games' ],
+          })
+          }
+        when 'RedHat'
+          it { is_expected.to contain_augeas('ldap.conf').with({
+            :incl    => '/etc/openldap/ldap.conf',
+            :changes => [ 'set NSS_INITGROUPS_IGNOREUSERS ovahi,backup,games' ],
+          })
+          }
+        end
+      end
+
       context 'with pam_filter set' do
         let :pre_condition do
           "class {'openldap::client': pam_filter => 'type=FILTER', }"
