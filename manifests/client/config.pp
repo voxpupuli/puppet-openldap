@@ -89,6 +89,10 @@ class openldap::client::config {
     'absent' => 'rm NSS_BASE_SHADOW',
     default  => "set NSS_BASE_SHADOW ${::openldap::client::nss_base_shadow}",
   }
+  $nss_initgroups_ignoreusers = $::openldap::client::nss_initgroups_ignoreusers ? {
+     undef   => undef,
+     default => "set NSS_INITGROUPS_IGNOREUSERS ${::openldap::client::nss_initgroups_ignoreusers}",
+  }
   $pam_filter = $::openldap::client::pam_filter ? {
     undef    => undef,
     'absent' => 'rm PAM_FILTER',
@@ -188,6 +192,7 @@ class openldap::client::config {
     $nss_base_hosts,
     $nss_base_passwd,
     $nss_base_shadow,
+    $nss_initgroups_ignoreusers,
     $pam_filter,
     $pam_login_attribute,
     $pam_member_attribute,
