@@ -14,8 +14,8 @@ describe 'openldap::server::database' do
       }
     EOS
 
-    apply_manifest(pp, :catch_failures => true)
-    apply_manifest(pp, :catch_changes => true)
+    apply_manifest(pp, catch_failures: true)
+    apply_manifest(pp, catch_changes: true)
   end
 
   after :all do
@@ -31,8 +31,8 @@ describe 'openldap::server::database' do
       }
     EOS
 
-    apply_manifest(pp, :expect_changes => true)
-    apply_manifest(pp, :catch_changes => true)
+    apply_manifest(pp, expect_changes: true)
+    apply_manifest(pp, catch_changes: true)
   end
 
   context 'without parameters' do
@@ -42,13 +42,13 @@ describe 'openldap::server::database' do
       openldap::server::database { 'dc=foo,dc=com': }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
     end
 
     it 'can connect with ldapsearch' do
       ldapsearch('-LLL -x -b dc=foo,dc=com') do |r|
-        expect(r.stdout).to match(/dn: dc=foo,dc=com/)
+        expect(r.stdout).to match(%r{dn: dc=foo,dc=com})
       end
     end
   end
@@ -63,13 +63,13 @@ describe 'openldap::server::database' do
       }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
     end
 
     it 'can connect with ldapsearch' do
       ldapsearch('-LLL -x -b dc=bar,dc=com') do |r|
-        expect(r.stdout).to match(/dn: dc=bar,dc=com/)
+        expect(r.stdout).to match(%r{dn: dc=bar,dc=com})
       end
     end
   end
@@ -87,13 +87,13 @@ describe 'openldap::server::database' do
       }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
     end
 
     it 'can connect with ldapsearch' do
       ldapsearch('-LLL -x -b "dc=foo,dc=com" -D "cn=admin,dc=bar,dc=com" -w secret') do |r|
-        expect(r.stdout).to match(/dn: dc=foo,dc=com/)
+        expect(r.stdout).to match(%r{dn: dc=foo,dc=com})
       end
     end
   end
@@ -112,8 +112,8 @@ describe 'openldap::server::database' do
       }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
     end
   end
 
@@ -132,8 +132,8 @@ describe 'openldap::server::database' do
       EOS
 
       pending 'Somehow this test does not work.'
-      apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
     end
   end
 
@@ -150,15 +150,14 @@ describe 'openldap::server::database' do
       }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
     end
 
     it 'can connect with ldapsearch to the new password' do
       ldapsearch('-LLL -s base -x -b "cn=config" -D "cn=newadmin,cn=config" -w newsecret') do |r|
-        expect(r.stdout).to match(/dn: cn=config/)
+        expect(r.stdout).to match(%r{dn: cn=config})
       end
     end
   end
 end
-

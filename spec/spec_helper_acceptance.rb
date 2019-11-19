@@ -1,7 +1,7 @@
 require 'beaker-rspec'
 
-def ldapsearch(cmd, exit_codes = [0,1], &block)
-  shell("ldapsearch #{cmd}", :acceptable_exit_codes => exit_codes, &block)
+def ldapsearch(cmd, exit_codes = [0, 1], &block)
+  shell("ldapsearch #{cmd}", acceptable_exit_codes: exit_codes, &block)
 end
 
 install_puppet_agent_on hosts, {}
@@ -24,7 +24,7 @@ RSpec.configure do |c|
   # Configure all nodes in nodeset
   c.before :suite do
     # Install module and dependencies
-    puppet_module_install(:source => module_root, :module_name => module_name)
+    puppet_module_install(source: module_root, module_name: module_name)
 
     # Set up Certificates
     pp = <<-EOS
@@ -68,12 +68,12 @@ RSpec.configure do |c|
       }
     EOS
 
-    apply_manifest_on(hosts, pp, :catch_failures => false)
+    apply_manifest_on(hosts, pp, catch_failures: false)
 
     hosts.each do |host|
-      on host, puppet('module','install','herculesteam-augeasproviders_core'), { :acceptable_exit_codes => [0,1] }
-      on host, puppet('module','install','herculesteam-augeasproviders_shellvar'), { :acceptable_exit_codes => [0,1] }
-      on host, puppet('module','install','puppetlabs-stdlib'), { :acceptable_exit_codes => [0,1] }
+      on host, puppet('module', 'install', 'herculesteam-augeasproviders_core'), acceptable_exit_codes: [0, 1]
+      on host, puppet('module', 'install', 'herculesteam-augeasproviders_shellvar'), acceptable_exit_codes: [0, 1]
+      on host, puppet('module', 'install', 'puppetlabs-stdlib'), acceptable_exit_codes: [0, 1]
     end
   end
 end
