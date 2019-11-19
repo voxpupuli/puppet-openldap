@@ -21,6 +21,7 @@ AllCops:
 Metrics/LineLength:
   Description: People have wide screens, use them.
   Max: 200
+  Enabled: false
 GetText:
   Enabled: false
 GetText/DecorateString:
@@ -33,6 +34,7 @@ RSpec/BeforeAfterAll:
     A necessary evil in acceptance testing.
   Exclude:
   - spec/acceptance/**/*.rb
+  Enabled: false
 RSpec/HookArgument:
   Description: Prefer explicit :each argument, matching existing module's style
   EnforcedStyle: each
@@ -43,6 +45,7 @@ Style/BlockDelimiters:
 Style/ClassAndModuleChildren:
   Description: Compact style reduces the required amount of indentation.
   EnforcedStyle: compact
+  Enabled: false
 Style/EmptyElse:
   Description: Enforce against empty else clauses, but allow `nil` for clarity.
   EnforcedStyle: empty
@@ -53,6 +56,7 @@ Style/FormatStringToken:
   Description: Following the main puppet project's style, prefer the simpler template
     tokens over annotated ones.
   EnforcedStyle: template
+  Enabled: false
 Style/Lambda:
   Description: Prefer the keyword for easier discoverability.
   EnforcedStyle: literal
@@ -75,33 +79,123 @@ Style/TrailingCommaInLiteral:
 Style/SymbolArray:
   Description: Using percent style obscures symbolic intent of array's contents.
   EnforcedStyle: brackets
-RSpec/MessageSpies:
-  EnforcedStyle: receive
-Style/Documentation:
-  Exclude:
-  - lib/puppet/parser/functions/**/*
-  - spec/**/*
 Style/WordArray:
   EnforcedStyle: brackets
 Style/CollectionMethods:
   Enabled: true
-Style/MethodCalledOnDoEndBlock:
-  Enabled: true
 Style/StringMethods:
   Enabled: true
+Bundler/DuplicatedGem:
+  Enabled: false
 GetText/DecorateFunctionMessage:
   Enabled: false
 GetText/DecorateStringFormattingUsingInterpolation:
   Enabled: false
 GetText/DecorateStringFormattingUsingPercent:
   Enabled: false
+Layout/EmptyLinesAroundBeginBody:
+  Enabled: false
 Layout/EndOfLine:
   Enabled: false
 Layout/IndentHeredoc:
   Enabled: false
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
+Lint/AmbiguousOperator:
+  Enabled: false
+Lint/AmbiguousRegexpLiteral:
+  Enabled: false
+Lint/AssignmentInCondition:
+  Enabled: false
+Lint/CircularArgumentReference:
+  Enabled: false
+Lint/ConditionPosition:
+  Enabled: false
+Lint/Debugger:
+  Enabled: false
+Lint/DuplicateCaseCondition:
+  Enabled: false
+Lint/DuplicateMethods:
+  Enabled: false
+Lint/DuplicatedKey:
+  Enabled: false
+Lint/EachWithObjectArgument:
+  Enabled: false
+Lint/ElseLayout:
+  Enabled: false
+Lint/EmptyEnsure:
+  Enabled: false
+Lint/EmptyExpression:
+  Enabled: false
+Lint/EmptyWhen:
+  Enabled: false
+Lint/EndAlignment:
+  Enabled: false
+Lint/EndInMethod:
+  Enabled: false
+Lint/EnsureReturn:
+  Enabled: false
+Lint/FloatOutOfRange:
+  Enabled: false
+Lint/FormatParameterMismatch:
+  Enabled: false
+Lint/HandleExceptions:
+  Enabled: false
+Lint/ImplicitStringConcatenation:
+  Enabled: false
+Lint/IneffectiveAccessModifier:
+  Enabled: false
+Lint/InheritException:
+  Enabled: false
+Lint/InvalidCharacterLiteral:
+  Enabled: false
+Lint/LiteralInCondition:
+  Enabled: false
+Lint/Loop:
+  Enabled: false
+Lint/NestedMethodDefinition:
+  Enabled: false
+Lint/NextWithoutAccumulator:
+  Enabled: false
+Lint/NonLocalExitFromIterator:
+  Enabled: false
+Lint/ParenthesesAsGroupedExpression:
+  Enabled: false
+Lint/RandOne:
+  Enabled: false
+Lint/RequireParentheses:
+  Enabled: false
+Lint/RescueException:
+  Enabled: false
+Lint/ScriptPermission:
+  Enabled: false
+Lint/ShadowedException:
+  Enabled: false
+Lint/ShadowingOuterLocalVariable:
+  Enabled: false
+Lint/UnderscorePrefixedVariableName:
+  Enabled: false
+Lint/UnneededDisable:
+  Enabled: false
+Lint/UnreachableCode:
+  Enabled: false
+Lint/UselessAccessModifier:
+  Enabled: false
+Lint/UselessAssignment:
+  Enabled: false
+Lint/UselessComparison:
+  Enabled: false
+Lint/UselessElseWithoutRescue:
+  Enabled: false
+Lint/UselessSetterCall:
+  Enabled: false
+Lint/Void:
+  Enabled: false
 Metrics/AbcSize:
   Enabled: false
 Metrics/BlockLength:
+  Enabled: false
+Metrics/BlockNesting:
   Enabled: false
 Metrics/ClassLength:
   Enabled: false
@@ -115,19 +209,147 @@ Metrics/ParameterLists:
   Enabled: false
 Metrics/PerceivedComplexity:
   Enabled: false
+Performance/Caller:
+  Enabled: false
+Performance/EndWith:
+  Enabled: false
+Performance/FixedSize:
+  Enabled: false
+Performance/HashEachMethods:
+  Enabled: false
+RSpec/AnyInstance:
+  Enabled: false
+RSpec/AroundBlock:
+  Enabled: false
 RSpec/DescribeClass:
+  Enabled: false
+RSpec/DescribeMethod:
+  Enabled: false
+RSpec/DescribeSymbol:
+  Enabled: false
+RSpec/EmptyExampleGroup:
   Enabled: false
 RSpec/ExampleLength:
   Enabled: false
+RSpec/ExpectActual:
+  Enabled: false
+RSpec/ExpectOutput:
+  Enabled: false
+RSpec/FilePath:
+  Enabled: false
+RSpec/Focus:
+  Enabled: false
+RSpec/InstanceVariable:
+  Enabled: false
+RSpec/IteratedExpectation:
+  Enabled: false
+RSpec/LetSetup:
+  Enabled: false
+RSpec/MessageChain:
+  Enabled: false
 RSpec/MessageExpectation:
+  Enabled: false
+RSpec/MessageSpies:
+  Enabled: false
+RSpec/MultipleDescribes:
   Enabled: false
 RSpec/MultipleExpectations:
   Enabled: false
+RSpec/NamedSubject:
+  Enabled: false
 RSpec/NestedGroups:
+  Enabled: false
+RSpec/OverwritingSetup:
+  Enabled: false
+RSpec/RepeatedDescription:
+  Enabled: false
+RSpec/RepeatedExample:
+  Enabled: false
+RSpec/ScatteredLet:
+  Enabled: false
+RSpec/ScatteredSetup:
+  Enabled: false
+RSpec/SubjectStub:
+  Enabled: false
+RSpec/VerifiedDoubles:
+  Enabled: false
+Security/Eval:
+  Enabled: false
+Security/MarshalLoad:
+  Enabled: false
+Style/AccessorMethodName:
   Enabled: false
 Style/AsciiComments:
   Enabled: false
+Style/AsciiIdentifiers:
+  Enabled: false
+Style/BeginBlock:
+  Enabled: false
+Style/CaseEquality:
+  Enabled: false
+Style/ClassAndModuleCamelCase:
+  Enabled: false
+Style/ClassVars:
+  Enabled: false
+Style/ConstantName:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/DoubleNegation:
+  Enabled: false
+Style/EndBlock:
+  Enabled: false
+Style/FileName:
+  Enabled: false
+Style/FlipFlop:
+  Enabled: false
+Style/For:
+  Enabled: false
+Style/GlobalVars:
+  Enabled: false
+Style/GuardClause:
+  Enabled: false
+Style/IdenticalConditionalBranches:
+  Enabled: false
+Style/IfInsideElse:
+  Enabled: false
 Style/IfUnlessModifier:
   Enabled: false
+Style/IfUnlessModifierOfIfUnless:
+  Enabled: false
+Style/IfWithSemicolon:
+  Enabled: false
+Style/MethodMissing:
+  Enabled: false
+Style/MethodName:
+  Enabled: false
+Style/ModuleFunction:
+  Enabled: false
+Style/MultilineBlockChain:
+  Enabled: false
+Style/MultilineIfModifier:
+  Enabled: false
+Style/MultilineTernaryOperator:
+  Enabled: false
+Style/MultipleComparison:
+  Enabled: false
+Style/NestedTernaryOperator:
+  Enabled: false
+Style/NumericPredicate:
+  Enabled: false
+Style/OpMethod:
+  Enabled: false
+Style/OptionalArguments:
+  Enabled: false
+Style/PredicateName:
+  Enabled: false
+Style/SelfAssignment:
+  Enabled: false
+Style/StructInheritance:
+  Enabled: false
 Style/SymbolProc:
+  Enabled: false
+Style/VariableName:
+  Enabled: false
+Style/VariableNumber:
   Enabled: false

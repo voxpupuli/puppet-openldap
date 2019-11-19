@@ -222,11 +222,9 @@ Puppet::Type.newtype(:openldap_database) do
         unless correct_keys.include? k
           raise ArgumentError, "Invalid security key: '#{k}' for value '#{v}'\nSecurity key must be one of these value: #{correct_keys.join(', ')}\nSee olcSecurity in `man slapd-config`"
         end
-        unless begin
-                Float(v)
-              rescue
-                false
-              end
+        begin
+          Float(v)
+        rescue
           raise ArgumentError, "Invalid security value: '#{v}' for key '#{k}'\nSecurity value must be a number\nSee olcSecurity in `man slapd-config`"
         end
       end
