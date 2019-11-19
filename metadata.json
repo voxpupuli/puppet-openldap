@@ -21,12 +21,6 @@
       "version_requirement": "2.x"
     }
   ],
-  "requirements": [
-    {
-      "name": "puppet",
-      "version_requirement": ">= 4.6.1 < 6.0.0"
-    }
-  ],
   "operatingsystem_support": [
     {
       "operatingsystem": "Debian",
@@ -49,5 +43,14 @@
         "7"
       ]
     }
-  ]
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 4.6.1 < 6.0.0"
+    }
+  ],
+  "pdk-version": "1.14.1",
+  "template-url": "pdk-default#1.14.1",
+  "template-ref": "1.14.1-0-g0b5b39b"
 }
