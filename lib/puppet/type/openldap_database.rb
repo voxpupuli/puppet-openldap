@@ -55,7 +55,7 @@ Puppet::Type.newtype(:openldap_database) do
   newproperty(:directory) do
     desc 'The directory where the BDB files containing this database and associated indexes live.'
     defaultto do
-      unless ['monitor', 'config', 'relay', 'ldap'].include? (@resource[:backend]).to_s
+      unless ['monitor', 'config', 'relay', 'ldap'].include? @resource[:backend].to_s
         '/var/lib/ldap'
       end
     end
@@ -138,7 +138,7 @@ Puppet::Type.newtype(:openldap_database) do
 
     newvalues(:true, :false)
     defaultto do
-      if ['monitor', 'config', 'relay', 'ldap'].include? (@resource[:backend]).to_s
+      if ['monitor', 'config', 'relay', 'ldap'].include? @resource[:backend].to_s
         :false
       else
         :true
@@ -208,7 +208,7 @@ Puppet::Type.newtype(:openldap_database) do
     desc 'Limits the number entries returned and/or the time spent by a request'
 
     validate do |value|
-      if value !~ /^(\*|anonymous|users|self|(dn(\.\S+)?=\S+)|(dn\.\S+=\S+)|(group(\/\S+(\/\S+)?)?=\S+))(\s+((time(\.(soft|hard))?=((\d+)|unlimited))|(size(\.(soft|hard|unchecked))?=((\d+)|unlimited))|(size\.pr=((\d+)|noEstimate|unlimited))|(size.prtotal=((\d+)|unlimited|disabled))))+$/
+      if value !~ %r{^(\*|anonymous|users|self|(dn(\.\S+)?=\S+)|(dn\.\S+=\S+)|(group(\/\S+(\/\S+)?)?=\S+))(\s+((time(\.(soft|hard))?=((\d+)|unlimited))|(size(\.(soft|hard|unchecked))?=((\d+)|unlimited))|(size\.pr=((\d+)|noEstimate|unlimited))|(size.prtotal=((\d+)|unlimited|disabled))))+$}
         raise ArgumentError, "Invalid limit: #{value}\nLimit values must be according to syntax described at http://www.openldap.org/doc/admin24/limits.html#Per-Database%20Limits"
       end
     end
