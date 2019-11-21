@@ -1,5 +1,11 @@
 ---
 .travis.yml:
+  addons:
+    apt:
+      sources:
+        - augeas
+      packages:
+        - libaugeas-dev
   acceptance:
     - '*'
   docker_sets:
