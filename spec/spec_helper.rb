@@ -52,10 +52,6 @@ def ensure_module_defined(module_name)
 end
 
 # 'spec_overrides' from sync.yml will appear below this line
-require 'pathname'
-dir = Pathname.new(__FILE__).parent
-Puppet[:modulepath] = File.join(dir, 'fixtures', 'modules')
-
 # There's no real need to make this version dependent, but it helps find
 # regressions in Puppet
 #
@@ -66,9 +62,16 @@ Puppet[:modulepath] = File.join(dir, 'fixtures', 'modules')
 # 3. Workaround for 3.5 where context hasn't been configured yet,
 # ticket https://tickets.puppetlabs.com/browse/MODULES-823
 #
+require 'pathname'
+dir = Pathname.new(__FILE__).parent
 ver = Gem::Version.new(Puppet.version.split('-').first)
-if Gem::Requirement.new('~> 2.7.20') =~ ver || Gem::Requirement.new('~> 3.0.0') =~ ver || Gem::Requirement.new('~> 3.5') =~ ver || Gem::Requirement.new('~> 4.0')
-  puts 'augeasproviders: setting Puppet[:libdir] to work around broken type autoloading'
-  # libdir is only a single dir, so it can only workaround loading of one external module
-  Puppet[:libdir] = "#{Puppet[:modulepath]}/augeasproviders_core/lib"
+if ver >= Gem::Version.new('2.7.20')
+  puts 'augeasproviders: setting $LOAD_PATH to work around broken type autoloading'
+  Puppet.initialize_settings
+  $LOAD_PATH.unshift(
+    dir,
+    File.join(dir, 'fixtures/modules/augeasproviders_core/spec/lib'),
+    File.join(dir, 'fixtures/modules/augeasproviders_core/lib'),
+  )
+  $LOAD_PATH.unshift(File.join(dir, '..', 'lib'))
 end
