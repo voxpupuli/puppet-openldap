@@ -30,60 +30,6 @@ matrix:
   fast_finish: true
   include:
     -
-      bundler_args: --with system_tests
-      dist: trusty
-      env: PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_set= BEAKER_setfile=centos6-64{hypervisor=docker} BEAKER_TESTMODE=apply
-      rvm: 2.5.3
-      script: bundle exec rake beaker
-      services: docker
-      stage: acceptance
-      sudo: required
-    -
-      bundler_args: --with system_tests
-      dist: trusty
-      env: PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_set= BEAKER_setfile=centos7-64{hypervisor=docker} BEAKER_TESTMODE=apply
-      rvm: 2.5.3
-      script: bundle exec rake beaker
-      services: docker
-      stage: acceptance
-      sudo: required
-    -
-      bundler_args: --with system_tests
-      dist: trusty
-      env: PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_set= BEAKER_setfile=debian8-64{hypervisor=docker} BEAKER_TESTMODE=apply
-      rvm: 2.5.3
-      script: bundle exec rake beaker
-      services: docker
-      stage: acceptance
-      sudo: required
-    -
-      bundler_args: --with system_tests
-      dist: trusty
-      env: PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_set= BEAKER_setfile=debian9-64{hypervisor=docker} BEAKER_TESTMODE=apply
-      rvm: 2.5.3
-      script: bundle exec rake beaker
-      services: docker
-      stage: acceptance
-      sudo: required
-    -
-      bundler_args: --with system_tests
-      dist: trusty
-      env: PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_set= BEAKER_setfile=ubuntu1604-64{hypervisor=docker} BEAKER_TESTMODE=apply
-      rvm: 2.5.3
-      script: bundle exec rake beaker
-      services: docker
-      stage: acceptance
-      sudo: required
-    -
-      bundler_args: --with system_tests
-      dist: trusty
-      env: PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_set= BEAKER_setfile=ubuntu1804-64{hypervisor=docker} BEAKER_TESTMODE=apply
-      rvm: 2.5.3
-      script: bundle exec rake beaker
-      services: docker
-      stage: acceptance
-      sudo: required
-    -
       env: CHECK="check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop syntax lint metadata_lint"
       stage: static
     -
@@ -97,6 +43,56 @@ matrix:
     -
       env: DEPLOY_TO_FORGE=yes
       stage: deploy
+    -
+      before_script: ["bundle exec rake 'litmus:provision[docker, camptocamp/litmus_centos:5]'", "bundle exec rake 'litmus:install_agent[puppet5]'", "bundle exec rake litmus:install_module"]
+      bundler_args: 
+      env: PLATFORMS=centos6
+      rvm: 2.5.3
+      script: ["bundle exec rake litmus:acceptance:parallel"]
+      services: docker
+      stage: acceptance
+      sudo: required
+    -
+      before_script: ["bundle exec rake 'litmus:provision[docker, waffleimage/centos7]'", "bundle exec rake 'litmus:install_agent[puppet5]'", "bundle exec rake litmus:install_module"]
+      bundler_args: 
+      env: PLATFORMS=centos7
+      rvm: 2.5.3
+      script: ["bundle exec rake litmus:acceptance:parallel"]
+      services: docker
+      stage: acceptance
+      sudo: required
+    -
+      before_script: ["bundle exec rake 'litmus:provision[docker, waffleimage/debian8]'", "bundle exec bolt command run 'apt-get install lsb-release gnupg -y' --inventoryfile inventory.yaml --nodes='localhost*'", "bundle exec rake 'litmus:install_agent[puppet5]'", "bundle exec rake litmus:install_module"]
+      bundler_args: 
+      env: PLATFORMS=debian8
+      script: ["bundle exec rake litmus:acceptance:parallel"]
+      services: docker
+      stage: acceptance
+      sudo: required
+    -
+      before_script: ["bundle exec rake 'litmus:provision[docker, waffleimage/debian9]'", "bundle exec bolt command run 'apt-get install lsb-release gnupg -y' --inventoryfile inventory.yaml --nodes='localhost*'", "bundle exec rake 'litmus:install_agent[puppet5]'", "bundle exec rake litmus:install_module"]
+      bundler_args: 
+      env: PLATFORMS=debian9
+      script: ["bundle exec rake litmus:acceptance:parallel"]
+      services: docker
+      stage: acceptance
+      sudo: required
+    -
+      before_script: ["bundle exec rake 'litmus:provision[docker, waffleimage/ubuntu16.04]'", "bundle exec bolt command run 'apt-get install lsb-release gnupg -y' --inventoryfile inventory.yaml --nodes='localhost*'", "bundle exec rake 'litmus:install_agent[puppet5]'", "bundle exec rake litmus:install_module"]
+      bundler_args: 
+      env: PLATFORMS=ubuntu16.04
+      script: ["bundle exec rake litmus:acceptance:parallel"]
+      services: docker
+      stage: acceptance
+      sudo: required
+    -
+      before_script: ["bundle exec rake 'litmus:provision[docker, waffleimage/ubuntu18.04]'", "bundle exec bolt command run 'apt-get install lsb-release gnupg -y' --inventoryfile inventory.yaml --nodes='localhost*'", "bundle exec rake 'litmus:install_agent[puppet5]'", "bundle exec rake litmus:install_module"]
+      bundler_args: 
+      env: PLATFORMS=ubuntu18.04
+      script: ["bundle exec rake litmus:acceptance:parallel"]
+      services: docker
+      stage: acceptance
+      sudo: required
 branches:
   only:
     - master
