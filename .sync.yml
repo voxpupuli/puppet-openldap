@@ -39,7 +39,8 @@
       collection: puppet5
       options:
         env: "PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_PUPPET_COLLECTION=@@COLLECTION@@ BEAKER_set=@@SET@@ BEAKER_setfile=ubuntu1804-64{hypervisor=docker} BEAKER_TESTMODE=@@TESTMODE@@"
-  forge_password: "ZjmgM4a2tcCE4dtccVSmYZAcuCaXdZNsZxVzRiDg7URBYyALMNgCV6XaiS/DTHX4jCuiyw/89Vywyf+uDjrj1552D+lF3cuQMXziwJhXp9v0jJRT9kpq8CFnq4iC/qwqLj54QIhIFoVgtiY9k+2MWRoMuGveLnAmg9K6wSNvLS4="
+  user: camptocamp
+  secure: "ZjmgM4a2tcCE4dtccVSmYZAcuCaXdZNsZxVzRiDg7URBYyALMNgCV6XaiS/DTHX4jCuiyw/89Vywyf+uDjrj1552D+lF3cuQMXziwJhXp9v0jJRT9kpq8CFnq4iC/qwqLj54QIhIFoVgtiY9k+2MWRoMuGveLnAmg9K6wSNvLS4="
 
 Gemfile:
   required:
