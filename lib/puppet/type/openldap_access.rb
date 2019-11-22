@@ -4,35 +4,35 @@ Puppet::Type.newtype(:openldap_access) do
   ensurable
 
   newparam(:name) do
-    desc 'The default namevar'
+    desc "The default namevar"
   end
 
   newparam(:target) do
-    desc 'The slapd.conf file'
+    desc "The slapd.conf file"
   end
 
   newproperty(:islast) do
-    desc 'Is this olcAccess the last one?'
+    desc "Is this olcAccess the last one?"
   end
 
   newproperty(:what) do
-    desc 'The entries and/or attributes to which the access applies'
+    desc "The entries and/or attributes to which the access applies"
   end
 
   newproperty(:suffix) do
-    desc 'The suffix to which the access applies'
+    desc "The suffix to which the access applies"
   end
 
   newproperty(:position) do
-    desc 'Where to place the new entry'
+    desc "Where to place the new entry"
   end
 
-  newproperty(:access, array_matching: :all) do
-    desc 'Access rule.'
+  newproperty(:access, :array_matching => :all ) do
+    desc "Access rule."
     munge do |v|
       if v.is_a?(String)
         a = []
-        v.split(%r{(?= by .+)}).each do |b|
+        v.split(/(?= by .+)/).each do |b|
           a << b.lstrip
         end
         a
@@ -51,59 +51,61 @@ Puppet::Type.newtype(:openldap_access) do
     what_re = %r{\S+=\S+(?:\s+\S+=\S+)*}
     [
       [
-        %r{^(\{(\d+)\}to\s+(#{what_re})\s+(by\s+.+)\s+on\s+(.+))$},
+        /^(\{(\d+)\}to\s+(#{what_re})\s+(by\s+.+)\s+on\s+(.+))$/,
         [
-          [:name],
-          [:position],
-          [:what],
-          [:access],
-          [:suffix],
+          [ :name ],
+          [ :position ],
+          [ :what ],
+          [ :access ],
+          [ :suffix ],
         ],
       ],
       [
-        %r{^(\{(\d+)\}to\s+(#{what_re})\s+(by\s+.+))$},
+        /^(\{(\d+)\}to\s+(#{what_re})\s+(by\s+.+))$/,
         [
-          [:name],
-          [:position],
-          [:what],
-          [:access],
+          [ :name ],
+          [ :position ],
+          [ :what ],
+          [ :access ],
         ],
       ],
       [
-        %r{^(to\s+(#{what_re})\s+(by\s+.+)\s+on\s+(.+))$},
+        /^(to\s+(#{what_re})\s+(by\s+.+)\s+on\s+(.+))$/,
         [
-          [:name],
-          [:what],
-          [:access],
-          [:suffix],
+          [ :name ],
+          [ :what ],
+          [ :access ],
+          [ :suffix ],
         ],
       ],
       [
-        %r{^(to\s+(#{what_re})\s+(by\s+.+))$},
+        /^(to\s+(#{what_re})\s+(by\s+.+))$/,
         [
-          [:name],
-          [:what],
-          [:access],
+          [ :name ],
+          [ :what ],
+          [ :access ],
         ],
       ],
       [
-        %r{^((\d+)\s+on\s+(.+))$},
+        /^((\d+)\s+on\s+(.+))$/,
         [
-          [:name],
-          [:position],
-          [:suffix],
+          [ :name ],
+          [ :position ],
+          [ :suffix ],
         ],
       ],
       [
-        %r{(.*)},
+        /(.*)/,
         [
-          [:name],
+          [ :name ],
         ],
       ],
     ]
+
   end
 
   autorequire(:openldap_database) do
-    [value(:suffix)]
+    [ value(:suffix) ]
   end
+
 end

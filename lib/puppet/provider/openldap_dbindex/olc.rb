@@ -1,38 +1,38 @@
-require File.expand_path(File.join(File.dirname(__FILE__), ['..', 'openldap']))
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. openldap]))
 
-Puppet::Type
-  .type(:openldap_dbindex)
-  .provide(:olc, parent: Puppet::Provider::Openldap) do
+Puppet::Type.
+  type(:openldap_dbindex).
+  provide(:olc, :parent => Puppet::Provider::Openldap) do
 
   # TODO: Use ruby bindings (can't find one that support IPC)
 
-  defaultfor osfamily: [:debian, :redhat]
+  defaultfor :osfamily => [:debian, :redhat]
 
   mk_resource_methods
 
   def self.instances
     # TODO: restict to bdb and hdb
     i = []
-    slapcat('(olcDbIndex=*)').split("\n\n").map do |paragraph|
+    slapcat('(olcDbIndex=*)').split("\n\n").collect do |paragraph|
       suffix = nil
       attrlist = nil
       indices = nil
       attribute = nil
-      paragraph.gsub("\n ", '').split("\n").map do |line|
+      paragraph.gsub("\n ", '').split("\n").collect do |line|
         case line
-        when %r{^olcSuffix: }
+        when /^olcSuffix: /
           suffix = line.split(' ')[1]
-        when %r{^olcDbIndex: }
-          attrlist, dummy, indices = line.match(%r{^olcDbIndex: (\S+)(\s+(.+))?$}).captures
-          attrlist.split(',').each do |attribute|
+        when /^olcDbIndex: /
+          attrlist, dummy, indices = line.match(/^olcDbIndex: (\S+)(\s+(.+))?$/).captures
+          attrlist.split(',').each { |attribute|
             i << new(
-              name: "#{attribute} on #{suffix}",
-              ensure: :present,
-              attribute: attribute,
-              suffix: suffix,
-              indices: indices,
+              :name      => "#{attribute} on #{suffix}",
+              :ensure    => :present,
+              :attribute => attribute,
+              :suffix    => suffix,
+              :indices   => indices
             )
-          end
+          }
         end
       end
     end
@@ -42,16 +42,17 @@ Puppet::Type
   def self.prefetch(resources)
     dbindexes = instances
     resources.keys.each do |name|
-      next unless provider = dbindexes.find do |access|
+      if provider = dbindexes.find{ |access|
         access.attribute == resources[name][:attribute] && access.suffix == resources[name][:suffix]
+      }
+        resources[name].provider = provider
       end
-      resources[name].provider = provider
     end
   end
 
   def getDn(suffix)
-    slapcat("(olcSuffix=#{suffix})").split("\n").map do |line|
-      if line =~ %r{^dn: }
+    slapcat("(olcSuffix=#{suffix})").split("\n").collect do |line|
+      if line =~ /^dn: /
         return line.split(' ')[1]
       end
     end
@@ -67,7 +68,7 @@ Puppet::Type
     t << "add: olcDbIndex\n"
     t << "olcDbIndex: #{resource[:attribute]} #{resource[:indices]}\n"
     t.close
-    Puppet.debug(IO.read(t.path))
+    Puppet.debug(IO.read t.path)
     begin
       ldapmodify(t.path)
     rescue Exception => e
@@ -75,7 +76,7 @@ Puppet::Type
     end
   end
 
-  def indices=(_value)
+  def indices=(value)
     current_olcDbIndex = getCurrentOlcDbIndex(resource[:suffix])
 
     t = Tempfile.new('openldap_dbindex')
@@ -83,35 +84,36 @@ Puppet::Type
     t << "changetype: modify\n"
     t << "replace: olcDbIndex\n"
     current_olcDbIndex.each do |olcDbIndex|
-      t << if olcDbIndex[:attribute].to_s == resource[:attribute].to_s
-             "olcDbIndex: #{resource[:attribute]} #{resource[:indices]}\n"
-           else
-             "olcDbIndex: #{olcDbIndex[:attribute]} #{olcDbIndex[:indices]}\n"
-           end
+    if olcDbIndex[:attribute].to_s == resource[:attribute].to_s
+        t << "olcDbIndex: #{resource[:attribute]} #{resource[:indices]}\n"
+    else
+        t << "olcDbIndex: #{olcDbIndex[:attribute]} #{olcDbIndex[:indices]}\n"
+    end
     end
     t.close
-    Puppet.debug(IO.read(t.path))
+    Puppet.debug(IO.read t.path)
     begin
-      ldapmodify(t.path)
+    ldapmodify(t.path)
     rescue Exception => e
-      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+    raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end
   end
 
   def getCurrentOlcDbIndex(suffix)
     i = []
-    slapcat('(olcDbIndex=*)', getDn(suffix)).split("\n\n").map do |paragraph|
-      paragraph.gsub("\n ", '').split("\n").map do |line|
+    slapcat("(olcDbIndex=*)", getDn(suffix)).split("\n\n").collect do |paragraph|
+      paragraph.gsub("\n ", '').split("\n").collect do |line|
         case line
-        when %r{^olcDbIndex: }
-          attribute, indices = line.match(%r{^olcDbIndex:\s+(\S+)\s+(.*)$}).captures
+        when /^olcDbIndex: /
+          attribute, indices = line.match(/^olcDbIndex:\s+(\S+)\s+(.*)$/).captures
           i << {
-            attribute: attribute,
-            indices: indices,
+            :attribute => attribute,
+            :indices => indices,
           }
         end
       end
     end
-    i
+    return i
   end
+
 end
