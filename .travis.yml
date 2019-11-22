@@ -44,7 +44,7 @@ matrix:
       env: DEPLOY_TO_FORGE=yes
       stage: deploy
     -
-      before_script: ["bundle exec rake 'litmus:provision[docker, camptocamp/litmus_centos:5]'", "bundle exec rake 'litmus:install_agent[puppet5]'", "bundle exec rake litmus:install_module"]
+      before_script: ["bundle exec rake 'litmus:provision[docker, waffleimage/centos6]'", "bundle exec rake 'litmus:install_agent[puppet5]'", "bundle exec rake litmus:install_module"]
       bundler_args: 
       env: PLATFORMS=centos6
       rvm: 2.5.3
