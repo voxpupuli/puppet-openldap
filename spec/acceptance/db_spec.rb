@@ -52,15 +52,16 @@ describe 'openldap::server::database' do
 
   context 'with a directory' do
     it 'creates a database' do
-      tmpdir = default.tmpdir('openldap')
-      pp = <<-EOS
-      class { 'openldap::server': }
-      openldap::server::database { 'dc=bar,dc=com':
-        directory => '#{tmpdir}',
-      }
-      EOS
+      Dir.mktmpdir('openldap') do |tmpdir|
+        pp = <<-EOS
+        class { 'openldap::server': }
+        openldap::server::database { 'dc=bar,dc=com':
+          directory => '#{tmpdir}',
+        }
+        EOS
 
-      idempotent_apply(pp)
+        idempotent_apply(pp)
+      end
     end
 
     it 'can connect with ldapsearch' do
@@ -72,18 +73,19 @@ describe 'openldap::server::database' do
 
   context 'with a rootdn and rootpw' do
     it 'creates a database' do
-      tmpdir = default.tmpdir('openldap')
-      pp = <<-EOS
-      class { 'openldap::server': }
-      openldap::server::database { 'dc=bar,dc=com':
-        ensure    => present,
-        directory => '#{tmpdir}',
-        rootdn    => 'cn=admin,dc=bar,dc=com',
-        rootpw    => 'secret',
-      }
-      EOS
+      Dir.mktmpdir('openldap') do |tmpdir|
+        pp = <<-EOS
+        class { 'openldap::server': }
+        openldap::server::database { 'dc=bar,dc=com':
+          ensure    => present,
+          directory => '#{tmpdir}',
+          rootdn    => 'cn=admin,dc=bar,dc=com',
+          rootpw    => 'secret',
+        }
+        EOS
 
-      idempotent_apply(pp)
+        idempotent_apply(pp)
+      end
     end
 
     it 'can connect with ldapsearch' do
@@ -132,7 +134,6 @@ describe 'openldap::server::database' do
 
   context 'cn=config with a rootdn and rootpw' do
     it 'change a config password database' do
-      tmpdir = default.tmpdir('openldap')
       pp = <<-EOS
       class { 'openldap::server': }
       openldap::server::database { 'cn=config':
