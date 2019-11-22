@@ -7,8 +7,7 @@ describe 'openldap::server' do
         class { 'openldap::server': }
       EOS
 
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
+      idempotent_apply(pp)
     end
 
     describe port(389) do
@@ -30,8 +29,7 @@ describe 'openldap::server' do
         }
       EOS
 
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
+      idempotent_apply(pp)
     end
 
     describe port(389) do
@@ -61,8 +59,7 @@ describe 'openldap::server' do
         }
       EOS
 
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
+      idempotent_apply(pp)
     end
 
     describe port(389) do

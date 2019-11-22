@@ -14,8 +14,7 @@ describe 'openldap::server::database' do
       }
     EOS
 
-    apply_manifest(pp, catch_failures: true)
-    apply_manifest(pp, catch_changes: true)
+      idempotent_apply(pp)
   end
 
   after :all do
@@ -31,8 +30,7 @@ describe 'openldap::server::database' do
       }
     EOS
 
-    apply_manifest(pp, expect_changes: true)
-    apply_manifest(pp, catch_changes: true)
+      idempotent_apply(pp)
   end
 
   context 'without parameters' do
@@ -42,8 +40,7 @@ describe 'openldap::server::database' do
       openldap::server::database { 'dc=foo,dc=com': }
       EOS
 
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
+      idempotent_apply(pp)
     end
 
     it 'can connect with ldapsearch' do
@@ -63,8 +60,7 @@ describe 'openldap::server::database' do
       }
       EOS
 
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
+      idempotent_apply(pp)
     end
 
     it 'can connect with ldapsearch' do
@@ -87,8 +83,7 @@ describe 'openldap::server::database' do
       }
       EOS
 
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
+      idempotent_apply(pp)
     end
 
     it 'can connect with ldapsearch' do
@@ -112,8 +107,7 @@ describe 'openldap::server::database' do
       }
       EOS
 
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
+      idempotent_apply(pp)
     end
   end
 
@@ -132,8 +126,7 @@ describe 'openldap::server::database' do
       EOS
 
       pending 'Somehow this test does not work.'
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
+      idempotent_apply(pp)
     end
   end
 
@@ -150,8 +143,7 @@ describe 'openldap::server::database' do
       }
       EOS
 
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
+      idempotent_apply(pp)
     end
 
     it 'can connect with ldapsearch to the new password' do

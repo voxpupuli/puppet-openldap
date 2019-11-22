@@ -10,8 +10,7 @@ describe 'openldap::server::schema' do
       }
       EOS
 
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
+      idempotent_apply(pp)
     end
   end
 
@@ -31,8 +30,7 @@ describe 'openldap::server::schema' do
       }
       EOS
 
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
+      idempotent_apply(pp)
     end
   end
 
@@ -52,8 +50,7 @@ describe 'openldap::server::schema' do
       }
       EOS
 
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
+      idempotent_apply(pp)
     end
   end
 
@@ -85,8 +82,7 @@ describe 'openldap::server::schema' do
       }
       EOS
 
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
+      idempotent_apply(pp)
     end
   end
 
@@ -106,8 +102,7 @@ describe 'openldap::server::schema' do
       }
       EOS
 
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
+      idempotent_apply(pp)
     end
   end
 end
