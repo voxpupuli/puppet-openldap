@@ -5,6 +5,7 @@ end
 
 RSpec.configure do |c|
   c.before :suite do
+    run_shell('puppet cert generate $(facter fqdn) || true')
     pp = <<-EOS
      $ssldir = '/etc/puppetlabs/puppet/ssl'
      file { '/etc/ldap':
