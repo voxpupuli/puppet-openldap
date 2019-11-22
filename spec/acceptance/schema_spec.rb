@@ -68,6 +68,7 @@ describe 'openldap::server::schema' do
 
   context 'adds custom ldif schema' do
     it 'adds puppet schema' do
+      pending 'Need to replace scp_to()'
       fixture = File.expand_path(File.join(File.dirname(__FILE__), '../fixtures/schema/puppet1.ldif'))
       scp_to(hosts, fixture, '/tmp/puppet1.ldif')
       pp = <<-EOS
@@ -88,6 +89,7 @@ describe 'openldap::server::schema' do
 
   context 'modifies custom ldif schema' do
     it 'modifies puppet schema' do
+      pending 'Need to replace scp_to()'
       fixture = File.expand_path(File.join(File.dirname(__FILE__), '../fixtures/schema/puppet2.ldif'))
       scp_to(hosts, fixture, '/tmp/puppet2.ldif')
       pp = <<-EOS

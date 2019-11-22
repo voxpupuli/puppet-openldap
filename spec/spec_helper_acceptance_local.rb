@@ -46,7 +46,7 @@ RSpec.configure do |c|
      }
     EOS
 
-    apply_idempotent(pp)
+    idempotent_apply(pp)
   end
 end
 
