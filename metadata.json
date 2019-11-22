@@ -17,6 +17,10 @@
       "version_requirement": "1.x"
     },
     {
+      "name": "puppetlabs/yumrepo_core",
+      "version_requirement": "1.x"
+    },
+    {
       "name": "herculesteam/augeasproviders_core",
       "version_requirement": "2.x"
     },
@@ -44,7 +48,8 @@
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
         "6",
-        "7"
+        "7",
+        "8"
       ]
     }
   ],

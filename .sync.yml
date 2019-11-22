@@ -37,6 +37,20 @@
       sudo: required
     -
       bundler_args:
+      env: PLATFORMS=centos8
+      rvm: 2.5.3
+      before_script:
+        - bundle exec rake 'litmus:provision[docker, camptocamp/litmus_centos:8]'
+        - bundle exec bolt command run 'yum install net-tools -y' --inventoryfile inventory.yaml --nodes='localhost*'
+        - bundle exec rake 'litmus:install_agent[puppet5]'
+        - bundle exec rake litmus:install_module
+      script:
+        - bundle exec rake litmus:acceptance:parallel
+      services: docker
+      stage: acceptance
+      sudo: required
+    -
+      bundler_args:
       env: PLATFORMS=debian8
       before_script:
         - bundle exec rake 'litmus:provision[docker, waffleimage/debian8]'

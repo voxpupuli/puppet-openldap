@@ -19,7 +19,8 @@ class openldap::server(
   $ldapi_ifs                               = ['/'],
 ) inherits ::openldap::params {
 
-  class { '::openldap::server::install': }
+  class { '::openldap::server::repositories': }
+  -> class { '::openldap::server::install': }
   -> class { '::openldap::server::config': }
   ~> class { '::openldap::server::service': }
 
