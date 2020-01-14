@@ -23,6 +23,7 @@ class openldap::client(
   $nss_base_hosts                               = undef,
   $nss_base_passwd                              = undef,
   $nss_base_shadow                              = undef,
+  $nss_initgroups_ignoreusers                   = undef,
 
   # PAM Options
   $pam_filter                                   = undef,
