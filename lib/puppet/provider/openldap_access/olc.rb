@@ -105,16 +105,16 @@ Puppet::Type.
   def getDn(*args); self.class.getDn(*args); end
 
   def exists?
-    if resource[:position]
+    if @property_hash[:position]
       access = {
-        :suffix   => resource[:suffix],
-        :position => resource[:position].to_s
+        :suffix   => @property_hash[:suffix],
+        :position => @property_hash[:position].to_s
       }
     else
       access = {
-        :suffix => resource[:suffix],
-        :access => resource[:access].flatten,
-        :what   => resource[:what]
+        :suffix => @property_hash[:suffix],
+        :access => @property_hash[:access].flatten,
+        :what   => @property_hash[:what]
       }
     end
     accesses = self.class.instances.map { |acc|
