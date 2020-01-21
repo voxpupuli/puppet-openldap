@@ -24,15 +24,13 @@ Puppet::Type.
           suffix = line.split(' ')[1]
         when /^olcDbIndex: /
           attrlist, dummy, indices = line.match(/^olcDbIndex: (\S+)(\s+(.+))?$/).captures
-          attrlist.split(',').each { |attribute|
-            i << new(
-              :name      => "#{attribute} on #{suffix}",
-              :ensure    => :present,
-              :attribute => attribute,
-              :suffix    => suffix,
-              :indices   => indices
-            )
-          }
+          i << new(
+            :name      => "#{attrlist} on #{suffix}",
+            :ensure    => :present,
+            :attribute => attrlist,
+            :suffix    => suffix,
+            :indices   => indices
+          )
         end
       end
     end
