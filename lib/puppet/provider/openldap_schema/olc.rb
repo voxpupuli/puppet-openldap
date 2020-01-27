@@ -59,6 +59,8 @@ Puppet::Type.
         ldif.push("olcObjectClasses:#{$1}")
       when /^\s+(.*)/   # Rewrite continuation whitespace
         ldif.push("  #{$1}")    # One space to indicate continuation, plus one for spacing between words
+      else
+        raise Puppet::Error, "Failed to parse schema line in schemaToLdif: '#{line}'"
       end
     end
     ldif.join("\n")
@@ -92,8 +94,10 @@ Puppet::Type.
         current.push("olcObjectClasses:#{$1}")
       when /^\s+(.*)/
         if not current.nil?
-          current.last << " #{$1}"
+          current.push("  #{$1}")
         end
+      else
+        raise Puppet::Error, "Failed to parse schema line in schemaToLdifReplace: '#{line}'"
       end
     end
 
@@ -142,8 +146,10 @@ Puppet::Type.
         current.push("olcObjectClasses:#{$1}")
       when /^\s+(.*)/
         if not current.nil?
-          current.last << " #{$1}"
+          current.push("  #{$1}")
         end
+      else
+        raise Puppet::Error, "Failed to parse LDIF line in ldifReplace: '#{line}'"
       end
     end
 
