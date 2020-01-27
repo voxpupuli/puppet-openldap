@@ -189,8 +189,8 @@ Puppet::Type.
     t = Tempfile.new('openldap_schemas_ldif')
 
     begin
-      schema = IO.read resource[:path]
-      file_extention = File.extname resource[:path]
+      schema = File.read(resource[:path])
+      file_extention = File.extname(resource[:path])
       if file_extention == '.schema'
         if @property_hash[:ensure] == :present
           t << self.class.schemaToLdifReplace(schema, "{#{@property_hash[:index]}}#{@property_hash[:name]}")
