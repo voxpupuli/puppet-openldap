@@ -135,6 +135,12 @@ Puppet::Type.
         next
       when /^$/
         next
+      when /^dn:/i
+        next
+      when /^cn:/i
+        next
+      when /objectClass:/i
+        next
       when /^olcObjectIdentifier:\s+(.*)$/i
         current = objId
         current.push("olcObjectIdentifier:#{$1}")
