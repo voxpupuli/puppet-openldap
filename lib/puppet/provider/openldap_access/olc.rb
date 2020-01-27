@@ -105,27 +105,12 @@ Puppet::Type.
   def getDn(*args); self.class.getDn(*args); end
 
   def exists?
-    if @property_hash[:position]
-      access = {
-        :suffix   => @property_hash[:suffix],
-        :position => @property_hash[:position].to_s
-      }
-    else
-      access = {
-        :suffix => @property_hash[:suffix],
-        :access => @property_hash[:access].flatten,
-        :what   => @property_hash[:what]
-      }
-    end
-    accesses = self.class.instances.map { |acc|
-      acc_hash = acc.instance_variable_get(:@property_hash)
-      acc_hash.select { |k,v| access.key?(k) }
-    }
-    accesses.include?(access)
+    resource[:suffix] == @property_hash[:suffix] and
+      resource[:access].flatten == @property_hash[:access].flatten and
+      resource[:what] == @property_hash[:what]
   end
 
   def create
-    position = "{#{resource[:position]}}" if resource[:position]
     t = Tempfile.new('openldap_access')
     t << "dn: #{getDn(resource[:suffix])}\n"
     t << "add: olcAccess\n"
@@ -175,24 +160,8 @@ Puppet::Type.
     @property_flush = {}
   end
 
-  def what=(value)
-    @property_flush[:what] = value
-  end
-
-  def suffix=(value)
-    @property_flush[:suffix] = value
-  end
-
-  def position=(value)
-    @property_flush[:position] = value
-  end
-
   def access=(value)
     @property_flush[:access] = value.flatten
-  end
-
-  def islast=(value)
-    @property_flush[:islast] = value
   end
 
   def self.getCountOfOlcAccess(suffix)
