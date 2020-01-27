@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe 'openldap::server::module' do
-
   let(:title) { 'foo' }
 
   on_supported_os.each do |os, facts|
@@ -11,7 +10,7 @@ describe 'openldap::server::module' do
       end
 
       context 'without declaring Class[openldap::server]' do
-        it { expect { is_expected.to compile }.to raise_error(/::openldap::server has not been evaluated/) }
+        it { expect { is_expected.to compile }.to raise_error(%r{::openldap::server has not been evaluated}) }
       end
 
       context 'without parameter' do

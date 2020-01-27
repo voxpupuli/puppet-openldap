@@ -1,64 +1,102 @@
 ---
+dist: xenial
 language: ruby
-sudo: false
+cache: bundler
 addons:
   apt:
-    packages:
-      - libaugeas-dev
     sources:
       - augeas
-cache: bundler
+    packages:
+      - libaugeas-dev
+before_install:
+  - bundle -v
+  - rm -f Gemfile.lock
+  - gem update --system $RUBYGEMS_VERSION
+  - gem --version
+  - bundle -v
+script:
+  - 'bundle exec rake $CHECK'
 bundler_args: --without system_tests
-script: ["bundle exec rake validate", "bundle exec rake lint", "bundle exec rake spec SPEC_OPTS='--format documentation'"]
+rvm:
+  - 2.5.3
+stages:
+  - static
+  - spec
+  - acceptance
+  -
+    if: tag =~ ^v\d
+    name: deploy
 matrix:
   fast_finish: true
   include:
-  - rvm: 2.1.9
-    env: PUPPET_GEM_VERSION="~> 4.0"
-  - rvm: 2.4.1
-    env: PUPPET_GEM_VERSION="~> 5.0"
-  - rvm: default
-    sudo: required
-    dist: trusty
-    services: docker
-    env: BEAKER_set="debian-8"
-    bundler_args:
-    script: sudo service docker restart ; sleep 10 && bundle exec rspec spec/acceptance/*_spec.rb
-  - rvm: default
-    sudo: required
-    dist: trusty
-    services: docker
-    env: BEAKER_set="debian-9"
-    bundler_args:
-    script: sudo service docker restart ; sleep 10 && bundle exec rspec spec/acceptance/*_spec.rb
-  - rvm: default
-    sudo: required
-    dist: trusty
-    services: docker
-    env: BEAKER_set="ubuntu-14.04"
-    bundler_args:
-    script: sudo service docker restart ; sleep 10 && bundle exec rspec spec/acceptance/*_spec.rb
-  - rvm: default
-    sudo: required
-    dist: trusty
-    services: docker
-    env: BEAKER_set="ubuntu-16.04"
-    bundler_args:
-    script: sudo service docker restart ; sleep 10 && bundle exec rspec spec/acceptance/*_spec.rb
-  - rvm: default
-    sudo: required
-    dist: trusty
-    services: docker
-    env: BEAKER_set="centos-6"
-    bundler_args:
-    script: sudo service docker restart ; sleep 10 && bundle exec rspec spec/acceptance/*_spec.rb
-  - rvm: default
-    sudo: required
-    dist: trusty
-    services: docker
-    env: BEAKER_set="centos-7"
-    bundler_args:
-    script: sudo service docker restart ; sleep 10 && bundle exec rspec spec/acceptance/*_spec.rb
+    -
+      env: CHECK="check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop syntax lint metadata_lint"
+      stage: static
+    -
+      env: PUPPET_GEM_VERSION="~> 5.0" CHECK=parallel_spec
+      rvm: 2.4.5
+      stage: spec
+    -
+      env: PUPPET_GEM_VERSION="~> 6.0" CHECK=parallel_spec
+      rvm: 2.5.3
+      stage: spec
+    -
+      env: DEPLOY_TO_FORGE=yes
+      stage: deploy
+    -
+      before_script: ["bundle exec rake 'litmus:provision[docker, waffleimage/centos6]'", "bundle exec rake 'litmus:install_agent[puppet5]'", "bundle exec rake litmus:install_module"]
+      bundler_args: 
+      env: PLATFORMS=centos6
+      rvm: 2.5.3
+      script: ["bundle exec rake litmus:acceptance:parallel"]
+      services: docker
+      stage: acceptance
+      sudo: required
+    -
+      before_script: ["bundle exec rake 'litmus:provision[docker, waffleimage/centos7]'", "bundle exec rake 'litmus:install_agent[puppet5]'", "bundle exec rake litmus:install_module"]
+      bundler_args: 
+      env: PLATFORMS=centos7
+      rvm: 2.5.3
+      script: ["bundle exec rake litmus:acceptance:parallel"]
+      services: docker
+      stage: acceptance
+      sudo: required
+    -
+      before_script: ["bundle exec rake 'litmus:provision[docker, waffleimage/debian8]'", "bundle exec bolt command run 'apt-get install lsb-release gnupg iproute2 -y' --inventoryfile inventory.yaml --nodes='localhost*'", "bundle exec rake 'litmus:install_agent[puppet5]'", "bundle exec rake litmus:install_module"]
+      bundler_args: 
+      env: PLATFORMS=debian8
+      script: ["bundle exec rake litmus:acceptance:parallel"]
+      services: docker
+      stage: acceptance
+      sudo: required
+    -
+      before_script: ["bundle exec rake 'litmus:provision[docker, waffleimage/debian9]'", "bundle exec bolt command run 'apt-get install lsb-release gnupg iproute2 -y' --inventoryfile inventory.yaml --nodes='localhost*'", "bundle exec rake 'litmus:install_agent[puppet5]'", "bundle exec rake litmus:install_module"]
+      bundler_args: 
+      env: PLATFORMS=debian9
+      script: ["bundle exec rake litmus:acceptance:parallel"]
+      services: docker
+      stage: acceptance
+      sudo: required
+    -
+      before_script: ["bundle exec rake 'litmus:provision[docker, waffleimage/ubuntu16.04]'", "bundle exec bolt command run 'apt-get install lsb-release gnupg iproute2 -y' --inventoryfile inventory.yaml --nodes='localhost*'", "bundle exec rake 'litmus:install_agent[puppet5]'", "bundle exec rake litmus:install_module"]
+      bundler_args: 
+      env: PLATFORMS=ubuntu16.04
+      script: ["bundle exec rake litmus:acceptance:parallel"]
+      services: docker
+      stage: acceptance
+      sudo: required
+    -
+      before_script: ["bundle exec rake 'litmus:provision[docker, waffleimage/ubuntu18.04]'", "bundle exec bolt command run 'apt-get install lsb-release gnupg iproute2 -y' --inventoryfile inventory.yaml --nodes='localhost*'", "bundle exec rake 'litmus:install_agent[puppet5]'", "bundle exec rake litmus:install_module"]
+      bundler_args: 
+      env: PLATFORMS=ubuntu18.04
+      script: ["bundle exec rake litmus:acceptance:parallel"]
+      services: docker
+      stage: acceptance
+      sudo: required
+branches:
+  only:
+    - master
+    - /^v\d/
 notifications:
   email: false
 deploy:
@@ -68,7 +106,5 @@ deploy:
     secure: "ZjmgM4a2tcCE4dtccVSmYZAcuCaXdZNsZxVzRiDg7URBYyALMNgCV6XaiS/DTHX4jCuiyw/89Vywyf+uDjrj1552D+lF3cuQMXziwJhXp9v0jJRT9kpq8CFnq4iC/qwqLj54QIhIFoVgtiY9k+2MWRoMuGveLnAmg9K6wSNvLS4="
   on:
     tags: true
-    # all_branches is required to use tags
     all_branches: true
-    # Only publish if our main Ruby target builds
-    rvm: 2.1.9
+    condition: "$DEPLOY_TO_FORGE = yes"

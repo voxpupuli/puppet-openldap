@@ -1,7 +1,6 @@
 require 'spec_helper_acceptance'
 
 describe 'openldap::server::overlay' do
-
   context 'without parameters' do
     it 'creates an overlay' do
       pp = <<-EOS
@@ -19,8 +18,7 @@ describe 'openldap::server::overlay' do
       }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
+      idempotent_apply(pp)
     end
   end
 
@@ -44,10 +42,7 @@ describe 'openldap::server::overlay' do
       }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
+      idempotent_apply(pp)
     end
   end
 end
-
-
