@@ -93,6 +93,16 @@ matrix:
     -
       env: DEPLOY_TO_FORGE=yes
       stage: deploy
+  allow_failures:
+    -
+      before_script: ["bundle exec rake 'litmus:provision[docker, waffleimage/centos7]'", "bundle exec rake 'litmus:install_agent[puppet5]'", "bundle exec rake litmus:install_module"]
+      bundler_args: 
+      env: PLATFORMS=centos7
+      rvm: 2.5.3
+      script: ["bundle exec rake litmus:acceptance:parallel"]
+      services: docker
+      stage: acceptance
+      sudo: required
 branches:
   only:
     - master
