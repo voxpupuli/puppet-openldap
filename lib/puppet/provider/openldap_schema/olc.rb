@@ -59,6 +59,8 @@ Puppet::Type.
         ldif.push("olcObjectClasses:#{$1}")
       when /^\s+(.*)/   # Rewrite continuation whitespace
         ldif.push("  #{$1}")    # One space to indicate continuation, plus one for spacing between words
+      else
+        raise Puppet::Error, "Failed to parse schema line in schemaToLdif: '#{line}'"
       end
     end
     ldif.join("\n")
@@ -92,8 +94,10 @@ Puppet::Type.
         current.push("olcObjectClasses:#{$1}")
       when /^\s+(.*)/
         if not current.nil?
-          current.last << " #{$1}"
+          current.push("  #{$1}")
         end
+      else
+        raise Puppet::Error, "Failed to parse schema line in schemaToLdifReplace: '#{line}'"
       end
     end
 
@@ -131,6 +135,12 @@ Puppet::Type.
         next
       when /^$/
         next
+      when /^dn:/i
+        next
+      when /^cn:/i
+        next
+      when /objectClass:/i
+        next
       when /^olcObjectIdentifier:\s+(.*)$/i
         current = objId
         current.push("olcObjectIdentifier:#{$1}")
@@ -142,8 +152,10 @@ Puppet::Type.
         current.push("olcObjectClasses:#{$1}")
       when /^\s+(.*)/
         if not current.nil?
-          current.last << " #{$1}"
+          current.push("  #{$1}")
         end
+      else
+        raise Puppet::Error, "Failed to parse LDIF line in ldifReplace: '#{line}'"
       end
     end
 
@@ -177,8 +189,8 @@ Puppet::Type.
     t = Tempfile.new('openldap_schemas_ldif')
 
     begin
-      schema = IO.read resource[:path]
-      file_extention = File.extname resource[:path]
+      schema = File.read(resource[:path])
+      file_extention = File.extname(resource[:path])
       if file_extention == '.schema'
         if @property_hash[:ensure] == :present
           t << self.class.schemaToLdifReplace(schema, "{#{@property_hash[:index]}}#{@property_hash[:name]}")
