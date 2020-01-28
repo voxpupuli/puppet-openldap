@@ -89,11 +89,23 @@
       sudo: required
   user: camptocamp
   secure: "ZjmgM4a2tcCE4dtccVSmYZAcuCaXdZNsZxVzRiDg7URBYyALMNgCV6XaiS/DTHX4jCuiyw/89Vywyf+uDjrj1552D+lF3cuQMXziwJhXp9v0jJRT9kpq8CFnq4iC/qwqLj54QIhIFoVgtiY9k+2MWRoMuGveLnAmg9K6wSNvLS4="
+  branches:
+    - master
+    - /^\d/
+  deploy_to_forge:
+    enabled: true
+    tag_regex: "^\\d"
 
 Gemfile:
   required:
     ':development':
       - gem: ruby-augeas
+  optional:
+    ':development':
+      - gem: 'github_changelog_generator'
+
+Rakefile:
+  changelog_version_tag_pattern: '%s'
 
 spec/spec_helper.rb:
   spec_overrides:

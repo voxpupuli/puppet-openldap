@@ -24,7 +24,7 @@ stages:
   - spec
   - acceptance
   -
-    if: tag =~ ^v\d
+    if: tag =~ ^\d
     name: deploy
 matrix:
   fast_finish: true
@@ -40,9 +40,6 @@ matrix:
       env: PUPPET_GEM_VERSION="~> 6.0" CHECK=parallel_spec
       rvm: 2.5.3
       stage: spec
-    -
-      env: DEPLOY_TO_FORGE=yes
-      stage: deploy
     -
       before_script: ["bundle exec rake 'litmus:provision[docker, waffleimage/centos6]'", "bundle exec rake 'litmus:install_agent[puppet5]'", "bundle exec rake litmus:install_module"]
       bundler_args: 
@@ -93,10 +90,14 @@ matrix:
       services: docker
       stage: acceptance
       sudo: required
+    -
+      env: DEPLOY_TO_FORGE=yes
+      stage: deploy
 branches:
   only:
     - master
     - /^v\d/
+    - /^\d/
 notifications:
   email: false
 deploy:
