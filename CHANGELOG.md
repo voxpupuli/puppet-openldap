@@ -1,3 +1,9 @@
+## 2020-02-27 - Release 2.0.0
+
+- update dependencies and Puppet version [\#261](https://github.com/camptocamp/puppet-openldap/pull/261) ([Dan33l](https://github.com/Dan33l))
+- declare this module as compatible with ubuntu1804 [\#260](https://github.com/camptocamp/puppet-openldap/pull/260) ([Dan33l](https://github.com/Dan33l))
+- Port openldap\_password() to Puppet 4.x function API [\#258](https://github.com/camptocamp/puppet-openldap/pull/258) ([raphink](https://github.com/raphink))
+
 ## 2020-01-28 - Release 1.18.0
 
 - Fix acceptance [\#257](https://github.com/camptocamp/puppet-openldap/pull/257) ([raphink](https://github.com/raphink))
