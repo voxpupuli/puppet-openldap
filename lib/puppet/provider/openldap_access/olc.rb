@@ -25,7 +25,11 @@ Puppet::Type.
         when /^olcSuffix: /
           suffix = line.split(' ')[1]
         when /^olcAccess: /
-          position, what, bys = line.match(/^olcAccess:\s+\{(\d+)\}to\s+(\S+(?:\s+filter=\S+)?(?:\s+attrs=\S+)?(?:\s+val=\S+)?)(\s+by\s+.*)+$/).captures
+          begin
+            position, what, bys = line.match(/^olcAccess:\s+\{(\d+)\}to\s+(\S+(?:\s+filter=\S+)?(?:\s+attrs=\S+)?(?:\s+val=\S+)?)(\s+by\s+.*)+$/).captures
+          rescue
+            raise Puppet::Error, "Failed to parse olcAccess for suffix '#{suffix}': #{line}"
+          end
           access = []
           bys.split(/(?= by .+)/).each { |b|
             access << b.lstrip
