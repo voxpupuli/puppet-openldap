@@ -23,8 +23,7 @@ Puppet::Type.type(:openldap_database).provide(:augeas, :parent => Puppet::Type.t
   def self.instances
     augopen do |aug|
       aug.match('$target/database').map { |hpath|
-        new({
-          :ensure    => :present,
+        new(          :ensure    => :present,
           :name      => aug.get("#{hpath}/suffix").chomp('"').reverse.chomp('"').reverse,
           :suffix    => aug.get("#{hpath}/suffix").chomp('"').reverse.chomp('"').reverse,
           :target    => target,
@@ -32,8 +31,7 @@ Puppet::Type.type(:openldap_database).provide(:augeas, :parent => Puppet::Type.t
           :directory => aug.get("#{hpath}/directory").chomp('"').reverse.chomp('"').reverse,
           :rootdn    => aug.get("#{hpath}/rootdn"),
           :rootpw    => aug.get("#{hpath}/rootpw"),
-          :readonly  => aug.get("#{hpath}/readonly"),
-        })
+          :readonly  => aug.get("#{hpath}/readonly"))
       }
     end
   end
