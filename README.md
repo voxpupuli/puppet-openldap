@@ -304,3 +304,70 @@ openldap::server::overlay { "rwm on relay":
   },
 }
 ```
+
+### Configuring Syncrepl
+
+LDAP Replication can be configured as part of the openldap:server:database class
+
+```puppet
+openldap::server::database { 'dc=example,dc=com':
+  syncrepl  => $syncreplstring,
+  updateref => 'ldap:://${providor}:389',
+}```
+
+There are a few other options that may be helpful but these are the ones I've used
+to set up a simple slave.
+
+syncrepl is an array of strings pointing to providers, Be careful about the quoting.
+I guess should really be wrapped in another class.  
+
+```puppet
+$syncrepl = {
+      rid            => '001',
+      provider       => "\"ldap://${master}:389\"",
+      starttls       => yes,
+      tls_reqcert    => never,
+      bindmethod     => simple,
+      binddn         => "\"${replicadn}\"",
+      credentials    => "\"${credentials}\"",
+      filter         => '"(objectclass=*)"',
+      searchbase     => "\"dc=examnple,dc=com\"",
+      scope          => '"sub"',
+      schemachecking => '"off"',
+      type           => '"refreshAndPersist"',
+      retry          => '"60 +"',
+    }
+    $syncreplstring = $syncrepl.map |$k, $v| {"${k}=${v}"}.join(' ')
+```  
+
+You will also need to configure the correct modules, overlays and indexes on the providor for
+replication to work, (and database if you want deltarepl to work)
+
+```puppet
+openldap::server::overlay { 'syncprov':
+        ensure  => present,
+        suffix  => 'dc=example,dc=com',
+        overlay => syncprov,
+        options => {
+            olcSpNoPresent  => 'TRUE',
+            olcSpReloadHint => 'TRUE',
+            olcSpCheckpoint => '20 10',
+            olcSpSessionlog => '500',
+        },
+        require => [
+          Openldap::Server::Module['syncprov'],
+          Openldap::Server::Database['dc=example,dc=com']],
+  }
+```
+
+If setting up a new slave, `initdb` should be set to false as all data will be loaded from the
+provider.
+
+Changes from upstream module:
+
+  * updateref initialised to empty string, rather than nil
+  * syncrepl initialised to empty array, rather than nil
+  * only update updateref if updateref is not empty
+  * only update syncrepl if syncrepl is not empty
+  * delete olcUpdateref and olcSyncrepl before replacing (if not empty)
+

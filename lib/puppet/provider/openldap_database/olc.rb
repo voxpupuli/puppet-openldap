@@ -26,11 +26,11 @@ Puppet::Type.
       sizelimit = nil
       dbmaxsize = nil
       timelimit = nil
-      updateref = nil
+      updateref = ''
       dboptions = {}
       mirrormode = nil
       syncusesubentry = nil
-      syncrepl = nil
+      syncrepl = []
       limits = []
       security = {}
       paragraph.gsub("\n ", "").split("\n").collect do |line|
@@ -235,7 +235,7 @@ Puppet::Type.
     t << "olcSizeLimit: #{resource[:sizelimit]}\n" if resource[:sizelimit]
     t << "olcDbMaxSize: #{resource[:dbmaxsize]}\n" if resource[:dbmaxsize]
     t << "olcTimeLimit: #{resource[:timelimit]}\n" if resource[:timelimit]
-    t << "olcUpdateref: #{resource[:updateref]}\n" if resource[:updateref]
+    t << "olcUpdateref: #{resource[:updateref]}\n" if resource[:updateref] and !resource[:updateref].empty?
     if resource[:dboptions]
       resource[:dboptions].each do |k, v|
         case k
@@ -254,7 +254,7 @@ Puppet::Type.
         end
       end
     end
-    t << resource[:syncrepl].collect { |x| "olcSyncrepl: #{x}" }.join("\n") + "\n" if resource[:syncrepl]
+    t << resource[:syncrepl].collect { |x| "olcSyncrepl: #{x}" }.join("\n") + "\n" if resource[:syncrepl] and !resource[:syncrepl].empty?
     t << "olcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:mirrormode]
     t << "olcSyncUseSubentry: #{resource[:syncusesubentry]}\n" if resource[:syncusesubentry]
     t << "#{resource[:limits].collect { |x| "olcLimits: #{x}" }.join("\n")}\n" if resource[:limits] and !resource[:limits].empty?
@@ -403,8 +403,10 @@ Puppet::Type.
           end
         end
       end
-      t << "replace: olcSyncrepl\n#{resource[:syncrepl].collect { |x| "olcSyncrepl: #{x}" }.join("\n")}\n-\n" if @property_flush[:syncrepl]
-      t << "replace: olcUpdateref\nolcUpdateref: #{resource[:updateref]}\n-\n" if @property_flush[:updateref]
+      t << "delete: olcSyncrepl\n-\n"                                                                         if @property_flush[:updateref] and resource[:updateref].empty?
+      t << "replace: olcSyncrepl\n#{resource[:syncrepl].collect { |x| "olcSyncrepl: #{x}" }.join("\n")}\n-\n" if @property_flush[:syncrepl]  and !resource[:updateref].empty?
+      t << "delete: olcUpdateref\n-\n"                                                                        if @property_flush[:updateref] and resource[:updateref].empty?
+      t << "replace: olcUpdateref\nolcUpdateref: #{resource[:updateref]}\n-\n"                                if @property_flush[:updateref] and !resource[:updateref].empty?
       t << "replace: olcMirrorMode\nolcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n-\n" if @property_flush[:mirrormode]
       t << "replace: olcSyncUseSubentry\nolcSyncUseSubentry: #{resource[:syncusesubentry]}\n-\n" if @property_flush[:syncusesubentry]
       t << "replace: olcLimits\n#{@property_flush[:limits].collect { |x| "olcLimits: #{x}" }.join("\n")}\n-\n" if @property_flush[:limits]
