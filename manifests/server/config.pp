@@ -9,8 +9,12 @@ class openldap::server::config {
     false => join(prefix($::openldap::server::ldap_ifs, 'ldap://'), ' '),
     true  => '',
   }
+  $escaped_ldapi_ifs = $::openldap::server::escape_ldapi_ifs ? {
+    true  => regsubst($::openldap::server::ldapi_ifs, '/', '%2F', 'G'),
+    false => $::openldap::server::ldapi_ifs,
+  }
   $slapd_ldapi_ifs = empty($::openldap::server::ldapi_ifs) ? {
-    false => join(prefix($::openldap::server::ldapi_ifs, 'ldapi://'), ' '),
+    false => join(prefix($escaped_ldapi_ifs, 'ldapi://'), ' '),
     true  => '',
   }
   $slapd_ldaps_ifs = empty($::openldap::server::ldaps_ifs) ? {
@@ -70,6 +74,31 @@ class openldap::server::config {
       }
     }
     'Archlinux': {}
+    'FreeBSD': {
+      shellvar { 'slapd_cn_config':
+        ensure   => present,
+        target   => '/etc/rc.conf',
+        variable => 'slapd_cn_config',
+        value    => bool2str($openldap::server::provider == 'olc', 'YES', 'NO'),
+        quoted   => 'double',
+      }
+
+      shellvar { 'slapd_flags':
+        ensure   => present,
+        target   => '/etc/rc.conf',
+        variable => 'slapd_flags',
+        value    => "-h '${slapd_ldap_urls}'",
+        quoted   => 'double',
+      }
+
+      shellvar { 'slapd_sockets':
+        ensure   => present,
+        target   => '/etc/rc.conf',
+        variable => 'slapd_sockets',
+        value    => join($::openldap::server::ldapi_ifs, ' '),
+        quoted   => 'double',
+      }
+    }
     default: {
       fail "Operating System Family ${::osfamily} not yet supported"
     }

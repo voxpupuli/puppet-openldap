@@ -6,7 +6,7 @@ Puppet::Type.
 
   # TODO: Use ruby bindings (can't find one that support IPC)
 
-  defaultfor :osfamily => [:debian, :redhat]
+  defaultfor :osfamily => [:debian, :freebsd, :redhat]
 
   mk_resource_methods
 
@@ -205,7 +205,12 @@ Puppet::Type.
   end
 
   def destroy
-    default_confdir = Facter.value(:osfamily) == 'Debian' ? '/etc/ldap/slapd.d' : Facter.value(:osfamily) == 'RedHat' ? '/etc/openldap/slapd.d' : nil
+    default_confdir = case Facter.value(:osfamily)
+                      when 'Debian' then '/etc/ldap/slapd.d'
+                      when 'RedHat' then '/etc/openldap/slapd.d'
+                      when 'FreeBSD' then '/usr/local/etc/openldap/slapd.d'
+                      else nil
+                      end
 
     `service slapd stop`
     path = default_confdir  + "/" + getPath("olcOverlay={#{@property_hash[:index]}}#{resource[:overlay]},#{getDn(resource[:suffix])}")
