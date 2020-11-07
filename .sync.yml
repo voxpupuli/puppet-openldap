@@ -40,7 +40,7 @@
       env: PLATFORMS=debian8
       before_script:
         - bundle exec rake 'litmus:provision[docker, waffleimage/debian8]'
-        - bundle exec bolt command run 'apt-get install lsb-release gnupg iproute2 -y' --inventoryfile inventory.yaml --nodes='localhost*'
+        - bundle exec bolt command run 'apt-get install lsb-release gnupg iproute2 -y' --inventoryfile inventory.yaml --targets='localhost*'
         - bundle exec rake 'litmus:install_agent[puppet5]'
         - bundle exec rake litmus:install_module
       script:
@@ -53,7 +53,7 @@
       env: PLATFORMS=debian9
       before_script:
         - bundle exec rake 'litmus:provision[docker, waffleimage/debian9]'
-        - bundle exec bolt command run 'apt-get install lsb-release gnupg iproute2 -y' --inventoryfile inventory.yaml --nodes='localhost*'
+        - bundle exec bolt command run 'apt-get install lsb-release gnupg iproute2 -y' --inventoryfile inventory.yaml --targets='localhost*'
         - bundle exec rake 'litmus:install_agent[puppet5]'
         - bundle exec rake litmus:install_module
       script:
@@ -66,7 +66,7 @@
       env: PLATFORMS=ubuntu16.04
       before_script:
         - bundle exec rake 'litmus:provision[docker, waffleimage/ubuntu16.04]'
-        - bundle exec bolt command run 'apt-get install lsb-release gnupg iproute2 -y' --inventoryfile inventory.yaml --nodes='localhost*'
+        - bundle exec bolt command run 'apt-get install lsb-release gnupg iproute2 -y' --inventoryfile inventory.yaml --targets='localhost*'
         - bundle exec rake 'litmus:install_agent[puppet5]'
         - bundle exec rake litmus:install_module
       script:
@@ -79,7 +79,7 @@
       env: PLATFORMS=ubuntu18.04
       before_script:
         - bundle exec rake 'litmus:provision[docker, waffleimage/ubuntu18.04]'
-        - bundle exec bolt command run 'apt-get install lsb-release gnupg iproute2 -y' --inventoryfile inventory.yaml --nodes='localhost*'
+        - bundle exec bolt command run 'apt-get install lsb-release gnupg iproute2 -y' --inventoryfile inventory.yaml --targets='localhost*'
         - bundle exec rake 'litmus:install_agent[puppet5]'
         - bundle exec rake litmus:install_module
       script:
