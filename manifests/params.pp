@@ -10,11 +10,6 @@ class openldap::params {
       $server_owner             = 'openldap'
       $server_package           = 'slapd'
       $server_service           = 'slapd'
-      if $::operatingsystem == 'Debian' and versioncmp($::operatingsystemmajrelease, '5') <= 0 {
-        $server_service_hasstatus = false
-      } else {
-        $server_service_hasstatus = true
-      }
       $utils_package            = 'ldap-utils'
       $escape_ldapi_ifs         = false
       # added to fix spec tests
@@ -35,7 +30,6 @@ class openldap::params {
         '5' => 'ldap',
         default => 'slapd',
       }
-      $server_service_hasstatus = true
       $utils_package            = 'openldap-clients'
       $escape_ldapi_ifs         = false
       # added to fix spec tests
@@ -53,7 +47,6 @@ class openldap::params {
       $server_owner             = 'ldap'
       $server_package           = 'openldap'
       $server_service           = 'slapd'
-      $server_service_hasstatus = true
       $utils_package            = undef
       $escape_ldapi_ifs         = false
       # added to fix spec tests
@@ -71,7 +64,6 @@ class openldap::params {
       $server_owner             = 'ldap'
       $server_package           = 'openldap-sasl-server'
       $server_service           = 'slapd'
-      $server_service_hasstatus = true
       $utils_package            = undef
       $escape_ldapi_ifs         = true
       # added to fix spec tests
