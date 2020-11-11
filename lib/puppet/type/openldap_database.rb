@@ -48,6 +48,8 @@ Puppet::Type.newtype(:openldap_database) do
         else
           'hdb'
         end
+      when 'FreeBSD'
+        'mdb'
       end
     end
   end

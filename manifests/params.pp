@@ -16,6 +16,7 @@ class openldap::params {
         $server_service_hasstatus = true
       }
       $utils_package            = 'ldap-utils'
+      $escape_ldapi_ifs         = false
     }
     'RedHat': {
       $client_package           = 'openldap'
@@ -31,6 +32,7 @@ class openldap::params {
       }
       $server_service_hasstatus = true
       $utils_package            = 'openldap-clients'
+      $escape_ldapi_ifs         = false
     }
     'Archlinux': {
       $client_package           = 'openldap'
@@ -43,6 +45,20 @@ class openldap::params {
       $server_service           = 'slapd'
       $server_service_hasstatus = true
       $utils_package            = undef
+      $escape_ldapi_ifs         = false
+    }
+    'FreeBSD': {
+      $client_package           = 'openldap-sasl-client'
+      $client_conffile          = '/usr/local/etc/openldap/ldap.conf'
+      $server_confdir           = '/usr/local/etc/openldap/slapd.d'
+      $server_conffile          = '/usr/local/etc/openldap/slapd.conf'
+      $server_group             = 'ldap'
+      $server_owner             = 'ldap'
+      $server_package           = 'openldap-sasl-server'
+      $server_service           = 'slapd'
+      $server_service_hasstatus = true
+      $utils_package            = undef
+      $escape_ldapi_ifs         = true
     }
     default: {
       fail "Operating System family ${::osfamily} not supported"

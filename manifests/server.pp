@@ -17,6 +17,7 @@ class openldap::server(
   $ldap_ifs                                = ['/'],
   $ldaps_ifs                               = [],
   $ldapi_ifs                               = ['/'],
+  Boolean $escape_ldapi_ifs                = $openldap::params::escape_ldapi_ifs,
 ) inherits ::openldap::params {
 
   class { '::openldap::server::install': }
