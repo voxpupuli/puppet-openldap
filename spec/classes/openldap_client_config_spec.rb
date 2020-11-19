@@ -641,6 +641,7 @@ describe 'openldap::client::config' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
+        it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
           it {

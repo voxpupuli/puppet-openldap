@@ -206,6 +206,7 @@ class openldap::client::config {
     $tls_cacert,
     $tls_cacertdir,
     $tls_reqcert,
+    $tls_moznss_compatibility,
     $sasl_mech,
     $sasl_realm,
     $sasl_authcid,
