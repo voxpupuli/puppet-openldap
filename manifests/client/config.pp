@@ -133,6 +133,11 @@ class openldap::client::config {
     'absent' => 'rm TLS_REQCERT',
     default  => "set TLS_REQCERT ${::openldap::client::tls_reqcert}",
   }
+  $tls_moznss_compatibility = $::openldap::client::tls_moznss_compatibility ? {
+    undef    => undef,
+    'absent' => 'rm TLS_MOZNSS_COMPATIBILITY',
+    default  => "set TLS_MOZNSS_COMPATIBILITY ${::openldap::client::tls_moznss_compatibility}",
+  }
   $sasl_mech = $::openldap::client::sasl_mech ? {
     undef   => undef,
     default => "set SASL_MECH ${::openldap::client::sasl_mech}",

@@ -634,6 +634,27 @@ describe 'openldap::client::config' do
         end
       end
 
+      context 'with a valid tls_moznss_compatibility set' do
+        let :pre_condition do
+          "class {'openldap::client': tls_moznss_compatibility => 'true', }"
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('openldap::client::config') }
+        case facts[:osfamily]
+        when 'Debian'
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set TLS_MOZNSS_COMPATIBILITY true'])
+          }
+        when 'RedHat'
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set TLS_MOZNSS_COMPATIBILITY true'])
+          }
+        end
+      end
+
       context 'with sasl options set' do
         let :pre_condition do
           "class {'openldap::client':
