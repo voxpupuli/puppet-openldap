@@ -9,8 +9,12 @@ class openldap::server::config {
     false => join(prefix($::openldap::server::ldap_ifs, 'ldap://'), ' '),
     true  => '',
   }
+  $escaped_ldapi_ifs = $::openldap::server::escape_ldapi_ifs ? {
+    true  => regsubst($::openldap::server::ldapi_ifs, '/', '%2F', 'G'),
+    false => $::openldap::server::ldapi_ifs,
+  }
   $slapd_ldapi_ifs = empty($::openldap::server::ldapi_ifs) ? {
-    false => join(prefix($::openldap::server::ldapi_ifs, 'ldapi://'), ' '),
+    false => join(prefix($escaped_ldapi_ifs, 'ldapi://'), ' '),
     true  => '',
   }
   $slapd_ldaps_ifs = empty($::openldap::server::ldaps_ifs) ? {

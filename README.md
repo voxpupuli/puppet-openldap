@@ -5,7 +5,6 @@ OpenLDAP
 [![Puppet Forge Downloads](http://img.shields.io/puppetforge/dt/camptocamp/openldap.svg)](https://forge.puppetlabs.com/camptocamp/openldap)
 [![Build Status](https://img.shields.io/travis/camptocamp/puppet-openldap/master.svg)](https://travis-ci.org/camptocamp/puppet-openldap)
 [![Puppet Forge Endorsement](https://img.shields.io/puppetforge/e/camptocamp/openldap.svg)](https://forge.puppetlabs.com/camptocamp/openldap)
-[![Gemnasium](https://img.shields.io/gemnasium/camptocamp/puppet-openldap.svg)](https://gemnasium.com/camptocamp/puppet-openldap)
 [![By Camptocamp](https://img.shields.io/badge/by-camptocamp-fb7047.svg)](http://www.camptocamp.com)
 
 Overview
@@ -30,7 +29,7 @@ schema      | Y             | N
 Usage
 -----
 
-###Configuring the client
+### Configuring the client
 
 ```puppet
 class { 'openldap::client': }
@@ -46,7 +45,7 @@ class { 'openldap::client':
 }
 ```
 
-###Configuring the server
+### Configuring the server
 
 ```puppet
 class { 'openldap::server': }
@@ -114,7 +113,7 @@ openldap::server::globalconf { 'Security':
 	value   => { 'Security' => [ 'simple_bind=128', 'ssf=128', 'tls=0' ] } 
 ```
 
-###Configuring a database
+### Configuring a database
 
 ```puppet
 openldap::server::database { 'dc=example,dc=com':
@@ -126,7 +125,16 @@ openldap::server::database { 'dc=example,dc=com':
 
 `rootpw` will be automatically converted to a SSHA hash with random salt.
 
-###Configuring modules
+Support SHA-2 password
+```puppet
+openldap::server::database { 'dc=example,dc=com':
+  directory => '/var/lib/ldap',
+  rootdn    => 'cn=admin,dc=example,dc=com',
+  rootpw    => '{SHA384}QZdaK3FnibbilSPbthnf3cO8lBWsRyM9i1MZTUFP21RdBSLSNFgYc2eFFzJG/amX',
+}
+```
+
+### Configuring modules
 
 ```puppet
 openldap::server::module { 'memberof':
@@ -134,7 +142,7 @@ openldap::server::module { 'memberof':
 }
 ```
 
-###Configuring overlays
+### Configuring overlays
 
 ```puppet
 openldap::server::overlay { 'memberof on dc=example,dc=com':
@@ -142,7 +150,7 @@ openldap::server::overlay { 'memberof on dc=example,dc=com':
 }
 ```
 
-###Configuring ACPs/ACLs
+### Configuring ACPs/ACLs
 
 [Documentation](http://www.openldap.org/devel/admin/slapdconf2.html) about olcAcces state the following spec:
 > 5.2.5.2. olcAccess: to &lt;what&gt; [ by &lt;who&gt; [&lt;accesslevel&gt;] [&lt;control&gt;] ]+
@@ -198,7 +206,7 @@ openldap::server::access { '0 on frontend' :
 ```
 
 
-####Note #1:
+#### Note #1:
 The chaining arrows `->` are importants if you want to order your entries.
 Openldap put the entry as the last available position.
 So if you got in your ldap:
@@ -214,7 +222,7 @@ So if you got in your ldap:
  olcAccess: {3}to ...
 ```
 
-####Note #2:
+#### Note #2:
   The parameter `islast` is used for purging remaining entries. Only one `islast` is allowed per suffix. If you got in your ldap:
 ```
  olcAccess: {0}to ...
@@ -234,7 +242,7 @@ openldap::server::access { '1 on dc=example,dc=com':
 
 entries 2 and 3 will get deleted.
 
-####Call your acl from a hash:
+#### Call your acl from a hash:
 The class `openldap::server::access_wrapper` was designed to simplify creating ACL.
 If you have multiple `what` (`to *` in this example), you can order them by adding number to it.
 
@@ -261,7 +269,7 @@ openldap::server::access_wrapper { 'dc=example,dc=com' :
 }
 ```
 
-###Configuring Schemas
+### Configuring Schemas
 ```puppet
 openldap::server::schema { 'samba':
   ensure  => present,
@@ -276,7 +284,7 @@ openldap::server::schema { 'nis':
 }
 ```
 
-###Configuring Rewrite-overlay
+### Configuring Rewrite-overlay
 ```puppet
 openldap::server::database { 'relay':
   ensure  => present,

@@ -1,29 +1,29 @@
 require 'spec_helper'
 
 describe Puppet::Type.type(:openldap_database) do
-  before do
+  before(:each) do
     @provider_class = described_class.provide(:simple) { mk_resource_methods }
     @provider_class.stubs(:suitable?).returns true
     described_class.stubs(:defaultprovider).returns @provider_class
   end
 
-  describe "namevar validation" do
-    it "should have :suffix as its namevar" do
+  describe 'namevar validation' do
+    it 'has :suffix as its namevar' do
       expect(described_class.key_attributes).to eq([:suffix])
     end
-    it "should not invalid suffixes" do
+    it 'does not invalid suffixes' do
       skip('must implement validation')
-      expect { described_class.new(:name => 'foo bar') }.to raise_error(Puppet::Error, /Invalid value/)
-      expect { described_class.new(:name => 'cn=admin,dc=example,dc=com') }.to raise_error(Puppet::Error, /Invalid value/)
-      expect { described_class.new(:name => 'dc=example, dc=com') }.to raise_error(Puppet::Error, /Invalid value/)
+      expect { described_class.new(name: 'foo bar') }.to raise_error(Puppet::Error, %r{Invalid value})
+      expect { described_class.new(name: 'cn=admin,dc=example,dc=com') }.to raise_error(Puppet::Error, %r{Invalid value})
+      expect { described_class.new(name: 'dc=example, dc=com') }.to raise_error(Puppet::Error, %r{Invalid value})
     end
-    it "should allow valid suffix" do
-      expect { described_class.new(:name => 'dc=example,dc=com') }.to_not raise_error
-      expect { described_class.new(:name => 'cn=config') }.to_not raise_error
+    it 'allows valid suffix' do
+      expect { described_class.new(name: 'dc=example,dc=com') }.not_to raise_error
+      expect { described_class.new(name: 'cn=config') }.not_to raise_error
     end
   end
 
-  describe "when validating attributes" do
+  describe 'when validating attributes' do
     [:suffix, :provider].each do |param|
       it "should have a #{param} parameter" do
         expect(described_class.attrtype(param)).to eq(:param)
@@ -37,68 +37,64 @@ describe Puppet::Type.type(:openldap_database) do
     end
   end
 
-  describe "when validating values" do
-
-    describe "ensure" do
-      it "should support present as a value for ensure" do
-        expect { described_class.new(:name => 'foo', :ensure => :present) }.to_not raise_error
+  describe 'when validating values' do
+    describe 'ensure' do
+      it 'supports present as a value for ensure' do
+        expect { described_class.new(name: 'foo', ensure: :present) }.not_to raise_error
       end
-      it "should support absent as a value for ensure" do
-        expect { described_class.new(:name => 'foo', :ensure => :absent) }.to_not raise_error
+      it 'supports absent as a value for ensure' do
+        expect { described_class.new(name: 'foo', ensure: :absent) }.not_to raise_error
       end
-      it "should not support other values" do
-        expect { described_class.new(:name => 'foo', :ensure => :foo) }.to raise_error(Puppet::Error, /Invalid value/)
-      end
-    end
-
-    describe "backend" do
-      it "should support bdb as a value for backend" do
-        expect { described_class.new(:name => 'foo', :backend => 'bdb') }.to_not raise_error
-      end
-      it "should support hdb as a value for backend" do
-        expect { described_class.new(:name => 'foo', :backend => 'hdb') }.to_not raise_error
-      end
-      it "should support config as a value for backend" do
-        expect { described_class.new(:name => 'foo', :backend => 'config') }.to_not raise_error
-      end
-      it "should not support other values" do
-        expect { described_class.new(:name => 'foo', :backend => 'bar') }.to raise_error(Puppet::Error, /Invalid value/)
+      it 'does not support other values' do
+        expect { described_class.new(name: 'foo', ensure: :foo) }.to raise_error(Puppet::Error, %r{Invalid value})
       end
     end
 
-    describe "directory" do
-      it "should support an absolute path as a value for directory" do
-        expect { described_class.new(:name => 'foo', :directory => '/bar/baz') }.to_not raise_error
+    describe 'backend' do
+      ['bdb', 'hdb', 'mdb', 'monitor', 'config', 'relay', 'ldap'].each do |b|
+        it "should support #{b} as a value for backend" do
+          expect { described_class.new(name: 'foo', backend: b) }.not_to raise_error
+        end
       end
-      it "should not support other values" do
+      it 'supports config as a value for backend' do
+        expect { described_class.new(name: 'foo', backend: 'config') }.not_to raise_error
+      end
+      it 'does not support other values' do
+        expect { described_class.new(name: 'foo', backend: 'bar') }.to raise_error(Puppet::Error, %r{Invalid value})
+      end
+    end
+
+    describe 'directory' do
+      it 'supports an absolute path as a value for directory' do
+        expect { described_class.new(name: 'foo', directory: '/bar/baz') }.not_to raise_error
+      end
+      it 'does not support other values' do
         skip('Must implement validation')
-        expect { described_class.new(:name => 'foo', :directory => 'bar/baz') }.to raise_error(Puppet::Error, /kjsflkjdsflk/)
+        expect { described_class.new(name: 'foo', directory: 'bar/baz') }.to raise_error(Puppet::Error, %r{kjsflkjdsflk})
       end
     end
-
   end
 
-  describe "rootpw" do
-    before do
-      @resource = described_class.new(:name => 'foo')
-      @password = described_class.attrclass(:rootpw).new(:resource => @resource, :should => 'secret')
+  describe 'rootpw' do
+    before(:each) do
+      @resource = described_class.new(name: 'foo')
+      @password = described_class.attrclass(:rootpw).new(resource: @resource, should: 'secret')
     end
 
-    it "should not include the password in the change log when adding the password" do
+    it 'does not include the password in the change log when adding the password' do
       expect(@password.change_to_s(:absent, 'secret')).not_to be_include('secret')
     end
 
-    it "should not include the password in the change log when changing the password" do
+    it 'does not include the password in the change log when changing the password' do
       expect(@password.change_to_s('oldpass', 'secret')).not_to be_include('secret')
     end
 
-    it "should redact the password when displaying the old value" do
-      expect(@password.is_to_s('oldpass')).to match(/^\[old password hash redacted\]$/)
+    it 'redacts the password when displaying the old value' do
+      expect(@password.is_to_s('oldpass')).to match(%r{^\[old password hash redacted\]$})
     end
 
-    it "should redact the password when displaying the new value" do
-      expect(@password.should_to_s('newpass')).to match(/^\[new password hash redacted\]$/)
+    it 'redacts the password when displaying the new value' do
+      expect(@password.should_to_s('newpass')).to match(%r{^\[new password hash redacted\]$})
     end
   end
-
 end

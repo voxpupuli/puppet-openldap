@@ -2,7 +2,7 @@
 define openldap::server::dbindex(
   $ensure    = undef,
   $suffix    = undef,
-  $attribute = undef,
+  $attribute = $name,
   $indices   = undef,
 ) {
 

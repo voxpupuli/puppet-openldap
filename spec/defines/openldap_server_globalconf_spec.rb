@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe 'openldap::server::globalconf' do
-
   let(:title) { 'foo' }
 
   on_supported_os.each do |os, facts|
@@ -15,7 +14,7 @@ describe 'openldap::server::globalconf' do
       end
 
       context 'with a value' do
-        let(:params) {{ :value => 'bar' }}
+        let(:params) { { value: 'bar' } }
 
         context 'with olc provider' do
           context 'with no parameters' do
@@ -24,10 +23,9 @@ describe 'openldap::server::globalconf' do
             end
 
             it { is_expected.to compile.with_all_deps }
-            it { is_expected.to contain_openldap__server__globalconf('foo').with({
-              :value => 'bar',
-            })}
-
+            it {
+              is_expected.to contain_openldap__server__globalconf('foo').with(value: 'bar')
+            }
           end
         end
       end

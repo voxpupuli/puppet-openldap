@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe 'openldap::client::config' do
-
   on_supported_os.each do |os, facts|
     context "on #{os}" do
       let(:facts) do
@@ -28,16 +27,36 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set BASE dc=example,dc=com' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set BASE dc=example,dc=com'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set BASE dc=example,dc=com' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set BASE dc=example,dc=com'])
+          }
+        end
+      end
+
+      context 'with base set to absent' do
+        let :pre_condition do
+          "class {'openldap::client': base => 'absent', }"
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('openldap::client::config') }
+        it { is_expected.to contain_augeas('ldap.conf') }
+        case facts[:osfamily]
+        when 'Debian'
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['rm BASE'])
+          }
+        when 'RedHat'
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['rm BASE'])
           }
         when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -58,16 +77,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set BIND_POLICY soft' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set BIND_POLICY soft'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set BIND_POLICY soft' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set BIND_POLICY soft'])
           }
 	when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -88,16 +105,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set BIND_TIMELIMIT 10' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set BIND_TIMELIMIT 10'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set BIND_TIMELIMIT 10' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set BIND_TIMELIMIT 10'])
           }
 	when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -118,16 +133,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set BINDDN cn=admin,dc=example,dc=com' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set BINDDN cn=admin,dc=example,dc=com'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set BINDDN cn=admin,dc=example,dc=com' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set BINDDN cn=admin,dc=example,dc=com'])
           }
 	when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -148,16 +161,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set BINDPW secret' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set BINDPW secret'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set BINDPW secret' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set BINDPW secret'])
           }
 	when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -178,16 +189,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set LDAP_VERSION 3' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set LDAP_VERSION 3'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set LDAP_VERSION 3' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set LDAP_VERSION 3'])
           }
 	when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -208,16 +217,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set NETWORK_TIMEOUT 1' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set NETWORK_TIMEOUT 1'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set NETWORK_TIMEOUT 1' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set NETWORK_TIMEOUT 1'])
           }
 	when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -238,16 +245,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set SCOPE one' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set SCOPE one'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set SCOPE one' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set SCOPE one'])
           }
 	when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -268,16 +273,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set SSL on' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set SSL on'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set SSL on' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set SSL on'])
           }
 	when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -298,16 +301,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set SUFFIX dc=example,dc=com' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set SUFFIX dc=example,dc=com'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set SUFFIX dc=example,dc=com' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set SUFFIX dc=example,dc=com'])
           }
 	when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -328,16 +329,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set TIMELIMIT 10' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set TIMELIMIT 10'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set TIMELIMIT 10' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set TIMELIMIT 10'])
           }
 	when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -358,16 +357,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set TIMEOUT 10' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set TIMEOUT 10'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set TIMEOUT 10' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set TIMEOUT 10'])
           }
 	when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -388,16 +385,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ "set URI 'ldap://ldap.example.com'" ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ["set URI 'ldap://ldap.example.com'"])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ "set URI 'ldap://ldap.example.com'" ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ["set URI 'ldap://ldap.example.com'"])
           }
 	when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -418,16 +413,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ "set URI 'ldap://ldap1.example.com ldap://ldap2.example.com'" ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ["set URI 'ldap://ldap1.example.com ldap://ldap2.example.com'"])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ "set URI 'ldap://ldap1.example.com ldap://ldap2.example.com'" ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ["set URI 'ldap://ldap1.example.com ldap://ldap2.example.com'"])
           }
 	when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -448,16 +441,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set NSS_BASE_GROUP ou=group,dc=example,dc=com' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set NSS_BASE_GROUP ou=group,dc=example,dc=com'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set NSS_BASE_GROUP ou=group,dc=example,dc=com' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set NSS_BASE_GROUP ou=group,dc=example,dc=com'])
           }
 	when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -478,16 +469,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set NSS_BASE_HOSTS ou=hosts,dc=example,dc=com' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set NSS_BASE_HOSTS ou=hosts,dc=example,dc=com'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set NSS_BASE_HOSTS ou=hosts,dc=example,dc=com' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set NSS_BASE_HOSTS ou=hosts,dc=example,dc=com'])
           }
 	when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -508,16 +497,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set NSS_BASE_PASSWD ou=passwd,dc=example,dc=com' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set NSS_BASE_PASSWD ou=passwd,dc=example,dc=com'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set NSS_BASE_PASSWD ou=passwd,dc=example,dc=com' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set NSS_BASE_PASSWD ou=passwd,dc=example,dc=com'])
           }
 	when 'FreeBSd'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -538,15 +525,37 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set NSS_BASE_SHADOW ou=shadow,dc=example,dc=com'])
+          }
+        when 'RedHat'
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set NSS_BASE_SHADOW ou=shadow,dc=example,dc=com'])
+          }
+        end
+      end
+
+      context 'with nss_initgroups_ignoreusers set' do
+        let :pre_condition do
+          "class {'openldap::client': nss_initgroups_ignoreusers => 'ovahi,backup,games', }"
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('openldap::client::config') }
+        it { is_expected.to contain_augeas('ldap.conf') }
+        case facts[:osfamily]
+        when 'Debian'
           it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set NSS_BASE_SHADOW ou=shadow,dc=example,dc=com' ],
+            :changes => [ 'set NSS_INITGROUPS_IGNOREUSERS ovahi,backup,games' ],
           })
           }
         when 'RedHat'
           it { is_expected.to contain_augeas('ldap.conf').with({
             :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set NSS_BASE_SHADOW ou=shadow,dc=example,dc=com' ],
+            :changes => [ 'set NSS_INITGROUPS_IGNOREUSERS ovahi,backup,games' ],
           })
           }
 	when 'FreeBSD'
@@ -568,16 +577,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set PAM_FILTER type=FILTER' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set PAM_FILTER type=FILTER'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set PAM_FILTER type=FILTER' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set PAM_FILTER type=FILTER'])
           }
 	when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -598,16 +605,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set PAM_LOGIN_ATTRIBUTE uid' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set PAM_LOGIN_ATTRIBUTE uid'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set PAM_LOGIN_ATTRIBUTE uid' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set PAM_LOGIN_ATTRIBUTE uid'])
           }
 	when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -628,16 +633,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set PAM_MEMBER_ATTRIBUTE memberUid' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set PAM_MEMBER_ATTRIBUTE memberUid'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set PAM_MEMBER_ATTRIBUTE memberUid' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set PAM_MEMBER_ATTRIBUTE memberUid'])
           }
 	when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -658,16 +661,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set PAM_PASSWORD md5' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set PAM_PASSWORD md5'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set PAM_PASSWORD md5' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set PAM_PASSWORD md5'])
           }
 	when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -676,14 +677,6 @@ describe 'openldap::client::config' do
           })
           }
         end
-      end
-
-      context 'with an invalid tls_cacert set' do
-        let :pre_condition do
-          "class {'openldap::client': tls_cacert => 'foo', }"
-        end
-
-        it { expect { is_expected.to compile }.to raise_error(/\"foo\" is not an absolute path/) }
       end
 
       context 'with a valid tls_cacert set' do
@@ -695,26 +688,16 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set TLS_CACERT /etc/ssl/certs/ca-certificates.crt' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set TLS_CACERT /etc/ssl/certs/ca-certificates.crt'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set TLS_CACERT /etc/ssl/certs/ca-certificates.crt' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set TLS_CACERT /etc/ssl/certs/ca-certificates.crt'])
           }
         end
-      end
-
-      context 'with an invalid tls_cacertdir set' do
-        let :pre_condition do
-          "class {'openldap::client': tls_cacertdir => 'foo', }"
-        end
-
-        it { expect { is_expected.to compile }.to raise_error(/\"foo\" is not an absolute path/) }
       end
 
       context 'with a valid tls_cacertdir set' do
@@ -727,16 +710,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set TLS_CACERTDIR /etc/ssl/certs/' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set TLS_CACERTDIR /etc/ssl/certs/'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set TLS_CACERTDIR /etc/ssl/certs/' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set TLS_CACERTDIR /etc/ssl/certs/'])
           }
         end
       end
@@ -751,16 +732,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set TLS_CHECKPEER no' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set TLS_CHECKPEER no'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set TLS_CHECKPEER no' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set TLS_CHECKPEER no'])
           }
         end
       end
@@ -775,16 +754,80 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set TLS_REQCERT never' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set TLS_REQCERT never'])
           }
-	when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set TLS_REQCERT never' ],
-          })
+        when 'RedHat'
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set TLS_REQCERT never'])
+          }
+        end
+      end
+
+      context 'with sasl options set' do
+        let :pre_condition do
+          "class {'openldap::client':
+                   sasl_mech => 'gssapi',
+                   sasl_realm => 'TEST.REALM',
+                   sasl_authcid => 'dn:uid=test,cn=mech,cn=authzid',
+                   sasl_secprops => ['noplain','noactive'],
+                   sasl_nocanon => true,
+           }"
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('openldap::client::config') }
+        it { is_expected.to contain_augeas('ldap.conf') }
+        case facts[:osfamily]
+        when 'Debian'
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set SASL_MECH gssapi',
+                                                                      'set SASL_REALM TEST.REALM',
+                                                                      'set SASL_AUTHCID dn:uid=test,cn=mech,cn=authzid',
+                                                                      'set SASL_SECPROPS noplain,noactive',
+                                                                      'set SASL_NOCANON true'])
+          }
+        when 'RedHat'
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set SASL_MECH gssapi',
+                                                                      'set SASL_REALM TEST.REALM',
+                                                                      'set SASL_AUTHCID dn:uid=test,cn=mech,cn=authzid',
+                                                                      'set SASL_SECPROPS noplain,noactive',
+                                                                      'set SASL_NOCANON true'])
+          }
+        end
+      end
+
+      context 'with gssapi options set' do
+        let :pre_condition do
+          "class {'openldap::client':
+                   gssapi_sign => false,
+                   gssapi_encrypt => true,
+                   gssapi_allow_remote_principal => 'on'
+           }"
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('openldap::client::config') }
+        it { is_expected.to contain_augeas('ldap.conf') }
+        case facts[:osfamily]
+        when 'Debian'
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set GSSAPI_SIGN false',
+                                                                      'set GSSAPI_ENCRYPT true',
+                                                                      'set GSSAPI_ALLOW_REMOTE_PRINCIPAL on'])
+          }
+        when 'RedHat'
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set GSSAPI_SIGN false',
+                                                                      'set GSSAPI_ENCRYPT true',
+                                                                      'set GSSAPI_ALLOW_REMOTE_PRINCIPAL on'])
           }
         when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({
@@ -805,16 +848,14 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_augeas('ldap.conf') }
         case facts[:osfamily]
         when 'Debian'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/ldap/ldap.conf',
-            :changes => [ 'set SUDOERS_BASE ou=sudoers,dc=example,dc=com' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
+                                                            changes: ['set SUDOERS_BASE ou=sudoers,dc=example,dc=com'])
           }
         when 'RedHat'
-          it { is_expected.to contain_augeas('ldap.conf').with({
-            :incl    => '/etc/openldap/ldap.conf',
-            :changes => [ 'set SUDOERS_BASE ou=sudoers,dc=example,dc=com' ],
-          })
+          it {
+            is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/openldap/ldap.conf',
+                                                            changes: ['set SUDOERS_BASE ou=sudoers,dc=example,dc=com'])
           }
 	when 'FreeBSD'
           it { is_expected.to contain_augeas('ldap.conf').with({

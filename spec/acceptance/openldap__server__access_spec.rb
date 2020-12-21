@@ -1,7 +1,6 @@
 require 'spec_helper_acceptance'
 
 describe 'openldap::server::access' do
-
   before :all do
     pp = <<-EOS
       class { 'openldap::server': }
@@ -10,8 +9,7 @@ describe 'openldap::server::access' do
       }
     EOS
 
-    apply_manifest(pp, :catch_failures => true)
-    apply_manifest(pp, :catch_changes => true)
+    idempotent_apply(pp)
   end
 
   after :all do
@@ -20,12 +18,11 @@ describe 'openldap::server::access' do
       openldap::server::database { 'dc=example,dc=com': ensure => absent, }
     EOS
 
-    apply_manifest(pp, :expect_changes => true)
-    apply_manifest(pp, :catch_changes => true)
+    idempotent_apply(pp)
   end
 
   context 'with defaults' do
-    it 'should idempotently run' do
+    it 'idempotentlies run' do
       pp = <<-EOS
         class { 'openldap::server': }
         openldap::server::database { 'dc=example,dc=com' : }
@@ -35,12 +32,19 @@ describe 'openldap::server::access' do
           suffix  => 'dc=example,dc=com',
           require => Openldap::Server::Database['dc=example,dc=com'],
         }
+        ::openldap::server::access { 'root':
+          what    => '*',
+          access  => [
+            'by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage',
+            'by * break'
+          ],
+          suffix  => 'dc=example,dc=com',
+          position => 0,
+          require => Openldap::Server::Database['dc=example,dc=com'],
+        }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
+      idempotent_apply(pp)
     end
   end
-
 end
-

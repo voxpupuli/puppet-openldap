@@ -6,7 +6,7 @@ Puppet::Type.
 
   # TODO: Use ruby bindings (can't find one that support IPC)
 
-  defaultfor :osfamily => :debian, :osfamily => :redhat, :osfamily => :freebsd
+  defaultfor :osfamily => [:debian, :freebsd, :redhat]
 
   mk_resource_methods
 
@@ -70,6 +70,8 @@ Puppet::Type.
     case resource[:overlay]
     when 'memberof'
       t << "objectClass: olcMemberOf\n"
+    when 'sock'
+      t << "objectClass: olcOvSocketConfig\n"
     when 'ppolicy'
       t << "objectClass: olcPPolicyConfig\n"
     when 'dynlist'
@@ -90,8 +92,12 @@ Puppet::Type.
       t << "objectClass: olcUniqueConfig\n"
     when 'rwm'
       t << "objectClass: olcRwmConfig\n"
+    when 'sock'
+      t << "objectClass: olcOvSocketConfig\n"
     when 'smbk5pwd'
       t << "objectClass: olcSmbK5PwdConfig\n"
+    when 'sssvlv'
+      t << "objectClass: olcSssVlvConfig\n"
     end
     t << "olcOverlay: #{resource[:overlay]}\n"
     if resource[:options]
@@ -171,10 +177,15 @@ Puppet::Type.
         end
         # Add current options
         @property_flush[:options].each do |k, v|
-          if v.is_a?(Array)
-            t << "replace: #{k}\n#{v.collect { |x| "#{k}: #{x}" }.join("\n")}\n-\n"
+          if (@property_hash[:options] || {}).member?(k)
+            action = 'replace'
           else
-            t << "replace: #{k}\n#{k}: #{v}\n-\n"
+            action = 'add'
+          end
+          if v.is_a?(Array)
+            t << "#{action}: #{k}\n#{v.collect { |x| "#{k}: #{x}" }.join("\n")}\n-\n"
+          else
+            t << "#{action}: #{k}\n#{k}: #{v}\n-\n"
           end
         end
       end
@@ -194,13 +205,18 @@ Puppet::Type.
   end
 
   def destroy
-    default_confdir = Facter.value(:osfamily) == 'Debian' ? '/etc/ldap/slapd.d' : Facter.value(:osfamily) == 'RedHat' ? '/etc/openldap/slapd.d' : nil
+    default_confdir = case Facter.value(:osfamily)
+                      when 'Debian' then '/etc/ldap/slapd.d'
+                      when 'RedHat' then '/etc/openldap/slapd.d'
+                      when 'FreeBSD' then '/usr/local/etc/openldap/slapd.d'
+                      else nil
+                      end
 
     `service slapd stop`
     path = default_confdir  + "/" + getPath("olcOverlay={#{@property_hash[:index]}}#{resource[:overlay]},#{getDn(resource[:suffix])}")
     File.delete(path)
 
-    slapcat("ldap:///(objectClass=olcOverlayConfig)", getDn(resource[:suffix])).
+    slapcat("(objectClass=olcOverlayConfig)", getDn(resource[:suffix])).
       split("\n").
       select { |line| line =~ /^dn: / }.
       select { |dn| dn.match(/^dn: olcOverlay=\{(\d+)\}(.+),#{Regexp.quote(getDn(resource[:suffix]))}$/).captures[0].to_i > @property_hash[:index] }.

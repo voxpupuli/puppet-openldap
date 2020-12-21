@@ -11,76 +11,93 @@ Puppet::Type.newtype(:openldap_access) do
     desc "The slapd.conf file"
   end
 
-  newproperty(:islast) do
+  newparam(:position) do
+    desc "Where to place the new entry"
+  end
+
+  newparam(:islast) do
     desc "Is this olcAccess the last one?"
   end
 
-  newproperty(:what) do
+  newparam(:what) do
     desc "The entries and/or attributes to which the access applies"
   end
 
-  newproperty(:suffix) do
+  newparam(:suffix) do
     desc "The suffix to which the access applies"
-  end
-
-  newproperty(:position) do
-    desc "Where to place the new entry"
   end
 
   newproperty(:access, :array_matching => :all ) do
     desc "Access rule."
+    munge do |v|
+      if v.is_a?(String)
+        a = []
+        v.split(/(?= by .+)/).each do |b|
+          a << b.lstrip
+        end
+        a
+      else
+        v
+      end
+    end
+
+    def insync?(is)
+      @should.flatten!
+      super(is)
+    end
   end
 
   def self.title_patterns
+    what_re = %r{\S+=\S+(?:\s+\S+=\S+)*}
     [
       [
-        /^(\{(\d+)\}to\s+(\S+)\s+(by\s+.+)\s+on\s+(.+))$/,
+        /^(\{(\d+)\}to\s+(#{what_re})\s+(by\s+.+)\s+on\s+(.+))$/,
         [
-          [ :name, lambda{|x| x} ],
-          [ :position, lambda{|x| x} ],
-          [ :what, lambda{|x| x} ],
-          [ :access, lambda{ |x| a=[]; x.split(/(?= by .+)/).each { |b| a << b.lstrip }; a } ],
-          [ :suffix, lambda{|x| x} ],
+          [ :name ],
+          [ :position ],
+          [ :what ],
+          [ :access ],
+          [ :suffix ],
         ],
       ],
       [
-        /^(\{(\d+)\}to\s+(\S+)\s+(by\s+.+)\s+)$/,
+        /^(\{(\d+)\}to\s+(#{what_re})\s+(by\s+.+))$/,
         [
-          [ :name, lambda{|x| x} ],
-          [ :position, lambda{|x| x} ],
-          [ :what, lambda{|x| x} ],
-          [ :access, lambda{ |x| a=[]; x.split(/(?= by .+)/).each { |b| a << b.lstrip }; a } ],
+          [ :name ],
+          [ :position ],
+          [ :what ],
+          [ :access ],
         ],
       ],
       [
-        /^(to\s+(\S+)\s+(by\s+.+)\s+on\s+(.+))$/,
+        /^(to\s+(#{what_re})\s+(by\s+.+)\s+on\s+(.+))$/,
         [
-          [ :name, lambda{|x| x} ],
-          [ :what, lambda{|x| x} ],
-          [ :access, lambda{ |x| a=[]; x.split(/(?= by .+)/).each { |b| a << b.lstrip }; a } ],
-          [ :suffix, lambda{|x| x} ],
+          [ :name ],
+          [ :what ],
+          [ :access ],
+          [ :suffix ],
         ],
       ],
       [
-        /^(to\s+(\S+)\s+(by\s+.+))$/,
+        /^(to\s+(#{what_re})\s+(by\s+.+))$/,
         [
-          [ :name, lambda{|x| x} ],
-          [ :what, lambda{|x| x} ],
-          [ :access, lambda{ |x| a=[]; x.split(/(?= by .+)/).each { |b| a << b.lstrip }; a } ],
+          [ :name ],
+          [ :what ],
+          [ :access ],
         ],
       ],
       [
         /^((\d+)\s+on\s+(.+))$/,
         [
-          [ :name, lambda{|x| x} ],
-          [ :position, lambda{|x| x} ],
-          [ :suffix, lambda{|x| x} ],
+          [ :name ],
+          [ :position ],
+          [ :suffix ],
         ],
       ],
       [
         /(.*)/,
         [
-          [ :name, lambda{|x| x} ],
+          [ :name ],
         ],
       ],
     ]
