@@ -91,12 +91,14 @@ class openldap::server::config {
         quoted   => 'double',
       }
 
-      shellvar { 'slapd_sockets':
-        ensure   => present,
-        target   => '/etc/rc.conf',
-        variable => 'slapd_sockets',
-        value    => join($::openldap::server::ldapi_ifs, ' '),
-        quoted   => 'double',
+      if ($::openldap::server::ldapi_ifs) {
+        shellvar { 'slapd_sockets':
+          ensure   => present,
+          target   => '/etc/rc.conf',
+          variable => 'slapd_sockets',
+          value    => join($::openldap::server::ldapi_ifs, ' '),
+          quoted   => 'double',
+        }
       }
     }
     default: {
