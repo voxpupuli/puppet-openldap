@@ -127,9 +127,9 @@ cn: schema
 include: file:///usr/local/etc/openldap/schema/core.ldif
 EOL
         exec { 'bootstrap cn=config':
-          path    => $::path,
-          command => "echo '${ldif}' | slapadd -n 0 -F ${$::openldap::server::confdir}",
-          creates => "${$::openldap::server::confdir}/cn=config.ldif",
+          path    => '/usr/local/sbin',
+          command => "echo '${ldif}' | slapadd -n 0 -F ${openldap::server::confdir}",
+          creates => "${openldap::server::confdir}/cn=config.ldif",
         }
       }
     }
