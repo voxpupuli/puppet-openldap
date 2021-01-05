@@ -91,7 +91,7 @@ class openldap::server::config {
         quoted   => 'double',
       }
 
-      if ($::openldap::server::ldapi_ifs) {
+      if (!empty($::openldap::server::ldapi_ifs)) {
         shellvar { 'slapd_sockets':
           ensure   => present,
           target   => '/etc/rc.conf',
