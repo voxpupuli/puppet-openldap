@@ -16,7 +16,7 @@ class openldap::server(
   Hash $databases                                   = {},
   $ldap_ifs                                         = ['/'],
   $ldaps_ifs                                        = [],
-  $ldapi_ifs                                        = [],
+  $ldapi_ifs                                        = ['/'],
   Boolean $escape_ldapi_ifs                         = $openldap::params::escape_ldapi_ifs,
   Optional[String] $slapd_params                    = undef,
   Optional[Boolean] $enable_chown                   = $openldap::params::enable_chown,

@@ -104,14 +104,13 @@ class openldap::server::config (
         quoted   => 'double',
       }
 
-      if (!empty($::openldap::server::ldapi_ifs)) {
-        shellvar { 'slapd_sockets':
-          ensure   => present,
-          target   => '/etc/rc.conf',
-          variable => 'slapd_sockets',
-          value    => join($::openldap::server::ldapi_ifs, ' '),
-          quoted   => 'double',
-        }
+      $slapd_sockets_ensure = bool2str(empty($openldap::server::ldapi_ifs), 'absent', 'present')
+      shellvar { 'slapd_sockets':
+        ensure   => $slapd_sockets_ensure,
+        target   => '/etc/rc.conf',
+        variable => 'slapd_sockets',
+        value    => join($::openldap::server::ldapi_ifs, ' '),
+        quoted   => 'double',
       }
     }
     'Suse': {
