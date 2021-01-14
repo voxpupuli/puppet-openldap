@@ -7,7 +7,7 @@ Puppet::Type.
 
   # TODO: Use ruby bindings (can't find one that support IPC)
 
-  defaultfor :osfamily => [:debian, :freebsd, :redhat]
+  defaultfor :osfamily => [:debian, :freebsd, :redhat, :suse]
 
   mk_resource_methods
 

@@ -42,6 +42,19 @@
       ]
     },
     {
+      "operatingsystem": "SLES",
+      "operatingsystemrelease": [
+        "12",
+        "15"
+      ]
+    },
+    {
+      "operatingsystem": "OpenSUSE",
+      "operatingsystemrelease": [
+          "15"
+        ]
+    },
+    {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
         "6",

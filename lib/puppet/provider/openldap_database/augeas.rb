@@ -11,6 +11,8 @@ Puppet::Type.type(:openldap_database).provide(:augeas, :parent => Puppet::Type.t
       '/etc/openldap/slapd.conf'
     when 'FreeBSD'
       '/usr/local/etc/openldap/slapd.conf'
+    when 'Suse'
+      '/etc/openldap/slapd.conf'
     end
   }
 
