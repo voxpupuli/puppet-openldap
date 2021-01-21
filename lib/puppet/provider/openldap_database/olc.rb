@@ -36,7 +36,7 @@ Puppet::Type.
       paragraph.gsub("\n ", "").split("\n").collect do |line|
         case line
         when /^olcDatabase: /
-          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor|config|relay|ldap)$/).captures
+          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor|config|relay|ldap)$/i).captures
         when /^olcDbDirectory: /
           directory = line.split(' ')[1]
         when /^olcRootDN: /
