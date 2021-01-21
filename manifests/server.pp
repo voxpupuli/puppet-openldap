@@ -4,7 +4,7 @@ class openldap::server(
   $confdir                                          = $openldap::params::server_confdir,
   $conffile                                         = $openldap::params::server_conffile,
   $service                                          = $openldap::params::server_service,
-  $service_hasstatus                                = $openldap::params::server_service_hasstatus,
+  Optional[Boolean] $service_hasstatus              = undef,
   $owner                                            = $openldap::params::server_owner,
   $group                                            = $openldap::params::server_group,
   $enable                                           = true,
