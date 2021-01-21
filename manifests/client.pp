@@ -36,7 +36,7 @@ class openldap::client(
   Optional[Stdlib::Absolutepath] $tls_cacertdir = undef,
   $tls_checkpeer                                = undef,
   $tls_reqcert                                  = undef,
-  Optional[Enum['on', 'true', 'yes', 'off', 'false', 'no']] $tls_moznss_compatibility = undef,  # lint:ignore:quoted_booleans
+  Optional[Enum['absent', 'on', 'true', 'yes', 'off', 'false', 'no']] $tls_moznss_compatibility = undef,  # lint:ignore:quoted_booleans
 
   # SASL Options
   $sasl_mech            = undef,
