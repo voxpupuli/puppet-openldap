@@ -111,6 +111,16 @@ class openldap::server::config (
         value    => join($::openldap::server::ldapi_ifs, ' '),
         quoted   => 'double',
       }
+
+      if ($openldap::server::provider == 'olc') {
+        # On FreeBSD we need to bootstrap slapd.d
+        $ldif = file('openldap/cn-config.ldif')
+        exec { 'bootstrap cn=config':
+          path    => '/usr/local/sbin',
+          command => "echo '${ldif}' | slapadd -n 0 -F ${openldap::server::confdir}",
+          creates => "${openldap::server::confdir}/cn=config.ldif",
+        }
+      }
     }
     'Suse': {
       $start_ldap = empty($::openldap::server::ldapi_ifs) ? {
