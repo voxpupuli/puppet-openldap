@@ -36,6 +36,7 @@ class openldap::client(
   Optional[Stdlib::Absolutepath] $tls_cacertdir = undef,
   $tls_checkpeer                                = undef,
   $tls_reqcert                                  = undef,
+  Optional[Openldap::Tls_moznss_compatibility] $tls_moznss_compatibility = undef,
 
   # SASL Options
   $sasl_mech            = undef,
