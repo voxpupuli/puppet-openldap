@@ -104,6 +104,9 @@ Puppet::Type.
       if backend.match(/config/i) and !suffix
         suffix = "cn=#{backend}"
       end
+      if !suffix
+        next
+      end
       new(
         :ensure          => :present,
         :name            => suffix,
@@ -126,7 +129,7 @@ Puppet::Type.
         :limits          => limits,
         :security        => security
       )
-    end
+    end.compact
   end
 
   def self.prefetch(resources)
