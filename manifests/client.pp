@@ -1,7 +1,7 @@
 # See README.md for details.
 class openldap::client (
-  $package                                      = $openldap::params::client_package,
-  $file                                         = $openldap::params::client_conffile,
+  $package,
+  $file,
 
   # Options
   $base                                         = undef,
@@ -52,7 +52,7 @@ class openldap::client (
 
   # SUDO Options
   $sudoers_base                                 = undef,
-) inherits openldap::params {
+) {
   contain openldap::client::install
   contain openldap::client::config
   Class['openldap::client::install'] -> Class['openldap::client::config']
