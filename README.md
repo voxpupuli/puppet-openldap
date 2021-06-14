@@ -5,7 +5,7 @@ OpenLDAP
 [![Puppet Forge Downloads](http://img.shields.io/puppetforge/dt/camptocamp/openldap.svg)](https://forge.puppetlabs.com/camptocamp/openldap)
 [![Build Status](https://img.shields.io/travis/camptocamp/puppet-openldap/master.svg)](https://travis-ci.org/camptocamp/puppet-openldap)
 [![Puppet Forge Endorsement](https://img.shields.io/puppetforge/e/camptocamp/openldap.svg)](https://forge.puppetlabs.com/camptocamp/openldap)
-[![By Camptocamp](https://img.shields.io/badge/by-camptocamp-fb7047.svg)](http://www.camptocamp.com)
+[![Donated by Camptocamp](https://img.shields.io/badge/donated%20by-camptocamp-fb7047.svg)](#transfer-notice)
 
 Overview
 --------
@@ -304,3 +304,12 @@ openldap::server::overlay { "rwm on relay":
   },
 }
 ```
+
+
+## Transfer Notice
+
+This plugin was originally authored by [Camptocamp](http://www.camptocamp.com).
+The maintainer preferred that Puppet Community take ownership of the module for future improvement and maintenance.
+Existing pull requests and issues were transferred over, please fork and continue to contribute here instead of Camptocamp.
+
+Previously: https://github.com/camptocamp/puppet-openldap
