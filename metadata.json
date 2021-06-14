@@ -1,12 +1,12 @@
 {
-  "name": "camptocamp-openldap",
+  "name": "puppet-openldap",
   "version": "2.0.0",
-  "author": "Camptocamp",
+  "author": "Vox Pupuli",
   "summary": "Puppet OpenLDAP module",
   "license": "Apache-2.0",
-  "source": "https://github.com/camptocamp/puppet-openldap",
-  "project_page": "https://github.com/camptocamp/puppet-openldap",
-  "issues_url": "https://github.com/camptocamp/puppet-openldap/issues",
+  "source": "https://github.com/voxpupuli/puppet-openldap",
+  "project_page": "https://github.com/voxpupuli/puppet-openldap",
+  "issues_url": "https://github.com/voxpupuli/puppet-openldap/issues",
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
