@@ -1,12 +1,13 @@
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. openldap]))
 
+# rubocop:disable Lint/UselessAssignment
 Puppet::Type.
   type(:openldap_module).
-  provide(:olc, :parent => Puppet::Provider::Openldap) do
+  provide(:olc, parent: Puppet::Provider::Openldap) do
 
   # TODO: Use ruby bindings (can't find one that support IPC)
 
-  defaultfor :osfamily => [:debian, :freebsd, :redhat, :suse]
+  defaultfor osfamily: [:debian, :freebsd, :redhat, :suse]
 
   mk_resource_methods
 
@@ -21,7 +22,6 @@ Puppet::Type.
 
     begin
       ldapmodify(ldif.path)
-
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{ldif}\nError message: #{e.message}"
     end
@@ -29,20 +29,20 @@ Puppet::Type.
 
   def self.instances
     dn = slapcat('(objectClass=olcModuleList)')
-    create_module_list() if dn.empty?
+    create_module_list if dn.empty?
 
     i = []
 
-    dn.split("\n\n").collect do |paragraph|
+    dn.split("\n\n").map do |paragraph|
       name = nil
-      paragraph.split("\n").collect do |line|
+      paragraph.split("\n").map do |line|
         case line
-        when /^olcModuleLoad: /
+        when %r{^olcModuleLoad: }
           i << new(
-            :ensure => :present,
-            :name   => line.match(/^olcModuleLoad: \{\d+\}([^\.]+).*$/).captures[0]
+            ensure: :present,
+            name: line.match(%r{^olcModuleLoad: \{\d+\}([^\.]+).*$}).captures[0]
           )
-	end
+  end
       end
     end
     i
@@ -51,7 +51,7 @@ Puppet::Type.
   def self.prefetch(resources)
     mods = instances
     resources.keys.each do |name|
-      if provider = mods.find{ |mod| mod.name == name }
+      if provider = mods.find { |mod| mod.name == name }
         resources[name].provider = provider
       end
     end
@@ -67,7 +67,7 @@ Puppet::Type.
     t << "add: olcModuleLoad\n"
     t << "olcModuleLoad: #{resource[:name]}.la\n"
     t.close
-    Puppet.debug(IO.read t.path)
+    Puppet.debug(IO.read(t.path))
     begin
       ldapmodify(t.path)
     rescue Exception => e
@@ -75,5 +75,4 @@ Puppet::Type.
     end
     @property_hash[:ensure] = :present
   end
-
 end

@@ -19,7 +19,7 @@ describe Puppet::Type.type(:openldap_overlay).provider(:olc) do
     resource.provider
   end
 
-  before(:each) do
+  before do
     provider.stubs(:slapcat).returns('foo')
   end
 
