@@ -1,5 +1,5 @@
 # See README.md for details.
-define openldap::server::database(
+define openldap::server::database (
   $ensure                                   = present,
   Optional[Stdlib::Absolutepath] $directory = undef,
   $suffix                                   = $title,
@@ -23,7 +23,6 @@ define openldap::server::database(
   $syncrepl                                 = undef,
   $security                                 = undef,
 ) {
-
   if ! defined(Class['openldap::server']) {
     fail 'class ::openldap::server has not been evaluated'
   }
@@ -49,8 +48,8 @@ define openldap::server::database(
   if $ensure == present and $backend != 'monitor' and $backend != 'config' and $backend != 'relay' and $backend != 'ldap' {
     file { $manage_directory:
       ensure => directory,
-      owner  => $::openldap::server::owner,
-      group  => $::openldap::server::group,
+      owner  => $openldap::server::owner,
+      group  => $openldap::server::group,
       before => Openldap_database[$title],
     }
   }
@@ -78,5 +77,4 @@ define openldap::server::database(
     limits          => $limits,
     security        => $security,
   }
-
 }

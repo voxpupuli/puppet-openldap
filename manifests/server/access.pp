@@ -1,5 +1,5 @@
 # See README.md for details.
-define openldap::server::access(
+define openldap::server::access (
   $ensure   = undef,
   $position = undef,
   $what     = undef,
@@ -7,7 +7,6 @@ define openldap::server::access(
   $access   = undef,
   $islast   = false,
 ) {
-
   if ! defined(Class['openldap::server']) {
     fail 'class ::openldap::server has not been evaluated'
   }

@@ -1,7 +1,7 @@
 # See README.md for details.
-define openldap::server::schema(
+define openldap::server::schema (
   $ensure        = undef,
-  $path          = $::osfamily ? {
+  $path          = $facts['os']['family'] ? {
     'Debian' => "/etc/ldap/schema/${title}.schema",
     'Redhat' => "/etc/openldap/schema/${title}.schema",
     'Archlinux' => "/etc/openldap/schema/${title}.schema",
@@ -9,8 +9,6 @@ define openldap::server::schema(
     'Suse' => "/etc/openldap/schema/${title}.schema",
   }
 ) {
-
-
   if ! defined(Class['openldap::server']) {
     fail 'class ::openldap::server has not been evaluated'
   }

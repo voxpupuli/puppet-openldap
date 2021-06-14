@@ -1,11 +1,10 @@
 # See README.md for details.
-define openldap::server::overlay(
+define openldap::server::overlay (
   $ensure  = present,
   $overlay = regsubst($title, '^(\S+)\s+on\s+(\S+)$', '\1'),
   $suffix  = regsubst($title, '^(\S+)\s+on\s+(\S+)$', '\2'),
   $options = undef,
 ) {
-
   if ! defined(Class['openldap::server']) {
     fail 'class ::openldap::server has not been evaluated'
   }

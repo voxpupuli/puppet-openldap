@@ -1,11 +1,10 @@
 # See README.md for details.
-define openldap::server::dbindex(
+define openldap::server::dbindex (
   $ensure    = undef,
   $suffix    = undef,
   $attribute = $name,
   $indices   = undef,
 ) {
-
   if ! defined(Class['openldap::server']) {
     fail 'class ::openldap::server has not been evaluated'
   }
