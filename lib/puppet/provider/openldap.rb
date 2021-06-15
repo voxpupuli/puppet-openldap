@@ -235,8 +235,6 @@ class Puppet::Provider::Openldap < Puppet::Provider
 
     use_replace = single_value_attributes.include?(key.to_s) || force_replace == :true
 
-    use_replace ?
-      replace_key(key) :
-      add(key)
+    use_replace ? replace_key(key) : add(key)
   end
 end

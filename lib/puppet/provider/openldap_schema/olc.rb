@@ -5,7 +5,6 @@ require File.expand_path(File.join(File.dirname(__FILE__), %w[.. openldap]))
 # rubocop:disable Style/MethodName
 # rubocop:disable Lint/AssignmentInCondition
 # rubocop:disable Style/IfInsideElse
-# rubocop:disable Lint/EndAlignment
 Puppet::Type.
   type(:openldap_schema).
   provide(:olc, parent: Puppet::Provider::Openldap) do
@@ -195,17 +194,17 @@ Puppet::Type.
                self.class.schemaToLdifReplace(schema, "{#{@property_hash[:index]}}#{@property_hash[:name]}")
              else
                self.class.schemaToLdif(schema, resource[:name])
-                  end
+             end
            else
              if @property_hash[:ensure] == :present
                self.class.ldifReplace(schema, "{#{@property_hash[:index]}}#{@property_hash[:name]}")
              else
                schema
-                  end
+             end
            end
       t.close
       ldapadd(t.path)
-    rescue Exception => e
+    rescue StandardError => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end
     @property_hash[:ensure] = :present

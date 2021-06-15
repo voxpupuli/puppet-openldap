@@ -52,7 +52,7 @@ Puppet::Type.
   def self.prefetch(resources)
     overlays = instances
     resources.keys.each do |name|
-      if provider = overlays.find { |overlay| overlay.name == name }
+      if (provider = overlays.find { |overlay| overlay.name == name })
         resources[name].provider = provider
       end
     end
@@ -93,8 +93,6 @@ Puppet::Type.
       t << "objectClass: olcUniqueConfig\n"
     when 'rwm'
       t << "objectClass: olcRwmConfig\n"
-    when 'sock'
-      t << "objectClass: olcOvSocketConfig\n"
     when 'smbk5pwd'
       t << "objectClass: olcSmbK5PwdConfig\n"
     when 'sssvlv'
@@ -141,13 +139,9 @@ Puppet::Type.
       if line =~ %r{^dn: olcDatabase=#{database.gsub('{', '\{').gsub('}', '\}')},}
         found = true
       end
-      if database == '{0}config'
-        return 'cn=config'
-      elsif database =~ %r{\{\d+\}relay$}
-        return 'cn=config'
-      elsif line =~ %r{^olcSuffix: } && found
-        return line.split(' ')[1]
-      end
+      return 'cn=config' if database == '{0}config'
+      return 'cn=config' if database =~ %r{\{\d+\}relay$}
+      return line.split(' ')[1] if line =~ %r{^olcSuffix: } && found
     end
   end
 

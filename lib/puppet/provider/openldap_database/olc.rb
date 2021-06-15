@@ -128,7 +128,7 @@ Puppet::Type.
   def self.prefetch(resources)
     databases = instances
     resources.keys.each do |name|
-      if provider = databases.find { |database| database.name == name }
+      if (provider = databases.find { |database| database.name == name })
         resources[name].provider = provider
       end
     end
@@ -195,7 +195,7 @@ Puppet::Type.
     Puppet.debug(IO.read(t.path))
     begin
       ldapadd(t.path)
-    rescue Exception => e
+    rescue StandardError => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end
     t.delete
@@ -219,7 +219,7 @@ Puppet::Type.
     when 'relay'
       t << "olcRelay: #{resource[:relay]}\n" unless resource[:relay].empty?
       t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
-    when 'monitor'
+    when 'monitor' # rubocop:disable Lint/EmptyWhen
       # WRITE HERE FOR MONITOR ONLY
     when 'ldap'
       # WRITE HERE FOR LDAP ONLY
@@ -250,7 +250,7 @@ Puppet::Type.
                  v.map { |x| "olcDb#{k}: #{x}" }.join("\n") + "\n"
                else
                  "olcDb#{k}: #{v}\n"
-                    end
+               end
              end
       end
     end
@@ -274,7 +274,7 @@ Puppet::Type.
     Puppet.debug(IO.read(t.path))
     begin
       ldapmodify(t.path)
-    rescue Exception => e
+    rescue StandardError => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end
     t.delete
@@ -372,6 +372,7 @@ Puppet::Type.
       t << "replace: olcTimeLimit\nolcTimeLimit: #{resource[:timelimit]}\n-\n" if @property_flush[:timelimit]
       t << "replace: olcDbMaxSize\nolcDbMaxSize: #{resource[:dbmaxsize]}\n-\n" if @property_flush[:dbmaxsize]
       if @property_flush[:dboptions]
+        # rubocop:disable Metrics/BlockNesting
         if resource[:synctype].to_s == 'inclusive' && !@property_hash[:dboptions].empty?
           @property_hash[:dboptions].keys.each do |k|
             t << case k
@@ -399,9 +400,10 @@ Puppet::Type.
                    "replace: olcDb#{k}\n" + v.map { |x| "olcDb#{k}: #{x}" }.join("\n") + "\n-\n"
                  else
                    "replace: olcDb#{k}\nolcDb#{k}: #{v}\n-\n"
-                      end
+                 end
                end
         end
+        # rubocop:enable Metrics/BlockNesting
       end
       t << "replace: olcSyncrepl\n#{resource[:syncrepl].map { |x| "olcSyncrepl: #{x}" }.join("\n")}\n-\n" if @property_flush[:syncrepl]
       t << "replace: olcUpdateref\nolcUpdateref: #{resource[:updateref]}\n-\n" if @property_flush[:updateref]
@@ -413,7 +415,7 @@ Puppet::Type.
       Puppet.debug(IO.read(t.path))
       begin
         ldapmodify(t.path)
-      rescue Exception => e
+      rescue StandardError => e
         raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
       end
       initdb if @property_flush[:directory]
