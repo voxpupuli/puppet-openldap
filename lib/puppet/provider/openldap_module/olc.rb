@@ -1,6 +1,5 @@
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. openldap]))
 
-# rubocop:disable Lint/UselessAssignment
 Puppet::Type.
   type(:openldap_module).
   provide(:olc, parent: Puppet::Provider::Openldap) do
@@ -22,7 +21,7 @@ Puppet::Type.
 
     begin
       ldapmodify(ldif.path)
-    rescue Exception => e
+    rescue StandardError => e
       raise Puppet::Error, "LDIF content:\n#{ldif}\nError message: #{e.message}"
     end
   end
@@ -34,7 +33,6 @@ Puppet::Type.
     i = []
 
     dn.split("\n\n").map do |paragraph|
-      name = nil
       paragraph.split("\n").map do |line|
         case line
         when %r{^olcModuleLoad: }
@@ -42,7 +40,7 @@ Puppet::Type.
             ensure: :present,
             name: line.match(%r{^olcModuleLoad: \{\d+\}([^\.]+).*$}).captures[0]
           )
-  end
+        end
       end
     end
     i
@@ -51,7 +49,7 @@ Puppet::Type.
   def self.prefetch(resources)
     mods = instances
     resources.keys.each do |name|
-      if provider = mods.find { |mod| mod.name == name }
+      if (provider = mods.find { |mod| mod.name == name })
         resources[name].provider = provider
       end
     end
@@ -70,7 +68,7 @@ Puppet::Type.
     Puppet.debug(IO.read(t.path))
     begin
       ldapmodify(t.path)
-    rescue Exception => e
+    rescue StandardError => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end
     @property_hash[:ensure] = :present

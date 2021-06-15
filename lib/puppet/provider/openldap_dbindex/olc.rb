@@ -20,13 +20,12 @@ Puppet::Type.
       suffix = nil
       attrlist = nil
       indices = nil
-      attribute = nil
       paragraph.gsub("\n ", '').split("\n").map do |line|
         case line
         when %r{^olcSuffix: }
           suffix = line.split(' ')[1]
         when %r{^olcDbIndex: }
-          attrlist, dummy, indices = line.match(%r{^olcDbIndex: (\S+)(\s+(.+))?$}).captures
+          attrlist, indices = line.match(%r{^olcDbIndex: (\S+)(?:\s+(.+))?$}).captures
           i << new(
             name: "#{attrlist} on #{suffix}",
             ensure: :present,
@@ -69,7 +68,7 @@ Puppet::Type.
     Puppet.debug(IO.read(t.path))
     begin
       ldapmodify(t.path)
-    rescue Exception => e
+    rescue StandardError => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end
   end
@@ -92,7 +91,7 @@ Puppet::Type.
     Puppet.debug(IO.read(t.path))
     begin
       ldapmodify(t.path)
-    rescue Exception => e
+    rescue StandardError => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end
   end

@@ -4,7 +4,6 @@ require 'tempfile'
 # rubocop:disable Style/VariableName
 # rubocop:disable Style/MethodName
 # rubocop:disable Lint/AssignmentInCondition
-# rubocop:disable Lint/RescueException
 Puppet::Type.
   type(:openldap_access).
   provide(:olc, parent: Puppet::Provider::Openldap) do
@@ -81,13 +80,10 @@ Puppet::Type.
   def self.validate_islast(resources)
     islast = {}
     resources.keys.each do |name|
-      if resources[name][:islast] == true
-        if islast[resources[name][:suffix]].nil?
-          islast[resources[name][:suffix]] = resources[name][:name]
-        else
-          raise Puppet::Error, "Multiple 'islast' found for suffix '#{resources[name][:suffix]}': #{resources[name][:name]} and #{islast[:suffix]}"
-        end
-      end
+      next unless resources[name][:islast] == true
+      raise Puppet::Error, "Multiple 'islast' found for suffix '#{resources[name][:suffix]}': #{resources[name][:name]} and #{islast[:suffix]}" unless islast[resources[name][:suffix]].nil?
+
+      islast[resources[name][:suffix]] = resources[name][:name]
     end
   end
 
@@ -133,7 +129,7 @@ Puppet::Type.
     Puppet.debug(IO.read(t.path))
     begin
       ldapmodify(t.path)
-    rescue Exception => e
+    rescue StandardError => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end
   end
@@ -157,7 +153,7 @@ Puppet::Type.
     Puppet.debug(IO.read(t.path))
     begin
       ldapmodify(t.path)
-    rescue Exception => e
+    rescue StandardError => e
       raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
     end
   end
@@ -235,7 +231,7 @@ Puppet::Type.
       Puppet.debug(IO.read(t.path))
       begin
         ldapmodify(t.path)
-      rescue Exception => e
+      rescue StandardError => e
         raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
       end
     end
