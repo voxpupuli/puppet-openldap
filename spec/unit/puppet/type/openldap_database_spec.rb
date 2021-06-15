@@ -4,8 +4,8 @@ require 'spec_helper'
 describe Puppet::Type.type(:openldap_database) do
   before do
     @provider_class = described_class.provide(:simple) { mk_resource_methods }
-    @provider_class.stubs(:suitable?).returns true
-    described_class.stubs(:defaultprovider).returns @provider_class
+    allow(@provider_class).to receive(:suitable?).and_return(true)
+    allow(described_class).to receive(:defaultprovider).and_return(@provider_class)
   end
 
   describe 'namevar validation' do
