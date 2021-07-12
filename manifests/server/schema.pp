@@ -19,7 +19,7 @@ define openldap::server::schema(
   -> Openldap::Server::Schema[$title]
   -> Class['openldap::server']
   openldap_schema { $title:
-    ensure   => $ensure,
-    path     => $path,
+    ensure => $ensure,
+    path   => $path,
   }
 }

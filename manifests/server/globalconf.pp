@@ -13,8 +13,8 @@ define openldap::server::globalconf(
   -> Class['openldap::server']
 
   openldap_global_conf { $name:
-    ensure   => $ensure,
-    target   => $::openldap::server::conffile,
-    value    => $value,
+    ensure => $ensure,
+    target => $::openldap::server::conffile,
+    value  => $value,
   }
 }

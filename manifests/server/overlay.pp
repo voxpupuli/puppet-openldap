@@ -15,9 +15,9 @@ define openldap::server::overlay(
   -> Class['openldap::server']
 
   openldap_overlay { "${overlay} on ${suffix}":
-    ensure   => $ensure,
-    overlay  => $overlay,
-    suffix   => $suffix,
-    options  => $options,
+    ensure  => $ensure,
+    overlay => $overlay,
+    suffix  => $suffix,
+    options => $options,
   }
 }
