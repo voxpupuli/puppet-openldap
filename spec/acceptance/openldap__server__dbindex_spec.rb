@@ -15,7 +15,7 @@ describe 'openldap::server::dbindex' do
         Openldap::Server::Dbindex {
           suffix => 'dc=foo,dc=example,dc=com',
         }
-        ::openldap::server::dbindex {
+        openldap::server::dbindex {
           'cn':
             attribute => 'cn',
             indices   => 'pres,sub,eq';

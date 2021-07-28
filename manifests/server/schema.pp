@@ -10,14 +10,14 @@ define openldap::server::schema (
   }
 ) {
   if ! defined(Class['openldap::server']) {
-    fail 'class ::openldap::server has not been evaluated'
+    fail 'class openldap::server has not been evaluated'
   }
 
   Class['openldap::server::service']
   -> Openldap::Server::Schema[$title]
   -> Class['openldap::server']
   openldap_schema { $title:
-    ensure   => $ensure,
-    path     => $path,
+    ensure => $ensure,
+    path   => $path,
   }
 }

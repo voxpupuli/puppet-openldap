@@ -10,7 +10,7 @@ describe 'openldap::server::schema' do
       end
 
       context 'without declaring Class[openldap::server]' do
-        it { expect { is_expected.to compile }.to raise_error(%r{::openldap::server has not been evaluated}) }
+        it { expect { is_expected.to compile }.to raise_error(%r{openldap::server has not been evaluated}) }
       end
 
       context 'without parameter' do

@@ -24,7 +24,7 @@ define openldap::server::database (
   $security                                 = undef,
 ) {
   if ! defined(Class['openldap::server']) {
-    fail 'class ::openldap::server has not been evaluated'
+    fail 'class openldap::server has not been evaluated'
   }
 
   $manage_directory = $backend ? {
@@ -41,7 +41,7 @@ define openldap::server::database (
   Class['openldap::server::service']
   -> Openldap::Server::Database[$title]
   -> Class['openldap::server']
-  if $title != 'dc=my-domain,dc=com' and $::osfamily == 'Debian' {
+  if $title != 'dc=my-domain,dc=com' and fact('os.family') == 'Debian' {
     Openldap::Server::Database['dc=my-domain,dc=com'] -> Openldap::Server::Database[$title]
   }
 
@@ -58,7 +58,7 @@ define openldap::server::database (
     ensure          => $ensure,
     suffix          => $suffix,
     relay           => $relay,
-    target          => $::openldap::server::conffile,
+    target          => $openldap::server::conffile,
     backend         => $backend,
     directory       => $manage_directory,
     rootdn          => $rootdn,

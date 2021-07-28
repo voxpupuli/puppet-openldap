@@ -15,7 +15,7 @@ class openldap::server::config (
   $enable_memory_limit = $openldap::server::enable_memory_limit,
 ) {
   if ! defined(Class['openldap::server']) {
-    fail 'class ::openldap::server has not been evaluated'
+    fail 'class openldap::server has not been evaluated'
   }
   $slapd_ldap_ifs = empty($openldap::server::ldap_ifs) ? {
     false => join(prefix($openldap::server::ldap_ifs, 'ldap://'), ' '),

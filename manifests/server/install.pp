@@ -1,10 +1,10 @@
 # See README.md for details.
 class openldap::server::install {
   if ! defined(Class['openldap::server']) {
-    fail 'class ::openldap::server has not been evaluated'
+    fail 'class openldap::server has not been evaluated'
   }
 
-  contain ::openldap::utils
+  contain openldap::utils
 
   if $facts['os']['family'] == 'Debian' {
     file { '/var/cache/debconf/slapd.preseed':

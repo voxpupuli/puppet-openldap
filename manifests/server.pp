@@ -29,9 +29,9 @@ class openldap::server (
   Optional[String] $ldap_config_backend             = $openldap::params::ldap_config_backend,
   Optional[Boolean] $enable_memory_limit            = $openldap::params::enable_memory_limit,
 ) inherits openldap::params {
-  class { '::openldap::server::install': }
-  -> class { '::openldap::server::config': }
-  ~> class { '::openldap::server::service': }
-  -> class { '::openldap::server::slapdconf': }
+  class { 'openldap::server::install': }
+  -> class { 'openldap::server::config': }
+  ~> class { 'openldap::server::service': }
+  -> class { 'openldap::server::slapdconf': }
   -> Class['openldap::server']
 }

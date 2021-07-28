@@ -8,7 +8,7 @@ define openldap::server::access (
   $islast   = false,
 ) {
   if ! defined(Class['openldap::server']) {
-    fail 'class ::openldap::server has not been evaluated'
+    fail 'class openldap::server has not been evaluated'
   }
 
   Class['openldap::server::service']
@@ -18,7 +18,7 @@ define openldap::server::access (
   openldap_access { $title:
     ensure   => $ensure,
     position => $position,
-    target   => $::openldap::server::conffile,
+    target   => $openldap::server::conffile,
     what     => $what,
     suffix   => $suffix,
     access   => $access,

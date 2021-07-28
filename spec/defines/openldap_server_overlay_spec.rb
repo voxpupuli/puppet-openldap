@@ -16,7 +16,7 @@ describe 'openldap::server::overlay' do
       context 'when Class[openldap::server] is not declared' do
         let(:pre_condition) {}
 
-        it { expect { is_expected.to compile }.to raise_error(%r{class ::openldap::server has not been evaluated}) }
+        it { expect { is_expected.to compile }.to raise_error(%r{class openldap::server has not been evaluated}) }
       end
 
       context 'with ensure => present' do
@@ -28,10 +28,10 @@ describe 'openldap::server::overlay' do
 
         it { is_expected.to compile.with_all_deps }
         it {
-          is_expected.to contain_openldap_overlay('memberof on dc=example,dc=com')
-            .with_ensure('present')
-            .with_overlay('memberof')
-            .with_suffix('dc=example,dc=com')
+          is_expected.to contain_openldap_overlay('memberof on dc=example,dc=com').
+            with_ensure('present').
+            with_overlay('memberof').
+            with_suffix('dc=example,dc=com')
         }
       end
 
@@ -47,11 +47,11 @@ describe 'openldap::server::overlay' do
 
         it { is_expected.to compile.with_all_deps }
         it {
-          is_expected.to contain_openldap_overlay('memberof on dc=example,dc=com')
-            .with_ensure('present')
-            .with_overlay('memberof')
-            .with_suffix('dc=example,dc=com')
-            .with_options(['olcMemberOfGroupOC: groupOfNames'])
+          is_expected.to contain_openldap_overlay('memberof on dc=example,dc=com').
+            with_ensure('present').
+            with_overlay('memberof').
+            with_suffix('dc=example,dc=com').
+            with_options(['olcMemberOfGroupOC: groupOfNames'])
         }
       end
     end

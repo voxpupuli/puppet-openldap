@@ -1,13 +1,13 @@
 # See README.md for details.
 class openldap::server::slapdconf {
   if ! defined(Class['openldap::server']) {
-    fail 'class ::openldap::server has not been evaluated'
+    fail 'class openldap::server has not been evaluated'
   }
 
-  file { $::openldap::server::confdir:
+  file { $openldap::server::confdir:
     ensure => directory,
-    owner  => $::openldap::server::owner,
-    group  => $::openldap::server::group,
+    owner  => $openldap::server::owner,
+    group  => $openldap::server::group,
     mode   => '0750',
     force  => true,
   }

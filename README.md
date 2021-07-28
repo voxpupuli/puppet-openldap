@@ -16,15 +16,15 @@ By default it will use OLC (cn=config).
 Features supported
 ------------------
 
-Object      | olc (slapd.d) 
+Object      | olc (slapd.d)
 ------------|--------------
-global_conf | Y             
-database    | Y             
-module      | Y             
-overlay     | Y             
-access      | Y             
-index       | Y             
-schema      | Y             
+global_conf | Y
+database    | Y
+module      | Y
+overlay     | Y
+access      | Y
+index       | Y
+schema      | Y
 
 Usage
 -----

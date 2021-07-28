@@ -6,7 +6,7 @@ define openldap::server::dbindex (
   $indices   = undef,
 ) {
   if ! defined(Class['openldap::server']) {
-    fail 'class ::openldap::server has not been evaluated'
+    fail 'class openldap::server has not been evaluated'
   }
 
   Class['openldap::server::service']

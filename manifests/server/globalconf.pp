@@ -4,7 +4,7 @@ define openldap::server::globalconf (
   $ensure = 'present',
 ) {
   if ! defined(Class['openldap::server']) {
-    fail 'class ::openldap::server has not been evaluated'
+    fail 'class openldap::server has not been evaluated'
   }
 
   Class['openldap::server::service']
@@ -12,8 +12,8 @@ define openldap::server::globalconf (
   -> Class['openldap::server']
 
   openldap_global_conf { $name:
-    ensure   => $ensure,
-    target   => $::openldap::server::conffile,
-    value    => $value,
+    ensure => $ensure,
+    target => $openldap::server::conffile,
+    value  => $value,
   }
 }

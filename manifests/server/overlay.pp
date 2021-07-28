@@ -6,7 +6,7 @@ define openldap::server::overlay (
   $options = undef,
 ) {
   if ! defined(Class['openldap::server']) {
-    fail 'class ::openldap::server has not been evaluated'
+    fail 'class openldap::server has not been evaluated'
   }
 
   Class['openldap::server::service']
@@ -14,9 +14,9 @@ define openldap::server::overlay (
   -> Class['openldap::server']
 
   openldap_overlay { "${overlay} on ${suffix}":
-    ensure   => $ensure,
-    overlay  => $overlay,
-    suffix   => $suffix,
-    options  => $options,
+    ensure  => $ensure,
+    overlay => $overlay,
+    suffix  => $suffix,
+    options => $options,
   }
 }

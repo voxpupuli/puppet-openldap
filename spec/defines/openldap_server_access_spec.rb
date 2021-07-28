@@ -16,7 +16,7 @@ describe 'openldap::server::access' do
       context 'when Class[openldap::server] is not declared' do
         let(:pre_condition) {}
 
-        it { expect { is_expected.to compile }.to raise_error(%r{class ::openldap::server has not been evaluated}) }
+        it { expect { is_expected.to compile }.to raise_error(%r{class openldap::server has not been evaluated}) }
       end
 
       context 'with composite namevar' do
