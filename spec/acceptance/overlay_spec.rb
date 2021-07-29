@@ -45,4 +45,20 @@ describe 'openldap::server::overlay' do
       idempotent_apply(pp)
     end
   end
+
+  context 'cleanup' do
+    it 'adds option to overlay' do
+      pp = <<-EOS
+      class { 'openldap::server': }
+      openldap::server::database { 'dc=foo,dc=bar':
+        ensure => present,
+      }
+      openldap::server::overlay { 'memberof on dc=foo,dc=bar':
+        ensure  => absent,
+      }
+      EOS
+
+      idempotent_apply(pp)
+    end
+  end
 end
