@@ -60,6 +60,21 @@ jobs:
       matrix:
         setfile: ${{fromJson(needs.setup_matrix.outputs.beaker_setfiles)}}
         puppet: ${{fromJson(needs.setup_matrix.outputs.puppet_major_versions)}}
+        exclude:
+          - setfile:
+              name: "Debian 8"
+              value: "debian8-64{hostname=debian8-64.example.com}"
+            puppet:
+              name: "Puppet 7"
+              value: 7
+              collection: "puppet7"
+          - setfile:
+              name: "Ubuntu 14.04"
+              value: "ubuntu1404-64{hostname=ubuntu1404-64.example.com}"
+            puppet:
+              name: "Puppet 7"
+              value: 7
+              collection: "puppet7"
     name: ${{ matrix.puppet.name }} - ${{ matrix.setfile.name }}
     steps:
       - uses: actions/checkout@v2
