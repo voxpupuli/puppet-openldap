@@ -204,11 +204,7 @@ Puppet::Type.
       t << "dn: #{getDn(resource[:suffix])}\n"
       t << "changetype: modify\n"
       t << "replace: olcAccess\n"
-      position = if resource[:position]
-                   resource[:position]
-                 else
-                   @property_hash[:position]
-                 end
+      position = resource[:position] || @property_hash[:position]
       current_olcAccess.each do |olcAccess|
         if olcAccess[:position].to_i == position.to_i
           t << "olcAccess: {#{position}}to #{resource[:what]}\n"
