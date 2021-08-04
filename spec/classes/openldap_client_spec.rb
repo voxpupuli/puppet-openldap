@@ -10,7 +10,6 @@ describe 'openldap::client' do
       context 'with no parameters' do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::install').that_comes_before('Class[openldap::client::config]') }
-        it { is_expected.to contain_class('openldap::client::config').that_comes_before('Anchor[openldap::client::end]') }
         case facts[:osfamily]
         when 'Debian'
           it {
