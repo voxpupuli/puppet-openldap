@@ -1,7 +1,7 @@
 # See README.md for details.
 class openldap::server::config (
   $slapd_params        = $openldap::server::slapd_params,
-  $owner                = $openldap::server::owner,
+  $owner               = $openldap::server::owner,
   $group               = $openldap::server::group,
   $enable_chown        = $openldap::server::enable_chown,
   $ldap_port           = $openldap::server::ldap_port,
