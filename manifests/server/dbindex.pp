@@ -9,14 +9,12 @@ define openldap::server::dbindex (
     fail 'class openldap::server has not been evaluated'
   }
 
-  Class['openldap::server::service']
-  -> Openldap::Server::Dbindex[$title]
-  -> Class['openldap::server']
-
   openldap_dbindex { $title:
     ensure    => $ensure,
     suffix    => $suffix,
     attribute => $attribute,
     indices   => $indices,
+    require   => Class['openldap::server::service'],
+    before    => Class['openldap::server'],
   }
 }
