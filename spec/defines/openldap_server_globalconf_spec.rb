@@ -10,7 +10,7 @@ describe 'openldap::server::globalconf' do
       end
 
       context 'without value' do
-        it { expect { is_expected.to compile }.to raise_error }
+        it { is_expected.not_to compile }
       end
 
       context 'with a value' do
