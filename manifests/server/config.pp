@@ -120,7 +120,7 @@ class openldap::server::config (
       }
     }
     'Suse': {
-      $start_ldap = empty($openldap::server::ldapi_ifs) ? {
+      $start_ldap = empty($openldap::server::ldap_ifs) ? {
         false  => 'yes',
         true   => 'no',
       }
