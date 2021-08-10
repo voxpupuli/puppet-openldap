@@ -7,7 +7,7 @@ class openldap::server (
   String[1] $owner,
   String[1] $group,
   Boolean $escape_ldapi_ifs,
-  Optional[Boolean] $enable_chown,
+  Optional[Boolean] $enable_chown                   = undef,
   Optional[Boolean] $service_hasstatus              = undef,
   Boolean $enable                                   = true,
   Boolean $start                                    = true,
@@ -24,10 +24,10 @@ class openldap::server (
   Optional[Stdlib::Port] $ldaps_port                = undef,
   Optional[Stdlib::IP::Address] $ldaps_address      = undef,
   Optional[Stdlib::Absolutepath] $ldapi_socket_path = undef,
-  Optional[Boolean] $register_slp,
+  Optional[Boolean] $register_slp                   = undef,
   Optional[Stdlib::Absolutepath] $krb5_keytab_file  = undef,
-  Optional[String] $ldap_config_backend,
-  Optional[Boolean] $enable_memory_limit,
+  Optional[String] $ldap_config_backend             = undef,
+  Optional[Boolean] $enable_memory_limit            = undef,
 ) {
   class { 'openldap::server::install': }
   -> class { 'openldap::server::config': }
