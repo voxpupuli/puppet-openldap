@@ -1,23 +1,12 @@
 # See README.md for details.
-define openldap::server::dbindex(
+define openldap::server::dbindex (
   $ensure    = undef,
   $suffix    = undef,
   $attribute = $name,
   $indices   = undef,
 ) {
-
   if ! defined(Class['openldap::server']) {
-    fail 'class ::openldap::server has not been evaluated'
-  }
-
-  if $::openldap::server::provider == 'augeas' {
-    Class['openldap::server::install']
-    -> Openldap::Server::Dbindex[$title]
-    ~> Class['openldap::server::service']
-  } else {
-    Class['openldap::server::service']
-    -> Openldap::Server::Dbindex[$title]
-    -> Class['openldap::server']
+    fail 'class openldap::server has not been evaluated'
   }
 
   openldap_dbindex { $title:
@@ -25,5 +14,7 @@ define openldap::server::dbindex(
     suffix    => $suffix,
     attribute => $attribute,
     indices   => $indices,
+    require   => Class['openldap::server::service'],
+    before    => Class['openldap::server'],
   }
 }

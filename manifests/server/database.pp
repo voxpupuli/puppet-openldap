@@ -1,5 +1,5 @@
 # See README.md for details.
-define openldap::server::database(
+define openldap::server::database (
   $ensure                                   = present,
   Optional[Stdlib::Absolutepath] $directory = undef,
   $suffix                                   = $title,
@@ -23,9 +23,8 @@ define openldap::server::database(
   $syncrepl                                 = undef,
   $security                                 = undef,
 ) {
-
   if ! defined(Class['openldap::server']) {
-    fail 'class ::openldap::server has not been evaluated'
+    fail 'class openldap::server has not been evaluated'
   }
 
   $manage_directory = $backend ? {
@@ -39,24 +38,18 @@ define openldap::server::database(
     },
   }
 
-  if $::openldap::server::provider == 'augeas' {
-    Class['openldap::server::install']
-    -> Openldap::Server::Database[$title]
-    ~> Class['openldap::server::service']
-  } else {
-    Class['openldap::server::service']
-    -> Openldap::Server::Database[$title]
-    -> Class['openldap::server']
-  }
-  if $title != 'dc=my-domain,dc=com' and $::osfamily == 'Debian' {
+  Class['openldap::server::service']
+  -> Openldap::Server::Database[$title]
+  -> Class['openldap::server']
+  if $title != 'dc=my-domain,dc=com' and fact('os.family') == 'Debian' {
     Openldap::Server::Database['dc=my-domain,dc=com'] -> Openldap::Server::Database[$title]
   }
 
   if $ensure == present and $backend != 'monitor' and $backend != 'config' and $backend != 'relay' and $backend != 'ldap' {
     file { $manage_directory:
       ensure => directory,
-      owner  => $::openldap::server::owner,
-      group  => $::openldap::server::group,
+      owner  => $openldap::server::owner,
+      group  => $openldap::server::group,
       before => Openldap_database[$title],
     }
   }
@@ -65,8 +58,7 @@ define openldap::server::database(
     ensure          => $ensure,
     suffix          => $suffix,
     relay           => $relay,
-    provider        => $::openldap::server::provider,
-    target          => $::openldap::server::conffile,
+    target          => $openldap::server::conffile,
     backend         => $backend,
     directory       => $manage_directory,
     rootdn          => $rootdn,
@@ -85,5 +77,4 @@ define openldap::server::database(
     limits          => $limits,
     security        => $security,
   }
-
 }

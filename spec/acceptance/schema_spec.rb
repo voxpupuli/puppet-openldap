@@ -60,13 +60,9 @@ describe 'openldap::server::schema' do
 
   context 'remove custom schema' do
     it 'cleans up custom schema' do
-      run_shell('service slapd stop')
-      if os[:family] == 'Debian'
-        run_shell('rm -f /etc/ldap/slapd.d/cn=config/cn=schema/*puppet.ldif')
-      else
-        run_shell('rm -f /etc/openldap/slapd.d/cn=config/cn=schema/*puppet.ldif')
-      end
-      run_shell('service slapd start')
+      shell('service slapd stop')
+      shell('rm /etc/ldap/slapd.d/cn=config/cn=schema/*puppet.ldif')
+      shell('service slapd start')
     end
   end
 

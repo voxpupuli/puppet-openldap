@@ -26,13 +26,13 @@ describe 'openldap::server::access' do
       pp = <<-EOS
         class { 'openldap::server': }
         openldap::server::database { 'dc=example,dc=com' : }
-        ::openldap::server::access { 'admin':
+        openldap::server::access { 'admin':
           what    => 'attrs=userPassword,distinguishedName',
           access  => ['by dn="cn=admin,dc=example,dc=com" write'],
           suffix  => 'dc=example,dc=com',
           require => Openldap::Server::Database['dc=example,dc=com'],
         }
-        ::openldap::server::access { 'root':
+        openldap::server::access { 'root':
           what    => '*',
           access  => [
             'by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage',
