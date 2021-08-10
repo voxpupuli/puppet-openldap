@@ -1,7 +1,7 @@
 # See README.md for details.
 define openldap::server::globalconf (
-  $value,
-  $ensure = 'present',
+  Variant[String[1],Hash[String[1], String[1]]] $value,
+  Enum['present', 'absent']                     $ensure = 'present',
 ) {
   if ! defined(Class['openldap::server']) {
     fail 'class openldap::server has not been evaluated'

@@ -1,6 +1,6 @@
 # See README.md for details.
 class openldap::utils (
-  $package,
+  Optional[String[1]] $package,
 ) {
   if $package {
     package { $package:

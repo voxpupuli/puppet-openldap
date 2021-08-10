@@ -1,6 +1,6 @@
 #  This is a 'private' class used by openldap::server::access_wrapper
 define openldap::server::iterate_access (
-  $hash,
+  Hash $hash,
 ) {
   # Call individual openldap::server::access
   $position = $hash[$name]['position']
