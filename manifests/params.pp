@@ -56,13 +56,13 @@ class openldap::params {
       $enable_memory_limit      = undef
     }
     'FreeBSD': {
-      $client_package           = 'openldap-sasl-client'
+      $client_package           = 'openldap-client'
       $client_conffile          = '/usr/local/etc/openldap/ldap.conf'
       $server_confdir           = '/usr/local/etc/openldap/slapd.d'
       $server_conffile          = '/usr/local/etc/openldap/slapd.conf'
       $server_group             = 'ldap'
       $server_owner             = 'ldap'
-      $server_package           = 'openldap-sasl-server'
+      $server_package           = 'openldap-server'
       $server_service           = 'slapd'
       $utils_package            = undef
       $escape_ldapi_ifs         = true
