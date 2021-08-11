@@ -1,10 +1,13 @@
 OpenLDAP
 ========
 
-[![Puppet Forge Version](http://img.shields.io/puppetforge/v/camptocamp/openldap.svg)](https://forge.puppetlabs.com/camptocamp/openldap)
-[![Puppet Forge Downloads](http://img.shields.io/puppetforge/dt/camptocamp/openldap.svg)](https://forge.puppetlabs.com/camptocamp/openldap)
-[![Build Status](https://img.shields.io/travis/camptocamp/puppet-openldap/master.svg)](https://travis-ci.org/camptocamp/puppet-openldap)
-[![Puppet Forge Endorsement](https://img.shields.io/puppetforge/e/camptocamp/openldap.svg)](https://forge.puppetlabs.com/camptocamp/openldap)
+[![Build Status](https://github.com/voxpupuli/puppet-openldap/workflows/CI/badge.svg)](https://github.com/voxpupuli/puppet-openldap/actions?query=workflow%3ACI)
+[![Release](https://github.com/voxpupuli/puppet-openldap/actions/workflows/release.yml/badge.svg)](https://github.com/voxpupuli/puppet-openldap/actions/workflows/release.yml)
+[![Puppet Forge Version](http://img.shields.io/puppetforge/v/puppet/openldap.svg)](https://forge.puppetlabs.com/puppet/openldap)
+[![Puppet Forge Downloads](http://img.shields.io/puppetforge/dt/puppet/openldap.svg)](https://forge.puppetlabs.com/puppet/openldap)
+[![Puppet Forge Endorsement](https://img.shields.io/puppetforge/e/puppet/openldap.svg)](https://forge.puppetlabs.com/puppet/openldap)
+[![puppetmodule.info docs](http://www.puppetmodule.info/images/badge.png)](http://www.puppetmodule.info/m/puppet-openldap)
+[![Apache v2 License](https://img.shields.io/github/license/voxpupuli/puppet-openldap.svg)](LICENSE)
 [![Donated by Camptocamp](https://img.shields.io/badge/donated%20by-camptocamp-fb7047.svg)](#transfer-notice)
 
 Overview
