@@ -1,7 +1,7 @@
 # See README.md for details.
 define openldap::server::schema (
-  $ensure        = undef,
-  $path          = $facts['os']['family'] ? {
+  Optional[Enum['present', 'absent']] $ensure = undef,
+  Stdlib::Absolutepath                $path   = $facts['os']['family'] ? {
     'Debian' => "/etc/ldap/schema/${title}.schema",
     'Redhat' => "/etc/openldap/schema/${title}.schema",
     'Archlinux' => "/etc/openldap/schema/${title}.schema",

@@ -1,7 +1,7 @@
 # See README.md for details.
 class openldap::utils (
-  $package = $openldap::params::utils_package,
-) inherits openldap::params {
+  Optional[String[1]] $package = undef,
+) {
   if $package {
     package { $package:
       ensure => present,
