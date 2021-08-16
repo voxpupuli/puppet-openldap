@@ -99,13 +99,13 @@ describe Puppet::Type.type(:openldap_database) do
     end
   end
 
-  describe "organization" do
-    it 'should set organization to foo.bar' do
+  describe 'organization' do
+    it 'sets organization to foo.bar' do
       @resource = described_class.new(name: 'foo', suffix: 'dc=foo,dc=bar')
       expect(@resource[:organization]).to eq('foo.bar')
     end
 
-    it 'should be nil when suffix is not using dc' do
+    it 'is nil when suffix is not using dc' do
       @resource = described_class.new(name: 'foo', suffix: 'ou=foo,dc=bar')
       expect(@resource[:organization]).to be_nil
     end

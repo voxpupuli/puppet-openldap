@@ -152,11 +152,11 @@ Puppet::Type.newtype(:openldap_database) do
   end
 
   newparam(:organization) do
-    desc "Organization name used when initdb is true"
+    desc 'Organization name used when initdb is true'
 
     defaultto do
       if @resource[:suffix].start_with?('dc=')
-        @resource[:suffix].split(/,?dc=/).delete_if { |c| c.empty? }.join('.')
+        @resource[:suffix].split(/,?dc=/).delete_if(&:empty?).join('.')
       end
     end
   end

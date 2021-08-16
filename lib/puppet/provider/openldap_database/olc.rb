@@ -189,7 +189,7 @@ Puppet::Type.
       t << "dn: #{resource[:rootdn]}\n"
       t << "objectClass: simpleSecurityObject\n" if resource[:rootpw]
       t << "objectClass: organizationalRole\n"
-      t << "cn: #{resource[:rootdn].split(/,|=/)[1]}\n"
+      t << "cn: #{resource[:rootdn].split(%r{,|=})[1]}\n"
       t << "description: LDAP administrator\n"
       t << "userPassword: #{resource[:rootpw]}\n" if resource[:rootpw]
     end
