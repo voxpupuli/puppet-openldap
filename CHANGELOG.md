@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v3.1.0](https://github.com/voxpupuli/puppet-openldap/tree/v3.1.0) (2021-08-27)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v3.0.0...v3.1.0)
+
+**Implemented enhancements:**
+
+- Improve initdb for openldap\_database type [\#209](https://github.com/voxpupuli/puppet-openldap/pull/209) ([treydock](https://github.com/treydock))
+
+**Fixed bugs:**
+
+- Delete database dc=my-domain,dc=com on RedHat systems [\#211](https://github.com/voxpupuli/puppet-openldap/pull/211) ([treydock](https://github.com/treydock))
+
+**Closed issues:**
+
+- Modernizing the module [\#270](https://github.com/voxpupuli/puppet-openldap/issues/270)
+
+**Merged pull requests:**
+
+- Allow up-to-date dependencies [\#310](https://github.com/voxpupuli/puppet-openldap/pull/310) ([smortex](https://github.com/smortex))
+
 ## [v3.0.0](https://github.com/voxpupuli/puppet-openldap/tree/v3.0.0) (2021-08-11)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/2.0.0...v3.0.0)
