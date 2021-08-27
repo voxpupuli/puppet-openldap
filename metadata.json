@@ -10,7 +10,7 @@
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.13.1 < 8.0.0"
+      "version_requirement": ">= 4.13.1 < 9.0.0"
     },
     {
       "name": "puppetlabs/augeas_core",
@@ -18,7 +18,7 @@
     },
     {
       "name": "herculesteam/augeasproviders_core",
-      "version_requirement": ">=2.0.0 < 3.0.0"
+      "version_requirement": ">=2.0.0 < 4.0.0"
     },
     {
       "name": "herculesteam/augeasproviders_shellvar",
