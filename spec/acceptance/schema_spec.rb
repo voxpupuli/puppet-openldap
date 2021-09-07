@@ -61,7 +61,11 @@ describe 'openldap::server::schema' do
   context 'remove custom schema' do
     it 'cleans up custom schema' do
       shell('service slapd stop')
-      shell('rm /etc/ldap/slapd.d/cn=config/cn=schema/*puppet.ldif')
+      if fact('os.family') == 'RedHat'
+        shell('rm /etc/openldap/slapd.d/cn=config/cn=schema/*puppet.ldif')
+      else
+        shell('rm /etc/ldap/slapd.d/cn=config/cn=schema/*puppet.ldif')
+      end
       shell('service slapd start')
     end
   end

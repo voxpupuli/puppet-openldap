@@ -26,7 +26,7 @@ jobs:
         run: bundle exec rake rubocop
       - name: Setup Test Matrix
         id: get-outputs
-        run: bundle exec metadata2gha --use-fqdn --pidfile-workaround false
+        run: bundle exec metadata2gha --use-fqdn --pidfile-workaround CentOS
 
   unit:
     needs: setup_matrix
