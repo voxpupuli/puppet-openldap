@@ -7,9 +7,7 @@ define openldap::server::access (
   Optional[Array[String[1]]]           $access   = undef,
   Boolean                              $islast   = false,
 ) {
-  if ! defined(Class['openldap::server']) {
-    fail 'class openldap::server has not been evaluated'
-  }
+  include openldap::server
 
   Class['openldap::server::service']
   -> Openldap::Server::Access[$title]

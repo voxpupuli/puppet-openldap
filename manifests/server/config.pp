@@ -1,22 +1,21 @@
 # See README.md for details.
-class openldap::server::config (
-  Optional[String[1]]            $slapd_params        = $openldap::server::slapd_params,
-  String[1]                      $owner               = $openldap::server::owner,
-  String[1]                      $group               = $openldap::server::group,
-  Optional[Boolean]              $enable_chown        = $openldap::server::enable_chown,
-  Optional[Integer[1]]           $ldap_port           = $openldap::server::ldap_port,
-  Optional[String[1]]            $ldap_address        = $openldap::server::ldap_address,
-  Optional[Integer[1]]           $ldaps_port          = $openldap::server::ldaps_port,
-  Optional[String[1]]            $ldaps_address       = $openldap::server::ldaps_address,
-  Optional[String[1]]            $ldapi_socket_path   = $openldap::server::ldapi_socket_path,
-  Optional[Boolean]              $register_slp        = $openldap::server::register_slp,
-  Optional[Stdlib::Absolutepath] $krb5_keytab_file    = $openldap::server::krb5_keytab_file,
-  Optional[String[1]]            $ldap_config_backend = $openldap::server::ldap_config_backend,
-  Optional[Boolean]              $enable_memory_limit = $openldap::server::enable_memory_limit,
-) {
-  if ! defined(Class['openldap::server']) {
-    fail 'class openldap::server has not been evaluated'
-  }
+class openldap::server::config {
+  include openldap::server
+
+  $slapd_params        = $openldap::server::slapd_params
+  $owner               = $openldap::server::owner
+  $group               = $openldap::server::group
+  $enable_chown        = $openldap::server::enable_chown
+  $ldap_port           = $openldap::server::ldap_port
+  $ldap_address        = $openldap::server::ldap_address
+  $ldaps_port          = $openldap::server::ldaps_port
+  $ldaps_address       = $openldap::server::ldaps_address
+  $ldapi_socket_path   = $openldap::server::ldapi_socket_path
+  $register_slp        = $openldap::server::register_slp
+  $krb5_keytab_file    = $openldap::server::krb5_keytab_file
+  $ldap_config_backend = $openldap::server::ldap_config_backend
+  $enable_memory_limit = $openldap::server::enable_memory_limit
+
   $slapd_ldap_ifs = empty($openldap::server::ldap_ifs) ? {
     false => join(prefix($openldap::server::ldap_ifs, 'ldap://'), ' '),
     true  => '',

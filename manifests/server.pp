@@ -29,9 +29,14 @@ class openldap::server (
   Optional[String] $ldap_config_backend             = undef,
   Optional[Boolean] $enable_memory_limit            = undef,
 ) {
-  class { 'openldap::server::install': }
-  -> class { 'openldap::server::config': }
-  ~> class { 'openldap::server::service': }
-  -> class { 'openldap::server::slapdconf': }
+  include openldap::server::install
+  include openldap::server::config
+  include openldap::server::service
+  include openldap::server::slapdconf
+
+  Class['openldap::server::install']
+  -> Class['openldap::server::config']
+  ~> Class['openldap::server::service']
+  -> Class['openldap::server::slapdconf']
   -> Class['openldap::server']
 }

@@ -3,9 +3,7 @@ define openldap::server::globalconf (
   Variant[String[1],Array[String[1]],Hash[String[1], Variant[String[1],Array[String[1]]]]] $value,
   Enum['present', 'absent']                     $ensure = 'present',
 ) {
-  if ! defined(Class['openldap::server']) {
-    fail 'class openldap::server has not been evaluated'
-  }
+  include openldap::server
 
   Class['openldap::server::service']
   -> Openldap::Server::Globalconf[$title]
