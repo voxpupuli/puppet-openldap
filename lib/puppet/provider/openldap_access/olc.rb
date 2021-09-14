@@ -43,7 +43,7 @@ Puppet::Type.
                      false
                    end
           i << new(
-            name: "{#{position}}to #{what} #{access.join(' ')} on #{suffix}",
+            name: "#{position} on #{suffix}",
             ensure: :present,
             position: position,
             what: what,
@@ -108,9 +108,7 @@ Puppet::Type.
   end
 
   def exists?
-    resource[:suffix] == (@property_hash[:suffix]) &&
-      resource[:access].flatten == @property_hash[:access].flatten &&
-      resource[:what] == (@property_hash[:what])
+    @property_hash[:ensure] == :present
   end
 
   def create
