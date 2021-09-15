@@ -2,9 +2,7 @@
 define openldap::server::module (
   Optional[Enum['present', 'absent']] $ensure = undef,
 ) {
-  if ! defined(Class['openldap::server']) {
-    fail 'class openldap::server has not been evaluated'
-  }
+  include openldap::server
 
   Class['openldap::server::service']
   -> Openldap::Server::Module[$title]

@@ -5,9 +5,7 @@ define openldap::server::overlay (
   String[1]                                                     $suffix  = regsubst($title, '^(\S+)\s+on\s+(\S+)$', '\2'),
   Optional[Variant[Array[String[1]],Hash[String[1],String[1]]]] $options = undef,
 ) {
-  if ! defined(Class['openldap::server']) {
-    fail 'class openldap::server has not been evaluated'
-  }
+  include openldap::server
 
   Class['openldap::server::service']
   -> Openldap::Server::Overlay[$title]

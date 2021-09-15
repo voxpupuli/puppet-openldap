@@ -3,10 +3,6 @@ require 'spec_helper'
 describe 'openldap::server::access_wrapper' do
   let(:title) { 'foo' }
 
-  let :pre_condition do
-    "class {'openldap::server':}"
-  end
-
   on_supported_os.each do |os, facts|
     context "on #{os}" do
       let(:facts) do

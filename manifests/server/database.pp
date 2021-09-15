@@ -23,9 +23,7 @@ define openldap::server::database (
   Optional[Variant[String[1],Array[String[1]]]] $syncrepl        = undef,
   Optional[String[1]]                           $security        = undef,
 ) {
-  if ! defined(Class['openldap::server']) {
-    fail 'class openldap::server has not been evaluated'
-  }
+  include openldap::server
 
   $manage_directory = $backend ? {
     'monitor' => undef,

@@ -9,9 +9,7 @@ define openldap::server::schema (
     'Suse' => "/etc/openldap/schema/${title}.schema",
   }
 ) {
-  if ! defined(Class['openldap::server']) {
-    fail 'class openldap::server has not been evaluated'
-  }
+  include openldap::server
 
   Class['openldap::server::service']
   -> Openldap::Server::Schema[$title]

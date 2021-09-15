@@ -5,9 +5,7 @@ define openldap::server::dbindex (
   String[1]                           $attribute = $name,
   Optional[String[1]]                 $indices   = undef,
 ) {
-  if ! defined(Class['openldap::server']) {
-    fail 'class openldap::server has not been evaluated'
-  }
+  include openldap::server
 
   openldap_dbindex { $title:
     ensure    => $ensure,

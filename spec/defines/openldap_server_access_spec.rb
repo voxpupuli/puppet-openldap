@@ -3,20 +3,10 @@ require 'spec_helper'
 describe 'openldap::server::access' do
   let(:title) { 'foo' }
 
-  let :pre_condition do
-    "class {'openldap::server':}"
-  end
-
   on_supported_os.each do |os, facts|
     context "on #{os}" do
       let(:facts) do
         facts
-      end
-
-      context 'when Class[openldap::server] is not declared' do
-        let(:pre_condition) {}
-
-        it { is_expected.to compile.and_raise_error(%r{class openldap::server has not been evaluated}) }
       end
 
       context 'with composite namevar' do

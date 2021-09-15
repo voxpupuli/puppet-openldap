@@ -1,8 +1,6 @@
 # See README.md for details.
 class openldap::server::service {
-  if ! defined(Class['openldap::server']) {
-    fail 'class openldap::server has not been evaluated'
-  }
+  include openldap::server
 
   $ensure = $openldap::server::start ? {
     true    => running,

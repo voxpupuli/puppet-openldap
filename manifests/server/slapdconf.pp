@@ -1,8 +1,6 @@
 # See README.md for details.
 class openldap::server::slapdconf {
-  if ! defined(Class['openldap::server']) {
-    fail 'class openldap::server has not been evaluated'
-  }
+  include openldap::server
 
   file { $openldap::server::confdir:
     ensure => directory,

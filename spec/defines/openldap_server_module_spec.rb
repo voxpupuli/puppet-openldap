@@ -9,15 +9,7 @@ describe 'openldap::server::module' do
         facts
       end
 
-      context 'without declaring Class[openldap::server]' do
-        it { is_expected.to compile.and_raise_error(%r{openldap::server has not been evaluated}) }
-      end
-
       context 'without parameter' do
-        let :pre_condition do
-          "class { 'openldap::server': }"
-        end
-
         it { is_expected.to compile.with_all_deps }
       end
     end
