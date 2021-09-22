@@ -1,9 +1,9 @@
 # See README.md for details.
 define openldap::server::overlay (
-  Enum['present', 'absent']                                     $ensure  = present,
-  String[1]                                                     $overlay = regsubst($title, '^(\S+)\s+on\s+(\S+)$', '\1'),
-  String[1]                                                     $suffix  = regsubst($title, '^(\S+)\s+on\s+(\S+)$', '\2'),
-  Optional[Variant[Array[String[1]],Hash[String[1],String[1]]]] $options = undef,
+  Enum['present', 'absent']      $ensure  = present,
+  String[1]                      $overlay = regsubst($title, '^(\S+)\s+on\s+(\S+)$', '\1'),
+  String[1]                      $suffix  = regsubst($title, '^(\S+)\s+on\s+(\S+)$', '\2'),
+  Optional[Openldap::Attributes] $options = undef,
 ) {
   include openldap::server
 
