@@ -19,7 +19,7 @@ Puppet::Type.newtype(:openldap_access) do
     desc 'Is this olcAccess the last one?'
   end
 
-  newparam(:what) do
+  newproperty(:what) do
     desc 'The entries and/or attributes to which the access applies'
   end
 
