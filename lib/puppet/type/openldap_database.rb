@@ -139,7 +139,7 @@ Puppet::Type.newtype(:openldap_database) do
   end
 
   newparam(:initdb, boolean: true) do
-    desc 'When true it initiales the database with the top object. When false, it does not create any object in the database, so you have to create it by other mechanism. It defaults to true'
+    desc 'When true it initiales the database with the top object. When false, it does not create any object in the database, so you have to create it by other mechanism. It defaults to false when the backend is one of config, ldap, monitor or relay, true otherwise.'
 
     newvalues(:true, :false)
     defaultto do
