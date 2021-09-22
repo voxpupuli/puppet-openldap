@@ -37,11 +37,6 @@ Puppet::Type.
           bys.split(%r{(?= by .+)}).each do |b|
             access << b.lstrip
           end
-          islast = if (position.to_i + 1) == getCountOfOlcAccess(suffix)
-                     true
-                   else
-                     false
-                   end
           i << new(
             name: "#{position} on #{suffix}",
             ensure: :present,
@@ -49,7 +44,6 @@ Puppet::Type.
             what: what,
             access: access,
             suffix: suffix,
-            islast: islast
           )
         end
       end
@@ -73,17 +67,6 @@ Puppet::Type.
       end
         resources[name].provider = provider
       end
-      validate_islast(resources)
-    end
-  end
-
-  def self.validate_islast(resources)
-    islast = {}
-    resources.keys.each do |name|
-      next unless resources[name][:islast] == true
-      raise Puppet::Error, "Multiple 'islast' found for suffix '#{resources[name][:suffix]}': #{resources[name][:name]} and #{islast[:suffix]}" unless islast[resources[name][:suffix]].nil?
-
-      islast[resources[name][:suffix]] = resources[name][:name]
     end
   end
 
@@ -138,15 +121,6 @@ Puppet::Type.
     t << "changetype: modify\n"
     t << "delete: olcAccess\n"
     t << "olcAccess: {#{@property_hash[:position]}}\n"
-    if resource[:islast]
-      t << "\n\n"
-      t << "dn: #{getDn(resource[:suffix])}\n"
-      t << "changetype: modify\n"
-      t << "delete: olcAccess\n"
-      (resource[:position].to_i + 1..getCountOfOlcAccess(resource[:suffix])).each do |n|
-        t << "olcAccess: {#{n}}\n"
-      end
-    end
     t.close
     Puppet.debug(IO.read(t.path))
     begin
@@ -214,13 +188,6 @@ Puppet::Type.
         end
       end
       countOfElement = self.class.getCountOfOlcAccess(resource[:suffix])
-      if resource[:islast] && countOfElement > (position.to_i + 1)
-        t << "-\n"
-        t << "delete: olcAccess\n"
-        (position.to_i + 1..countOfElement - 1).each do |n|
-          t << "olcAccess: {#{n}}\n"
-        end
-      end
       t.close
       Puppet.debug(IO.read(t.path))
       begin

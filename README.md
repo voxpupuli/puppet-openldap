@@ -148,7 +148,7 @@ openldap::server::overlay { 'memberof on dc=example,dc=com':
 ### Configuring ACPs/ACLs
 
 [Documentation](http://www.openldap.org/devel/admin/slapdconf2.html) about olcAcces state the following spec:
-> 5.2.5.2. olcAccess: to &lt;what&gt; [ by &lt;who&gt; [&lt;accesslevel&gt;] [&lt;control&gt;] ]+
+> 5.2.5.2. olcAccess: to &lt;what&gt; \[ by &lt;who&gt; \[&lt;accesslevel&gt;\] \[&lt;control&gt;\] \]+
 
 So we supports natively this way of writing in the title:
 ```puppet
@@ -218,20 +218,23 @@ So if you got in your ldap:
 ```
 
 #### Note #2:
-  The parameter `islast` is used for purging remaining entries. Only one `islast` is allowed per suffix. If you got in your ldap:
+For purging unmanaged entries, rely on the `resources` resource:
+
 ```
- olcAccess: {0}to ...
- olcAccess: {1}to ...
- olcAccess: {2}to ...
- olcAccess: {3}to ...
+resources { 'openldap_access':
+  purge => true,
+}
 ```
 
-And set :
+It is then necessary to identify access rules using the *priority and suffix* syntax for the title:
 ```puppet
+openldap::server::access { '0 on dc=example,dc=com':
+  what   => ...,
+  access => [...],
+}
 openldap::server::access { '1 on dc=example,dc=com':
   what   => ...,
   access => [...],
-  islast => true,
 }
 ```
 

@@ -5,7 +5,6 @@ define openldap::server::access (
   Optional[String[1]]                  $what     = undef,
   Optional[String[1]]                  $suffix   = undef,
   Optional[Array[String[1]]]           $access   = undef,
-  Boolean                              $islast   = false,
 ) {
   include openldap::server
 
@@ -20,6 +19,5 @@ define openldap::server::access (
     what     => $what,
     suffix   => $suffix,
     access   => $access,
-    islast   => $islast,
   }
 }
