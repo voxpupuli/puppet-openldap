@@ -7,7 +7,7 @@ define openldap::server::database (
   Optional[String[1]]                           $backend         = undef,
   Optional[String[1]]                           $rootdn          = undef,
   Optional[String[1]]                           $rootpw          = undef,
-  Optional[String[1]]                           $initdb          = undef,
+  Optional[Boolean]                             $initdb          = undef,
   Boolean                                       $readonly        = false,
   Optional[String[1]]                           $sizelimit       = undef,
   Optional[String[1]]                           $dbmaxsize       = undef,
