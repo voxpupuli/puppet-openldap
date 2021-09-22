@@ -43,7 +43,7 @@ Puppet::Type.
             position: position,
             what: what,
             access: access,
-            suffix: suffix,
+            suffix: suffix
           )
         end
       end
@@ -55,7 +55,7 @@ Puppet::Type.
   def self.prefetch(resources)
     accesses = instances
     resources.keys.each do |name|
-      if provider = accesses.find do |access|
+      next unless provider = accesses.find do |access|
         if resources[name][:position]
           access.suffix == resources[name][:suffix] &&
           access.position == resources[name][:position].to_s
@@ -65,8 +65,8 @@ Puppet::Type.
           access.what == resources[name][:what]
         end
       end
-        resources[name].provider = provider
-      end
+
+      resources[name].provider = provider
     end
   end
 
@@ -187,7 +187,7 @@ Puppet::Type.
           t << "olcAccess: {#{olcAccess[:position]}}#{olcAccess[:content]}\n"
         end
       end
-      countOfElement = self.class.getCountOfOlcAccess(resource[:suffix])
+      self.class.getCountOfOlcAccess(resource[:suffix])
       t.close
       Puppet.debug(IO.read(t.path))
       begin
