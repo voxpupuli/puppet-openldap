@@ -26,7 +26,6 @@ define openldap::server::iterate_access (
     openldap::server::access { "${position} on ${suffix}" :
       what    => $what,
       access  => $access,
-      islast  => true,
       require => Openldap::Server::Access["${previous_position} on ${suffix}"],
     }
   } else {
