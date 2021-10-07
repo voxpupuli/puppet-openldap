@@ -150,26 +150,7 @@ openldap::server::overlay { 'memberof on dc=example,dc=com':
 [Documentation](http://www.openldap.org/devel/admin/slapdconf2.html) about olcAcces state the following spec:
 > 5.2.5.2. olcAccess: to &lt;what&gt; \[ by &lt;who&gt; \[&lt;accesslevel&gt;\] \[&lt;control&gt;\] \]+
 
-So we supports natively this way of writing in the title:
-```puppet
-openldap::server::access { 'to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" write by anonymous auth' :
-  suffix   => 'dc=example,dc=com',
-}
-```
-
-Also is supported writing priority in title like olcAccess in ldap
-```puppet
-openldap::server::access { '{0}to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" write by anonymous auth' :
-  suffix   => 'dc=example,dc=com',
-}
-```
-
-As a single line with suffix:
-```puppet
-openldap::server::access { '{0}to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=example,dc=com" write by anonymous auth on dc=example,dc=com' : }
-```
-
-Defining priority and suffix in the title:
+Define priority and suffix in the title:
 ```puppet
 openldap::server::access { '0 on dc=example,dc=com':
   what     => 'attrs=userPassword,shadowLastChange',
@@ -200,34 +181,14 @@ openldap::server::access { '0 on cn=frontend' :
 }
 ```
 
-
-#### Note #1:
-The chaining arrows `->` are importants if you want to order your entries.
-Openldap put the entry as the last available position.
-So if you got in your ldap:
-```
- olcAccess: {0}to ...
- olcAccess: {1}to ...
- olcAccess: {2}to ...
-```
-
-  Even if you set the parameter `position => '4'`, the next entry will be set as
-
-```
- olcAccess: {3}to ...
-```
-
-#### Note #2:
+#### Note:
 For purging unmanaged entries, rely on the `resources` resource:
 
 ```
 resources { 'openldap_access':
   purge => true,
 }
-```
 
-It is then necessary to identify access rules using the *priority and suffix* syntax for the title:
-```puppet
 openldap::server::access { '0 on dc=example,dc=com':
   what   => ...,
   access => [...],
@@ -238,11 +199,9 @@ openldap::server::access { '1 on dc=example,dc=com':
 }
 ```
 
-entries 2 and 3 will get deleted.
-
 #### Call your acl from a hash:
 The class `openldap::server::access_wrapper` was designed to simplify creating ACL.
-If you have multiple `what` (`to *` in this example), you can order them by adding number to it.
+In order to avoid collisions when multiple identical `what` are present (`to *` in this example), a (meaningless) number must be prepended to each entry.
 
 ```puppet
 $example_acl = {
@@ -252,12 +211,12 @@ $example_acl = {
     'by dn.exact=cn=replicator,dc=example,dc=com read',
     'by * break',
   ],
-  'to attrs=userPassword,shadowLastChange' => [
+  '2 to attrs=userPassword,shadowLastChange' => [
     'by dn="cn=admin,dc=example,dc=com" write',
     'by self write',
     'by anonymous auth',
   ],
-  '2 to *' => [
+  '3 to *' => [
     'by self read',
   ],
 }

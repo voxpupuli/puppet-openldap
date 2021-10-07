@@ -12,13 +12,13 @@ describe 'openldap::server::access_wrapper' do
       let(:params) do
         {
           acl: {
-            '1 to *' => [
+            '0 to *' => [
               'by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage',
               'by dn.exact=cn=admin,dc=example,dc=com write',
               'by dn.exact=cn=replicator,dc=example,dc=com read',
               'by * break',
             ],
-            'to attrs=userPassword,shadowLastChange' => [
+            '1 to attrs=userPassword,shadowLastChange' => [
               'by dn="cn=admin,dc=example,dc=com" write',
               'by self write',
               'by anonymous auth',

@@ -14,14 +14,14 @@
 #
 #   example:
 #     $acl = {
-#       'to *' => [
+#       '1 to *' => [
 #         'by self write',
 #         'by anonymous read',
 #       ],
 #     }
 #
 define openldap::server::access_wrapper (
-  Hash[String[1],Array[String[1]]] $acl,
+  Hash[Pattern[/\A\d+ to\s/],Array[Openldap::Access_rule]] $acl,
   String[1] $suffix = $name,
 ) {
   # Parse ACL

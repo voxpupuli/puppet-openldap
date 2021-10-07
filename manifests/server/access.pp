@@ -1,10 +1,8 @@
 # See README.md for details.
 define openldap::server::access (
-  Optional[Enum['present', 'absent']]  $ensure   = undef,
-  Optional[Variant[Integer,String[1]]] $position = undef, # FIXME We should probably choose Integer or String
-  Optional[String[1]]                  $what     = undef,
-  Optional[String[1]]                  $suffix   = undef,
-  Optional[Array[String[1]]]           $access   = undef,
+  String[1]                            $what,
+  Array[Openldap::Access_rule]         $access,
+  Enum['present', 'absent']            $ensure   = 'present',
 ) {
   include openldap::server
 
@@ -13,11 +11,9 @@ define openldap::server::access (
   -> Class['openldap::server']
 
   openldap_access { $title:
-    ensure   => $ensure,
-    position => $position,
-    target   => $openldap::server::conffile,
-    what     => $what,
-    suffix   => $suffix,
-    access   => $access,
+    ensure => $ensure,
+    target => $openldap::server::conffile,
+    what   => $what,
+    access => $access,
   }
 }
