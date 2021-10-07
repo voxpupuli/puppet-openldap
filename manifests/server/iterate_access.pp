@@ -14,26 +14,17 @@ define openldap::server::iterate_access (
     fail('$access variable must be an array')
   }
 
-  if $position == 0 { # the first entry
+  $previous_position = $position - 1
 
-    openldap::server::access { "${position} on ${suffix}" :
-      what   => $what,
-      access => $access,
-    }
-  } elsif $position == $count { #the last entry
-
-    $previous_position = $position - 1
-    openldap::server::access { "${position} on ${suffix}" :
-      what    => $what,
-      access  => $access,
-      require => Openldap::Server::Access["${previous_position} on ${suffix}"],
-    }
+  if $previous_position < 0 {
+    $require = []
   } else {
-    $previous_position = $position - 1
-    openldap::server::access { "${position} on ${suffix}" :
-      what    => $what,
-      access  => $access,
-      require => Openldap::Server::Access["${previous_position} on ${suffix}"],
-    }
+    $require = Openldap::Server::Access["${previous_position} on ${suffix}"]
+  }
+
+  openldap::server::access { "${position} on ${suffix}" :
+    what    => $what,
+    access  => $access,
+    require => $require,
   }
 }
