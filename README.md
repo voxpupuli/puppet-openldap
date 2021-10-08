@@ -187,11 +187,11 @@ from the openldap [documentation](http://www.openldap.org/doc/admin24/slapdconf2
 options that should be applied to all the other databases. Subsequent database
 definitions may also override some frontend settings.
 
-So use the suffix 'frontend' for this special database
+So use the suffix 'cn=frontend' for this special database
 
 
 ```puppet
-openldap::server::access { '0 on frontend' :
+openldap::server::access { '0 on cn=frontend' :
   what   => '*',
   access => [
     'by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage',
