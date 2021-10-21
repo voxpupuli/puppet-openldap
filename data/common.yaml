@@ -7,3 +7,5 @@ openldap::server::group: "ldap"
 openldap::server::owner: "ldap"
 openldap::server::service: "slapd"
 openldap::server::escape_ldapi_ifs: false
+openldap::server::ldapi_ifs:
+  - "/"
