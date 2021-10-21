@@ -34,6 +34,14 @@ class openldap::server::config {
   }
   $slapd_ldap_urls = "${slapd_ldap_ifs} ${slapd_ldapi_ifs} ${slapd_ldaps_ifs}"
 
+  file { $openldap::server::confdir:
+    ensure => directory,
+    owner  => $openldap::server::owner,
+    group  => $openldap::server::group,
+    mode   => '0750',
+    force  => true,
+  }
+
   case $facts['os']['family'] {
     'Debian': {
       shellvar { 'slapd':
@@ -118,6 +126,7 @@ class openldap::server::config {
         command  => "echo '${ldif}' | slapadd -n 0 -F ${openldap::server::confdir}",
         creates  => "${openldap::server::confdir}/cn=config.ldif",
         provider => 'shell',
+        require  => File[$openldap::server::confdir],
       }
     }
     'Suse': {
