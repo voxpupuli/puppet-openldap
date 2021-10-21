@@ -126,6 +126,8 @@ class openldap::server::config {
         command  => "echo '${ldif}' | slapadd -n 0 -F ${openldap::server::confdir}",
         creates  => "${openldap::server::confdir}/cn=config.ldif",
         provider => 'shell',
+        user     => $openldap::server::owner,
+        group    => $openldap::server::group,
         require  => File[$openldap::server::confdir],
       }
     }
