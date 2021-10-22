@@ -7,3 +7,4 @@ openldap::server::package: "openldap24-server"
 openldap::server::escape_ldapi_ifs: true
 openldap::server::ldapi_ifs:
   - "/var/run/openldap/ldapi"
+openldap::server::default_directory: "/var/db/openldap-data"

@@ -9,3 +9,4 @@ openldap::server::service: "slapd"
 openldap::server::escape_ldapi_ifs: false
 openldap::server::ldapi_ifs:
   - "/"
+openldap::server::default_directory: "/var/lib/ldap"
