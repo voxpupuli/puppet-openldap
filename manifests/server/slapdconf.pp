@@ -2,14 +2,6 @@
 class openldap::server::slapdconf {
   include openldap::server
 
-  file { $openldap::server::confdir:
-    ensure => directory,
-    owner  => $openldap::server::owner,
-    group  => $openldap::server::group,
-    mode   => '0750',
-    force  => true,
-  }
-
   if $openldap::server::ssl_cert {
     if $openldap::server::ssl_key {
       openldap::server::globalconf { 'TLSCertificate':

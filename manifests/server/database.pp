@@ -30,10 +30,7 @@ define openldap::server::database (
     'config'  => undef,
     'relay'   => undef,
     'ldap'    => undef,
-    default   => $directory ? {
-      undef   => '/var/lib/ldap',
-      default => $directory,
-    },
+    default   => $directory.lest || { $openldap::server::default_directory },
   }
 
   Class['openldap::server::service']
