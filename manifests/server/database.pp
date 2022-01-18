@@ -13,7 +13,7 @@ define openldap::server::database (
   Optional[String[1]]                           $dbmaxsize       = undef,
   Optional[String[1]]                           $timelimit       = undef,
   Optional[String[1]]                           $updateref       = undef,
-  Optional[String[1]]                           $limits          = undef,
+  Array[String[1]]                              $limits          = [],
   # BDB/HDB options
   Optional[String[1]]                           $dboptions       = undef,
   Optional[String[1]]                           $synctype        = undef,
