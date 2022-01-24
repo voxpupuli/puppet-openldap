@@ -13,15 +13,25 @@ define openldap::server::database (
   Optional[String[1]]                           $dbmaxsize       = undef,
   Optional[String[1]]                           $timelimit       = undef,
   Optional[String[1]]                           $updateref       = undef,
-  Optional[String[1]]                           $limits          = undef,
+  Array[String[1]]                              $limits          = [],
   # BDB/HDB options
-  Optional[String[1]]                           $dboptions       = undef,
+  Array[String[1]]                              $dboptions       = [],
   Optional[String[1]]                           $synctype        = undef,
   # Synchronization options
   Optional[Boolean]                             $mirrormode      = undef,
   Optional[String[1]]                           $syncusesubentry = undef,
   Optional[Variant[String[1],Array[String[1]]]] $syncrepl        = undef,
-  Optional[String[1]]                           $security        = undef,
+  Hash[Enum[
+    'transport',
+    'sasl',
+    'simple_bind',
+    'ssf',
+    'tls',
+    'update_sasl',
+    'update_ssf',
+    'update_tls',
+    'update_transport',
+  ], Integer[0]]                                $security        = {},
 ) {
   include openldap::server
 
