@@ -201,25 +201,32 @@ openldap::server::access { '1 on dc=example,dc=com':
 
 #### Call your acl from a hash:
 The class `openldap::server::access_wrapper` was designed to simplify creating ACL.
-In order to avoid collisions when multiple identical `what` are present (`to *` in this example), a (meaningless) number must be prepended to each entry.
+Each ACL is distinct hash in order to avoid collisions when multiple identical `what` are present (`to *` in this example).
 
 ```puppet
-$example_acl = {
-  '1 to *' => [
-    'by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage',
-    'by dn.exact=cn=admin,dc=example,dc=com write',
-    'by dn.exact=cn=replicator,dc=example,dc=com read',
-    'by * break',
-  ],
-  '2 to attrs=userPassword,shadowLastChange' => [
-    'by dn="cn=admin,dc=example,dc=com" write',
-    'by self write',
-    'by anonymous auth',
-  ],
-  '3 to *' => [
-    'by self read',
-  ],
-}
+$example_acl = [
+  {
+    'to *' => [
+      'by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage',
+      'by dn.exact=cn=admin,dc=example,dc=com write',
+      'by dn.exact=cn=replicator,dc=example,dc=com read',
+      'by * break',
+    ],
+  },
+  {
+    'to attrs=userPassword,shadowLastChange' => [
+      'by dn="cn=admin,dc=example,dc=com" write',
+      'by self write',
+      'by anonymous auth',
+    ],
+  },
+  {
+    'to *' => [
+      'by self read',
+    ],
+  },
+]
+
 
 openldap::server::access_wrapper { 'dc=example,dc=com' :
   acl => $example_acl,
