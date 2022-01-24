@@ -21,7 +21,17 @@ define openldap::server::database (
   Optional[Boolean]                             $mirrormode      = undef,
   Optional[String[1]]                           $syncusesubentry = undef,
   Optional[Variant[String[1],Array[String[1]]]] $syncrepl        = undef,
-  Optional[String[1]]                           $security        = undef,
+  Hash[Enum[
+    'transport',
+    'sasl',
+    'simple_bind',
+    'ssf',
+    'tls',
+    'update_sasl',
+    'update_ssf',
+    'update_tls',
+    'update_transport',
+  ], Integer[0]]                                $security        = {},
 ) {
   include openldap::server
 

@@ -46,7 +46,9 @@ describe 'openldap::server::database' do
                   'rid=1 provider=ldap://localhost searchbase="dc=foo,dc=example,dc=com"',
                   'rid=2 provider=ldap://localhost searchbase="dc=foo,dc=example,dc=com"',
                 ],
-                security: 'olcSecurity: tls=128 '
+                security: {
+                  tls: 1,
+                },
               }
             end
 
