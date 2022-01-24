@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'openldap::server::overlay' do
@@ -17,6 +19,7 @@ describe 'openldap::server::overlay' do
         end
 
         it { is_expected.to compile.with_all_deps }
+
         it {
           is_expected.to contain_openldap_overlay('memberof on dc=example,dc=com').
             with_ensure('present').
@@ -36,6 +39,7 @@ describe 'openldap::server::overlay' do
         end
 
         it { is_expected.to compile.with_all_deps }
+
         it {
           is_expected.to contain_openldap_overlay('memberof on dc=example,dc=com').
             with_ensure('present').

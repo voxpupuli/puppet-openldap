@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'puppet/property/boolean'
 
 # rubocop:disable Style/RegexpLiteral
-# rubocop:disable Lint/ParenthesesAsGroupedExpression
-# rubocop:disable Style/PredicateName
+# rubocop:disable Naming/PredicateName
 Puppet::Type.newtype(:openldap_database) do
   @doc = 'Manages OpenLDAP BDB and HDB databases.'
 
@@ -60,9 +61,7 @@ Puppet::Type.newtype(:openldap_database) do
   newproperty(:directory) do
     desc 'The directory where the BDB files containing this database and associated indexes live.'
     defaultto do
-      unless %w[monitor config relay ldap].include? (@resource[:backend]).to_s
-        '/var/lib/ldap'
-      end
+      '/var/lib/ldap' unless %w[monitor config relay ldap].include? (@resource[:backend]).to_s
     end
   end
 
@@ -79,9 +78,9 @@ Puppet::Type.newtype(:openldap_database) do
       else
         case is
         when %r{^\{CRYPT\}.+}
-          '{CRYPT}' + should.crypt(is[0, 2]) == is
+          "{CRYPT}#{should.crypt(is[0, 2])}" == is
         when %r{^\{MD5\}.+}
-          '{MD5}' + Digest::MD5.hexdigest(should) == is
+          "{MD5}#{Digest::MD5.hexdigest(should)}" == is
         when %r{^\{SMD5\}.+}
           salt = is[16..-1]
           md5_hash_with_salt = "#{Digest::MD5.digest(should + salt)}#{salt}"
@@ -89,20 +88,21 @@ Puppet::Type.newtype(:openldap_database) do
         when %r{^\{SSHA\}.+}
           decoded = Base64.decode64(is.gsub(%r{^\{SSHA\}}, ''))
           salt = decoded[20..-1]
-          '{SSHA}' + Base64.encode64("#{Digest::SHA1.digest("#{should}#{salt}")}#{salt}").chomp == is
+          "{SSHA}#{Base64.encode64("#{Digest::SHA1.digest("#{should}#{salt}")}#{salt}").chomp}" == is
         when %r{^\{SHA\}.+}
-          '{SHA}' + Digest::SHA1.hexdigest(should) == is
+          "{SHA}#{Digest::SHA1.hexdigest(should)}" == is
         when %r{^\{(SHA(256|384|512))\}}
           matches = is.match("^\{(SHA[\\d]{,3})\}")
           raise ArgumentError, "Invalid password format: #{is}" if matches.nil?
+
           crypto = matches[1]
           case crypto
           when 'SHA256'
-            '{SHA256}' + Digest::SHA256.hexdigest(should) == is
+            "{SHA256}#{Digest::SHA256.hexdigest(should)}" == is
           when 'SHA384'
-            '{SHA384}' + Digest::SHA384.hexdigest(should) == is
+            "{SHA384}#{Digest::SHA384.hexdigest(should)}" == is
           when 'SHA512'
-            '{SHA512}' + Digest::SHA512.hexdigest(should) == is
+            "{SHA512}#{Digest::SHA512.hexdigest(should)}" == is
           end
         else
           false
@@ -116,7 +116,7 @@ Puppet::Type.newtype(:openldap_database) do
       @resource[:rootpw] = if should =~ %r{^\{(CRYPT|MD5|SMD5|SSHA|SHA(256|384|512)?)\}.+}
                              should
                            else
-                             '{SSHA}' + Base64.encode64("#{Digest::SHA1.digest("#{should}#{salt}")}#{salt}").chomp
+                             "{SSHA}#{Base64.encode64("#{Digest::SHA1.digest("#{should}#{salt}")}#{salt}").chomp}"
                            end
       super
     end
@@ -155,9 +155,7 @@ Puppet::Type.newtype(:openldap_database) do
     desc 'Organization name used when initdb is true'
 
     defaultto do
-      if @resource[:suffix].start_with?('dc=')
-        @resource[:suffix].split(/,?dc=/).delete_if(&:empty?).join('.')
-      end
+      @resource[:suffix].split(/,?dc=/).delete_if(&:empty?).join('.') if @resource[:suffix].start_with?('dc=')
     end
   end
 
@@ -221,9 +219,7 @@ Puppet::Type.newtype(:openldap_database) do
     desc 'Limits the number entries returned and/or the time spent by a request'
 
     validate do |value|
-      if value !~ /^(\*|anonymous|users|self|(dn(\.\S+)?=\S+)|(dn\.\S+=\S+)|(group(\/\S+(\/\S+)?)?=\S+))(\s+((time(\.(soft|hard))?=((\d+)|unlimited))|(size(\.(soft|hard|unchecked))?=((\d+)|unlimited))|(size\.pr=((\d+)|noEstimate|unlimited))|(size.prtotal=((\d+)|unlimited|disabled))))+$/
-        raise ArgumentError, "Invalid limit: #{value}\nLimit values must be according to syntax described at http://www.openldap.org/doc/admin24/limits.html#Per-Database%20Limits"
-      end
+      raise ArgumentError, "Invalid limit: #{value}\nLimit values must be according to syntax described at http://www.openldap.org/doc/admin24/limits.html#Per-Database%20Limits" if value !~ /^(\*|anonymous|users|self|(dn(\.\S+)?=\S+)|(dn\.\S+=\S+)|(group(\/\S+(\/\S+)?)?=\S+))(\s+((time(\.(soft|hard))?=((\d+)|unlimited))|(size(\.(soft|hard|unchecked))?=((\d+)|unlimited))|(size\.pr=((\d+)|noEstimate|unlimited))|(size.prtotal=((\d+)|unlimited|disabled))))+$/
     end
   end
 
@@ -232,9 +228,7 @@ Puppet::Type.newtype(:openldap_database) do
     correct_keys = %w[transport sasl simple_bind ssf tls update_sasl update_ssf update_tls update_transport]
     validate do |value|
       value.each do |k, v|
-        unless correct_keys.include? k
-          raise ArgumentError, "Invalid security key: '#{k}' for value '#{v}'\nSecurity key must be one of these value: #{correct_keys.join(', ')}\nSee olcSecurity in `man slapd-config`"
-        end
+        raise ArgumentError, "Invalid security key: '#{k}' for value '#{v}'\nSecurity key must be one of these value: #{correct_keys.join(', ')}\nSee olcSecurity in `man slapd-config`" unless correct_keys.include? k
         next if Float(v)
 
         raise ArgumentError, "Invalid security value: '#{v}' for key '#{k}'\nSecurity value must be a number\nSee olcSecurity in `man slapd-config`"

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 # rubocop:disable Style/IdenticalConditionalBranches
@@ -12,22 +14,27 @@ describe 'openldap::server' do
       context 'with olc provider' do
         context 'with no parameters' do
           it { is_expected.to compile.with_all_deps }
+
           it {
             is_expected.to contain_class('openldap::server::install').
               that_comes_before('Class[openldap::server::config]')
           }
+
           it {
             is_expected.to contain_class('openldap::server::config').
               that_notifies('Class[openldap::server::service]')
           }
+
           it {
             is_expected.to contain_class('openldap::server::service').
               that_comes_before('Class[openldap::server::slapdconf]')
           }
+
           it {
             is_expected.to contain_class('openldap::server::slapdconf').
               that_comes_before('Class[openldap::server]')
           }
+
           case facts[:osfamily]
           when 'Debian'
             it {
@@ -39,6 +46,7 @@ describe 'openldap::server' do
                                                                     ssl_key: nil,
                                                                     ssl_ca: nil)
             }
+
             it { is_expected.to contain_openldap__server__database('dc=my-domain,dc=com').with(ensure: :absent) }
             it { is_expected.to have_openldap__server__database_resource_count(1) }
           when 'RedHat'
@@ -53,6 +61,7 @@ describe 'openldap::server' do
                                                                       ssl_key: nil,
                                                                       ssl_ca: nil)
               }
+
               it { is_expected.to have_openldap__server__database_resource_count(1) }
               it { is_expected.to contain_openldap__server__database('dc=my-domain,dc=com').with(ensure: :absent) }
             else
@@ -65,6 +74,7 @@ describe 'openldap::server' do
                                                                       ssl_key: nil,
                                                                       ssl_ca: nil)
               }
+
               it { is_expected.to have_openldap__server__database_resource_count(1) }
               it { is_expected.to contain_openldap__server__database('dc=my-domain,dc=com').with(ensure: :absent) }
             end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Puppet::Type.newtype(:openldap_global_conf) do
   ensurable
 

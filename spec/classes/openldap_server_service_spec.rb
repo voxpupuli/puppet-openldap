@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 # rubocop:disable RSpec/RepeatedExample
@@ -11,6 +13,7 @@ describe 'openldap::server::service' do
       context 'with no parameters' do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::server::service') }
+
         case facts[:osfamily]
         when 'Debian'
           it {

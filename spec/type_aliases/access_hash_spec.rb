@@ -7,7 +7,7 @@ describe 'Openldap::Access_hash' do
     [
       {
         '0 on dc=example,dc=com' => {
-          'what'   => 'attrs=userPassword,shadowLastChange',
+          'what' => 'attrs=userPassword,shadowLastChange',
           'access' => [
             'by dn="cn=admin,dc=example,dc=com" write',
             'by anonymous auth',
@@ -19,9 +19,9 @@ describe 'Openldap::Access_hash' do
       {
         '0 on dc=example,dc=com' => {
           'position' => 3,
-          'suffix'   => 'dc=example,dc=com',
-          'what'     => 'attrs=userPassword,shadowLastChange',
-          'access'   => [
+          'suffix' => 'dc=example,dc=com',
+          'what' => 'attrs=userPassword,shadowLastChange',
+          'access' => [
             'by dn="cn=admin,dc=example,dc=com" write',
             'by anonymous auth',
             'by self write',

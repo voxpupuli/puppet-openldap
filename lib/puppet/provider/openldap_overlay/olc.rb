@@ -1,15 +1,16 @@
+# frozen_string_literal: true
+
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. openldap]))
 
-# rubocop:disable Style/MethodName
+# rubocop:disable Naming/MethodName
 # rubocop:disable Lint/RescueException
 # rubocop:disable Lint/EmptyWhen
 Puppet::Type.
   type(:openldap_overlay).
   provide(:olc, parent: Puppet::Provider::Openldap) do
-
   # TODO: Use ruby bindings (can't find one that support IPC)
 
-  defaultfor osfamily: [:debian, :freebsd, :redhat, :suse]
+  defaultfor osfamily: %i[debian freebsd redhat suse]
 
   mk_resource_methods
 
@@ -51,7 +52,7 @@ Puppet::Type.
 
   def self.prefetch(resources)
     overlays = instances
-    resources.keys.each do |name|
+    resources.each_key do |name|
       if (provider = overlays.find { |overlay| overlay.name == name })
         resources[name].provider = provider
       end
@@ -99,21 +100,19 @@ Puppet::Type.
       t << "objectClass: olcSssVlvConfig\n"
     end
     t << "olcOverlay: #{resource[:overlay]}\n"
-    if resource[:options]
-      resource[:options].each do |k, v|
-        t << if v.is_a?(Array)
-               v.map { |x| "#{k}: #{x}" }.join("\n") + "\n"
-             else
-               "#{k}: #{v}\n"
-             end
-      end
+    resource[:options]&.each do |k, v|
+      t << if v.is_a?(Array)
+             v.map { |x| "#{k}: #{x}" }.join("\n") + "\n"
+           else
+             "#{k}: #{v}\n"
+           end
     end
     t.close
-    Puppet.debug(IO.read(t.path))
+    Puppet.debug(File.read(t.path))
     begin
       ldapmodify(t.path)
     rescue Exception => e
-      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+      raise Puppet::Error, "LDIF content:\n#{File.read t.path}\nError message: #{e.message}"
     end
   end
 
@@ -121,14 +120,14 @@ Puppet::Type.
     if suffix == 'cn=config'
       if resource[:overlay].to_s == 'rwm'
         slapcat('(olcDatabase=relay)').split("\n").map do |line|
-          return line.split(' ')[1] if line =~ %r{^dn: }
+          return line.split[1] if line =~ %r{^dn: }
         end
       else
         'olcDatabase={0}config,cn=config'
       end
     else
       slapcat("(olcSuffix=#{suffix})").split("\n").map do |line|
-        return line.split(' ')[1] if line =~ %r{^dn: }
+        return line.split[1] if line =~ %r{^dn: }
       end
     end
   end
@@ -136,12 +135,10 @@ Puppet::Type.
   def self.getSuffix(database)
     found = false
     slapcat("(olcDatabase=#{database})").split("\n").map do |line|
-      if line =~ %r{^dn: olcDatabase=#{database.gsub('{', '\{').gsub('}', '\}')},}
-        found = true
-      end
+      found = true if line =~ %r{^dn: olcDatabase=#{database.gsub('{', '\{').gsub('}', '\}')},}
       return 'cn=config' if database == '{0}config'
       return 'cn=config' if database =~ %r{\{\d+\}relay$}
-      return line.split(' ')[1] if line =~ %r{^olcSuffix: } && found
+      return line.split[1] if line =~ %r{^olcSuffix: } && found
     end
   end
 
@@ -160,11 +157,9 @@ Puppet::Type.
       t << "dn: olcOverlay={#{@property_hash[:index]}}#{resource[:overlay]},#{getDn(resource[:suffix])}\n"
       t << "changetype: modify\n"
       if @property_flush[:options]
-        if @property_hash[:options]
-          # Remove all previously options remove in the should
-          @property_hash[:options].reject { |key, _value| @property_flush[:options].member?(key) }.keys.each do |k|
-            t << "delete: #{k}\n-\n"
-          end
+        # Remove all previously options remove in the should
+        @property_hash[:options]&.reject { |key, _value| @property_flush[:options].member?(key) }&.each_key do |k|
+          t << "delete: #{k}\n-\n"
         end
         # Add current options
         @property_flush[:options].each do |k, v|
@@ -181,18 +176,18 @@ Puppet::Type.
         end
       end
       t.close
-      Puppet.debug(IO.read(t.path))
+      Puppet.debug(File.read(t.path))
       begin
         ldapmodify(t.path)
       rescue Exception => e
-        raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+        raise Puppet::Error, "LDIF content:\n#{File.read t.path}\nError message: #{e.message}"
       end
     end
     @property_has = resource.to_hash
   end
 
   def getPath(dn)
-    dn.split(',').reverse.join('/') + '.ldif'
+    "#{dn.split(',').reverse.join('/')}.ldif"
   end
 
   def destroy
@@ -203,12 +198,12 @@ Puppet::Type.
                       end
 
     `service slapd stop`
-    path = default_confdir + '/' + getPath("olcOverlay={#{@property_hash[:index]}}#{resource[:overlay]},#{getDn(resource[:suffix])}")
+    path = "#{default_confdir}/#{getPath("olcOverlay={#{@property_hash[:index]}}#{resource[:overlay]},#{getDn(resource[:suffix])}")}"
     File.delete(path)
 
     slapcat('(objectClass=olcOverlayConfig)', getDn(resource[:suffix])).
       split("\n").
-      select { |line| line =~ %r{^dn: } }.
+      grep(%r{^dn: }).
       select { |dn| dn.match(%r{^dn: olcOverlay=\{(\d+)\}(.+),#{Regexp.quote(getDn(resource[:suffix]))}$}).captures[0].to_i > @property_hash[:index] }.
       each do |dn|
       index, type = dn.match(%r{^dn: olcOverlay=\{(\d+)\}(.+),#{Regexp.quote(getDn(resource[:suffix]))}$}).captures

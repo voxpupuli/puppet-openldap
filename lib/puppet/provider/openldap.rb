@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'tempfile'
 
 class Puppet::Provider::Openldap < Puppet::Provider
@@ -35,7 +37,7 @@ class Puppet::Provider::Openldap < Puppet::Provider
     items.strip.
       gsub("\n ", '').
       split("\n").
-      select { |entry| entry =~ %r{^olc} }.
+      grep(%r{^olc}).
       map { |entry| entry.gsub(%r{^olc}, '') }
   end
 

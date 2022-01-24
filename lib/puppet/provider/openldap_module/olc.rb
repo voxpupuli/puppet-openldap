@@ -1,12 +1,13 @@
+# frozen_string_literal: true
+
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. openldap]))
 
 Puppet::Type.
   type(:openldap_module).
   provide(:olc, parent: Puppet::Provider::Openldap) do
-
   # TODO: Use ruby bindings (can't find one that support IPC)
 
-  defaultfor osfamily: [:debian, :freebsd, :redhat, :suse]
+  defaultfor osfamily: %i[debian freebsd redhat suse]
 
   mk_resource_methods
 
@@ -38,7 +39,7 @@ Puppet::Type.
         when %r{^olcModuleLoad: }
           i << new(
             ensure: :present,
-            name: line.match(%r{^olcModuleLoad: \{\d+\}([^\.]+).*$}).captures[0]
+            name: line.match(%r{^olcModuleLoad: \{\d+\}([^.]+).*$}).captures[0]
           )
         end
       end
@@ -48,7 +49,7 @@ Puppet::Type.
 
   def self.prefetch(resources)
     mods = instances
-    resources.keys.each do |name|
+    resources.each_key do |name|
       if (provider = mods.find { |mod| mod.name == name })
         resources[name].provider = provider
       end
@@ -65,11 +66,11 @@ Puppet::Type.
     t << "add: olcModuleLoad\n"
     t << "olcModuleLoad: #{resource[:name]}.la\n"
     t.close
-    Puppet.debug(IO.read(t.path))
+    Puppet.debug(File.read(t.path))
     begin
       ldapmodify(t.path)
     rescue StandardError => e
-      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+      raise Puppet::Error, "LDIF content:\n#{File.read t.path}\nError message: #{e.message}"
     end
     @property_hash[:ensure] = :present
   end

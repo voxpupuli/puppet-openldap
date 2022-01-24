@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'openldap::utils' do
@@ -9,6 +11,7 @@ describe 'openldap::utils' do
 
       context 'with no parameters' do
         it { is_expected.to compile.with_all_deps }
+
         case facts[:osfamily]
         when 'Debian'
           it {
@@ -27,6 +30,7 @@ describe 'openldap::utils' do
         end
 
         it { is_expected.to compile.with_all_deps }
+
         it {
           is_expected.to contain_package('foo').with(ensure: :present)
         }

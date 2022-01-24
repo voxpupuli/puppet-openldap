@@ -1,17 +1,18 @@
+# frozen_string_literal: true
+
 require 'time'
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. openldap]))
 
-# rubocop:disable Style/VariableName
-# rubocop:disable Style/MethodName
+# rubocop:disable Naming/VariableName
+# rubocop:disable Naming/MethodName
 # rubocop:disable Lint/AssignmentInCondition
 # rubocop:disable Style/IfInsideElse
 Puppet::Type.
   type(:openldap_schema).
   provide(:olc, parent: Puppet::Provider::Openldap) do
-
   # TODO: Use ruby bindings (can't find one that support IPC)
 
-  defaultfor osfamily: [:debian, :freebsd, :redhat, :suse]
+  defaultfor osfamily: %i[debian freebsd redhat suse]
 
   mk_resource_methods
 
@@ -95,7 +96,7 @@ Puppet::Type.
         current = objClass
         current.push("olcObjectClasses:#{Regexp.last_match(1)}")
       when %r{^\s+(.*)}
-        current.push("  #{Regexp.last_match(1)}") unless current.nil?
+        current&.push("  #{Regexp.last_match(1)}")
       else
         raise Puppet::Error, "Failed to parse schema line in schemaToLdifReplace: '#{line}'"
       end
@@ -151,7 +152,7 @@ Puppet::Type.
         current = objClass
         current.push("olcObjectClasses:#{Regexp.last_match(1)}")
       when %r{^\s+(.*)}
-        current.push("  #{Regexp.last_match(1)}") unless current.nil?
+        current&.push("  #{Regexp.last_match(1)}")
       else
         raise Puppet::Error, "Failed to parse LDIF line in ldifReplace: '#{line}'"
       end
@@ -176,7 +177,7 @@ Puppet::Type.
 
   def self.prefetch(resources)
     existing = instances
-    resources.keys.each do |name|
+    resources.each_key do |name|
       if provider = existing.find { |r| r.name == name }
         resources[name].provider = provider
       end
@@ -205,7 +206,7 @@ Puppet::Type.
       t.close
       ldapadd(t.path)
     rescue StandardError => e
-      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+      raise Puppet::Error, "LDIF content:\n#{File.read t.path}\nError message: #{e.message}"
     end
     @property_hash[:ensure] = :present
   end
