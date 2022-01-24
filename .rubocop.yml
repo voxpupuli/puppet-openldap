@@ -4,3 +4,20 @@
 
 inherit_gem:
   voxpupuli-test: rubocop.yml
+Naming/MethodParameterName:
+  AllowedNames:
+  - at
+  - by
+  - db
+  - id
+  - in
+  - io
+  - ip
+  - of
+  - 'on'
+  - os
+  - pp
+  - to
+  - dn
+  - is
+  - t

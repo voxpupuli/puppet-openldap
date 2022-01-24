@@ -3,11 +3,9 @@
 Puppet::Type.newtype(:openldap_global_conf) do
   ensurable
 
-  newparam(:name) do
-  end
+  newparam(:name)
 
-  newparam(:target) do
-  end
+  newparam(:target)
 
   newproperty(:value) do
     validate do |value|

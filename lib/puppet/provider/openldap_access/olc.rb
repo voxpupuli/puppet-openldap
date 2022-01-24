@@ -179,14 +179,14 @@ Puppet::Type.
       t << "changetype: modify\n"
       t << "replace: olcAccess\n"
       position = resource[:position] || @property_hash[:position]
-      current_olcAccess.each do |olcAccess|
-        if olcAccess[:position].to_i == position.to_i
+      current_olcAccess.each do |olc_access|
+        if olc_access[:position].to_i == position.to_i
           t << "olcAccess: {#{position}}to #{resource[:what]}\n"
           resource[:access].flatten.each do |a|
             t << "  #{a}\n"
           end
         else
-          t << "olcAccess: {#{olcAccess[:position]}}#{olcAccess[:content]}\n"
+          t << "olcAccess: {#{olc_access[:position]}}#{olc_access[:content]}\n"
         end
       end
       self.class.getCountOfOlcAccess(resource[:suffix])
@@ -201,3 +201,6 @@ Puppet::Type.
     @property_hash = resource.to_hash
   end
 end
+# rubocop:enable Naming/VariableName
+# rubocop:enable Naming/MethodName
+# rubocop:enable Lint/AssignmentInCondition

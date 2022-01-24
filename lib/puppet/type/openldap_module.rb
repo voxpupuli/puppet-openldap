@@ -9,6 +9,5 @@ Puppet::Type.newtype(:openldap_module) do
     desc 'The default namevar.'
   end
 
-  newparam(:target) do
-  end
+  newparam(:target)
 end

@@ -149,3 +149,4 @@ Puppet::Type.
     @property_hash[:value] = value
   end
 end
+# rubocop:enable Lint/RescueException

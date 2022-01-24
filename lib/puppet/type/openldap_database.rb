@@ -17,8 +17,7 @@ Puppet::Type.newtype(:openldap_database) do
     desc 'The relay configuration.'
   end
 
-  newparam(:target) do
-  end
+  newparam(:target)
 
   newproperty(:index) do
     desc 'The index of the database.'
@@ -236,3 +235,5 @@ Puppet::Type.newtype(:openldap_database) do
     end
   end
 end
+# rubocop:enable Style/RegexpLiteral
+# rubocop:enable Naming/PredicateName

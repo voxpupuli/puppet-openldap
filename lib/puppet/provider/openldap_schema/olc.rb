@@ -82,9 +82,7 @@ Puppet::Type.
 
     schema.split("\n").each do |line|
       case line
-      when %r{^\s*#}
-        next
-      when %r{^$}
+      when %r{^\s*#}, %r{^$}
         next
       when %r{^objectidentifier(.*)$}i
         current = objId
@@ -132,15 +130,7 @@ Puppet::Type.
 
     ldif.split("\n").each do |line|
       case line
-      when %r{^\s*#}
-        next
-      when %r{^$}
-        next
-      when %r{^dn:}i
-        next
-      when %r{^cn:}i
-        next
-      when %r{objectClass:}i
+      when %r{^\s*#}, %r{^$}, %r{^dn:}i, %r{^cn:}i, %r{objectClass:}i
         next
       when %r{^olcObjectIdentifier:\s+(.*)$}i
         current = objId
@@ -227,3 +217,7 @@ Puppet::Type.
     raise Puppet::Error, 'Removing schemas is not supported by this provider. Slapd needs to be stopped and the schema must be removed manually.'
   end
 end
+# rubocop:enable Naming/VariableName
+# rubocop:enable Naming/MethodName
+# rubocop:enable Lint/AssignmentInCondition
+# rubocop:enable Style/IfInsideElse

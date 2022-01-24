@@ -146,11 +146,12 @@ Puppet::Type.
   end
 
   def destroy
-    default_confdir = case Facter.value(:osfamily)
-                      when 'Debian' then '/etc/ldap/slapd.d'
-                      when 'RedHat' then '/etc/openldap/slapd.d'
-                      when 'FreeBSD' then '/usr/local/etc/openldap/slapd.d'
-                      end
+    default_confdir = {
+      'Debian' => '/etc/ldap/slapd.d',
+      'RedHat' => '/etc/openldap/slapd.d',
+      'FreeBSD' => '/usr/local/etc/openldap/slapd.d',
+    }[Facter.value(:osfamily)]
+
     backend = @property_hash[:backend]
 
     fetch_index
@@ -244,16 +245,16 @@ Puppet::Type.
            when 'dbpagesize'
              "olcDbPagesize: #{v}\n"
            when 'dbconfig'
-             v.map { |x| "olcDbConfig: #{x}" }.join("\n") + "\n"
+             v.map { |x| "olcDbConfig: #{x}\n" }.join
            else
              if v.is_a?(Array)
-               v.map { |x| "olcDb#{k}: #{x}" }.join("\n") + "\n"
+               v.map { |x| "olcDb#{k}: #{x}\n" }.join
              else
                "olcDb#{k}: #{v}\n"
              end
            end
     end
-    t << (resource[:syncrepl].map { |x| "olcSyncrepl: #{x}" }.join("\n") + "\n") if resource[:syncrepl]
+    t << (resource[:syncrepl].map { |x| "olcSyncrepl: #{x}\n" }.join) if resource[:syncrepl]
     t << "olcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:mirrormode]
     t << "olcSyncUseSubentry: #{resource[:syncusesubentry]}\n" if resource[:syncusesubentry]
     t << "#{resource[:limits].map { |x| "olcLimits: #{x}" }.join("\n")}\n" if resource[:limits] && !resource[:limits].empty?
@@ -391,10 +392,10 @@ Puppet::Type.
                when 'dbpagesize'
                  "replace: olcDbPagesize\nolcDbPagesize: #{v}\n-\n"
                when 'dbconfig'
-                 "replace: olcDbConfig\n" + v.map { |x| "olcDbConfig: #{x}" }.join("\n") + "\n-\n"
+                 "replace: olcDbConfig\n#{v.map { |x| "olcDbConfig: #{x}" }.join("\n")}\n-\n"
                else
                  if v.is_a?(Array)
-                   "replace: olcDb#{k}\n" + v.map { |x| "olcDb#{k}: #{x}" }.join("\n") + "\n-\n"
+                   "replace: olcDb#{k}\n#{v.map { |x| "olcDb#{k}: #{x}" }.join("\n")}\n-\n"
                  else
                    "replace: olcDb#{k}\nolcDb#{k}: #{v}\n-\n"
                  end

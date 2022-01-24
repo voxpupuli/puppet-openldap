@@ -38,3 +38,4 @@ describe 'openldap::server::service' do
     end
   end
 end
+# rubocop:enable RSpec/RepeatedExample

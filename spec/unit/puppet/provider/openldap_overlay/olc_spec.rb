@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 
+# rubocop:disable RSpec/MultipleMemoizedHelpers
 describe Puppet::Type.type(:openldap_overlay).provider(:olc) do
   let(:params) do
     {
@@ -35,19 +36,17 @@ describe Puppet::Type.type(:openldap_overlay).provider(:olc) do
     allow(provider).to receive(:ldapmodify)
   end
 
-  describe '' do
-    describe 'when creating' do
-      it 'creates an overlay' do
-        provider.create
-        expect(tmpfile).to have_received(:<<).with("dn: olcOverlay=memberof,dc=example,dc=com\n")
-        expect(tmpfile).to have_received(:<<).with("objectClass: olcMemberOf\n")
-        expect(tmpfile).to have_received(:<<).with("olcOverlay: memberof\n")
-        expect(provider).to have_received(:ldapmodify)
-      end
+  describe 'when creating' do
+    it 'creates an overlay' do
+      provider.create
+      expect(tmpfile).to have_received(:<<).with("dn: olcOverlay=memberof,dc=example,dc=com\n")
+      expect(tmpfile).to have_received(:<<).with("objectClass: olcMemberOf\n")
+      expect(tmpfile).to have_received(:<<).with("olcOverlay: memberof\n")
+      expect(provider).to have_received(:ldapmodify)
     end
   end
 
-  describe '' do
+  describe 'with smbk5pwd' do
     let(:params) do
       {
         title: 'smbk5pwd on dc=example,dc=com',
@@ -69,3 +68,4 @@ describe Puppet::Type.type(:openldap_overlay).provider(:olc) do
     end
   end
 end
+# rubocop:enable RSpec/MultipleMemoizedHelpers

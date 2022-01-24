@@ -82,11 +82,11 @@ Puppet::Type.
     t << "dn: #{getDn(resource[:suffix])}\n"
     t << "changetype: modify\n"
     t << "replace: olcDbIndex\n"
-    current_olcDbIndex.each do |olcDbIndex|
-      t << if olcDbIndex[:attribute].to_s == resource[:attribute].to_s
+    current_olcDbIndex.each do |olc_db_index|
+      t << if olc_db_index[:attribute].to_s == resource[:attribute].to_s
              "olcDbIndex: #{resource[:attribute]} #{resource[:indices]}\n"
            else
-             "olcDbIndex: #{olcDbIndex[:attribute]} #{olcDbIndex[:indices]}\n"
+             "olcDbIndex: #{olc_db_index[:attribute]} #{olc_db_index[:indices]}\n"
            end
     end
     t.close
@@ -115,3 +115,6 @@ Puppet::Type.
     i
   end
 end
+# rubocop:enable Naming/VariableName
+# rubocop:enable Naming/MethodName
+# rubocop:enable Lint/AssignmentInCondition

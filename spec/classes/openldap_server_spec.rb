@@ -84,3 +84,5 @@ describe 'openldap::server' do
     end
   end
 end
+# rubocop:enable Style/IdenticalConditionalBranches
+# rubocop:enable RSpec/RepeatedExample

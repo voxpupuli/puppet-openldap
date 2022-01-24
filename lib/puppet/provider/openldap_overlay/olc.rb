@@ -102,7 +102,7 @@ Puppet::Type.
     t << "olcOverlay: #{resource[:overlay]}\n"
     resource[:options]&.each do |k, v|
       t << if v.is_a?(Array)
-             v.map { |x| "#{k}: #{x}" }.join("\n") + "\n"
+             v.map { |x| "#{k}: #{x}\n" }.join
            else
              "#{k}: #{v}\n"
            end
@@ -191,11 +191,11 @@ Puppet::Type.
   end
 
   def destroy
-    default_confdir = case Facter.value(:osfamily)
-                      when 'Debian' then '/etc/ldap/slapd.d'
-                      when 'RedHat' then '/etc/openldap/slapd.d'
-                      when 'FreeBSD' then '/usr/local/etc/openldap/slapd.d'
-                      end
+    default_confdir = {
+      'Debian' => '/etc/ldap/slapd.d',
+      'RedHat' => '/etc/openldap/slapd.d',
+      'FreeBSD' => '/usr/local/etc/openldap/slapd.d',
+    }[Facter.value(:osfamily)]
 
     `service slapd stop`
     path = "#{default_confdir}/#{getPath("olcOverlay={#{@property_hash[:index]}}#{resource[:overlay]},#{getDn(resource[:suffix])}")}"
@@ -221,3 +221,6 @@ Puppet::Type.
     @property_hash.clear
   end
 end
+# rubocop:enable Naming/MethodName
+# rubocop:enable Lint/RescueException
+# rubocop:enable Lint/EmptyWhen

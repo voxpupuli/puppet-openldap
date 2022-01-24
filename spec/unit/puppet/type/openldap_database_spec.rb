@@ -119,3 +119,4 @@ describe Puppet::Type.type(:openldap_database) do
     end
   end
 end
+# rubocop:enable RSpec/InstanceVariable
