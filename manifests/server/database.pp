@@ -15,7 +15,7 @@ define openldap::server::database (
   Optional[String[1]]                           $updateref       = undef,
   Array[String[1]]                              $limits          = [],
   # BDB/HDB options
-  Optional[String[1]]                           $dboptions       = undef,
+  Array[String[1]]                              $dboptions       = [],
   Optional[String[1]]                           $synctype        = undef,
   # Synchronization options
   Optional[Boolean]                             $mirrormode      = undef,
