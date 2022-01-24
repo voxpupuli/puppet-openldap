@@ -12,7 +12,7 @@ describe 'openldap::server::access' do
       context 'with valid parameters' do
         let(:params) do
           {
-            what: 'to *',
+            what: '*',
             access: [
               'by * read',
             ],
@@ -34,7 +34,7 @@ describe 'openldap::server::access' do
       context 'with access as an array' do
         let(:params) do
           {
-            what: 'to attrs=userPassword,shadowLastChange',
+            what: 'attrs=userPassword,shadowLastChange',
             access: [
               'by dn="cn=admin,dc=example,dc=com" write',
               'by anonymous read',
@@ -45,7 +45,7 @@ describe 'openldap::server::access' do
         it { is_expected.to compile.with_all_deps }
         it {
           is_expected.to contain_openldap_access('0 on dc=example,dc=com').
-            with_what('to attrs=userPassword,shadowLastChange').
+            with_what('attrs=userPassword,shadowLastChange').
             with_access(['by dn="cn=admin,dc=example,dc=com" write', 'by anonymous read'])
         }
       end
