@@ -4,6 +4,39 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v5.0.0](https://github.com/voxpupuli/puppet-openldap/tree/v5.0.0) (2022-01-25)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v4.0.0...v5.0.0)
+
+**Breaking changes:**
+
+- Drop support for FreeBSD 11 \(EOL\) [\#331](https://github.com/voxpupuli/puppet-openldap/pull/331) ([smortex](https://github.com/smortex))
+- Be more strict with access resource titles / ACL syntax [\#324](https://github.com/voxpupuli/puppet-openldap/pull/324) ([smortex](https://github.com/smortex))
+
+**Fixed bugs:**
+
+- Fix `$openldap::server::database::dboptions` data type [\#348](https://github.com/voxpupuli/puppet-openldap/pull/348) ([smortex](https://github.com/smortex))
+- Fix `$openldap::server::database::security` data type [\#347](https://github.com/voxpupuli/puppet-openldap/pull/347) ([smortex](https://github.com/smortex))
+- Fix `$openldap::server::database::limits` data type [\#346](https://github.com/voxpupuli/puppet-openldap/pull/346) ([Donatien26](https://github.com/Donatien26))
+- Fix FreeBSD default database directory [\#342](https://github.com/voxpupuli/puppet-openldap/pull/342) ([smortex](https://github.com/smortex))
+- Fix FreeBSD slapd.d bootstrapping [\#341](https://github.com/voxpupuli/puppet-openldap/pull/341) ([smortex](https://github.com/smortex))
+- Fix FreeBSD default value for ldapi\_ifs [\#340](https://github.com/voxpupuli/puppet-openldap/pull/340) ([smortex](https://github.com/smortex))
+- Fix provider for `cn=config` bootstrap on FreeBSD [\#339](https://github.com/voxpupuli/puppet-openldap/pull/339) ([smortex](https://github.com/smortex))
+- Fix `$openldap::server::database::mirrormode` data type [\#335](https://github.com/voxpupuli/puppet-openldap/pull/335) ([smortex](https://github.com/smortex))
+
+**Closed issues:**
+
+- Wrong data type for `$openldap::server::database::limits` [\#345](https://github.com/voxpupuli/puppet-openldap/issues/345)
+- Unable to configure openldap on FreeBSD 13.0-RELEASE [\#338](https://github.com/voxpupuli/puppet-openldap/issues/338)
+- `$openldap::server::database::mirrormode` does not enable olcMirrorMode [\#333](https://github.com/voxpupuli/puppet-openldap/issues/333)
+- `undefined method 'flatten' for nil:NilClass` in openldap\_access provider [\#294](https://github.com/voxpupuli/puppet-openldap/issues/294)
+- Documentation for frontend acl is incorrect [\#282](https://github.com/voxpupuli/puppet-openldap/issues/282)
+
+**Merged pull requests:**
+
+- Fix suffix of frontend database in README [\#336](https://github.com/voxpupuli/puppet-openldap/pull/336) ([smortex](https://github.com/smortex))
+- Simplify some code duplication [\#332](https://github.com/voxpupuli/puppet-openldap/pull/332) ([smortex](https://github.com/smortex))
+
 ## [v4.0.0](https://github.com/voxpupuli/puppet-openldap/tree/v4.0.0) (2021-09-27)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v3.1.0...v4.0.0)
