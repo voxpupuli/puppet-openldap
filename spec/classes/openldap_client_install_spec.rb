@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'openldap::client::install' do
@@ -14,6 +16,7 @@ describe 'openldap::client::install' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::install') }
+
         case facts[:osfamily]
         when 'Debian'
           it {
@@ -33,6 +36,7 @@ describe 'openldap::client::install' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::install') }
+
         it {
           is_expected.to contain_package('foo').with(ensure: :present)
         }

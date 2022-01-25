@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Puppet::Type.newtype(:openldap_schema) do
   @doc = 'Manages OpenLDAP schemas.'
 

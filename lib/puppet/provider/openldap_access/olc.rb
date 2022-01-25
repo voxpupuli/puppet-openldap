@@ -1,16 +1,17 @@
+# frozen_string_literal: true
+
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. openldap]))
 require 'tempfile'
 
-# rubocop:disable Style/VariableName
-# rubocop:disable Style/MethodName
+# rubocop:disable Naming/VariableName
+# rubocop:disable Naming/MethodName
 # rubocop:disable Lint/AssignmentInCondition
 Puppet::Type.
   type(:openldap_access).
   provide(:olc, parent: Puppet::Provider::Openldap) do
-
   # TODO: Use ruby bindings (can't find one that support IPC)
 
-  defaultfor osfamily: [:debian, :freebsd, :redhat, :suse]
+  defaultfor osfamily: %i[debian freebsd redhat suse]
 
   mk_resource_methods
 
@@ -24,13 +25,13 @@ Puppet::Type.
       paragraph.gsub("\n ", '').split("\n").map do |line|
         case line
         when %r{^olcDatabase: }
-          suffix = "cn=#{line.split(' ')[1].gsub(%r{\{-?\d+\}}, '')}"
+          suffix = "cn=#{line.split[1].gsub(%r{\{-?\d+\}}, '')}"
         when %r{^olcSuffix: }
-          suffix = line.split(' ')[1]
+          suffix = line.split[1]
         when %r{^olcAccess: }
           begin
             position, what, bys = line.match(%r{^olcAccess:\s+\{(\d+)\}to\s+(\S+(?:\s+filter=\S+)?(?:\s+attrs=\S+)?(?:\s+val=\S+)?)(\s+by\s+.*)+$}).captures
-          rescue
+          rescue StandardError
             raise Puppet::Error, "Failed to parse olcAccess for suffix '#{suffix}': #{line}"
           end
           access = []
@@ -54,7 +55,7 @@ Puppet::Type.
 
   def self.prefetch(resources)
     accesses = instances
-    resources.keys.each do |name|
+    resources.each_key do |name|
       next unless provider = accesses.find do |access|
         if resources[name][:position]
           access.suffix == resources[name][:suffix] &&
@@ -71,17 +72,18 @@ Puppet::Type.
   end
 
   def self.getDn(suffix)
-    if suffix == 'cn=frontend'
+    case suffix
+    when 'cn=frontend'
       'olcDatabase={-1}frontend,cn=config'
-    elsif suffix == 'cn=config'
+    when 'cn=config'
       'olcDatabase={0}config,cn=config'
-    elsif suffix == 'cn=monitor'
+    when 'cn=monitor'
       slapcat('(olcDatabase=monitor)').split("\n").map do |line|
-        return line.split(' ')[1] if line =~ %r{^dn: }
+        return line.split[1] if line =~ %r{^dn: }
       end
     else
       slapcat("(olcSuffix=#{suffix})").split("\n").map do |line|
-        return line.split(' ')[1] if line =~ %r{^dn: }
+        return line.split[1] if line =~ %r{^dn: }
       end
     end
   end
@@ -107,11 +109,11 @@ Puppet::Type.
       t << "  #{a}\n"
     end
     t.close
-    Puppet.debug(IO.read(t.path))
+    Puppet.debug(File.read(t.path))
     begin
       ldapmodify(t.path)
     rescue StandardError => e
-      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+      raise Puppet::Error, "LDIF content:\n#{File.read t.path}\nError message: #{e.message}"
     end
   end
 
@@ -122,11 +124,11 @@ Puppet::Type.
     t << "delete: olcAccess\n"
     t << "olcAccess: {#{@property_hash[:position]}}\n"
     t.close
-    Puppet.debug(IO.read(t.path))
+    Puppet.debug(File.read(t.path))
     begin
       ldapmodify(t.path)
     rescue StandardError => e
-      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+      raise Puppet::Error, "LDIF content:\n#{File.read t.path}\nError message: #{e.message}"
     end
   end
 
@@ -177,25 +179,28 @@ Puppet::Type.
       t << "changetype: modify\n"
       t << "replace: olcAccess\n"
       position = resource[:position] || @property_hash[:position]
-      current_olcAccess.each do |olcAccess|
-        if olcAccess[:position].to_i == position.to_i
+      current_olcAccess.each do |olc_access|
+        if olc_access[:position].to_i == position.to_i
           t << "olcAccess: {#{position}}to #{resource[:what]}\n"
           resource[:access].flatten.each do |a|
             t << "  #{a}\n"
           end
         else
-          t << "olcAccess: {#{olcAccess[:position]}}#{olcAccess[:content]}\n"
+          t << "olcAccess: {#{olc_access[:position]}}#{olc_access[:content]}\n"
         end
       end
       self.class.getCountOfOlcAccess(resource[:suffix])
       t.close
-      Puppet.debug(IO.read(t.path))
+      Puppet.debug(File.read(t.path))
       begin
         ldapmodify(t.path)
       rescue StandardError => e
-        raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+        raise Puppet::Error, "LDIF content:\n#{File.read t.path}\nError message: #{e.message}"
       end
     end
     @property_hash = resource.to_hash
   end
 end
+# rubocop:enable Naming/VariableName
+# rubocop:enable Naming/MethodName
+# rubocop:enable Lint/AssignmentInCondition

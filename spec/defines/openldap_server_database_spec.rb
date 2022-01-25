@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'openldap::server::database' do
@@ -15,10 +17,12 @@ describe 'openldap::server::database' do
         context 'with olc provider' do
           context 'with no parameters' do
             it { is_expected.to compile.with_all_deps }
+
             it {
               is_expected.to contain_openldap__server__database('foo').with(directory: '/foo/bar')
             }
           end
+
           context 'with all parameters set' do
             let(:params) do
               {

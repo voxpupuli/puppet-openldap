@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def idempotent_apply(pp)
   apply_manifest(pp, catch_failures: true)
   apply_manifest(pp, catch_changes: true)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'base64'
 #
 # @summary
@@ -25,18 +27,18 @@ Puppet::Functions.create_function(:openldap_password) do
     case scheme[%r{([A-Z,0-9]+)}, 1]
     when 'CRYPT'
       salt = call_function(:fqdn_rand_string, 2)
-      password = '{CRYPT}' + secret.crypt(salt)
+      password = "{CRYPT}#{secret.crypt(salt)}"
     when 'MD5'
-      password = '{MD5}' + Digest::MD5.hexdigest(secret)
+      password = "{MD5}#{Digest::MD5.hexdigest(secret)}"
     when 'SMD5'
       salt = call_function(:fqdn_rand_string, 8)
       md5_hash_with_salt = "#{Digest::MD5.digest(secret + salt)}#{salt}"
-      password = '{SMD5}' + [md5_hash_with_salt].pack('m').delete("\n")
+      password = "{SMD5}#{[md5_hash_with_salt].pack('m').delete("\n")}"
     when 'SSHA'
       salt = call_function(:fqdn_rand_string, 8)
-      password = '{SSHA}' + Base64.encode64("#{Digest::SHA1.digest(secret + salt)}#{salt}").chomp
+      password = "{SSHA}#{Base64.encode64("#{Digest::SHA1.digest(secret + salt)}#{salt}").chomp}"
     when 'SHA'
-      password = '{SHA}' + Digest::SHA1.hexdigest(secret)
+      password = "{SHA}#{Digest::SHA1.hexdigest(secret)}"
     else
       raise(Puppet::ParseError, "openldap_password(): Unrecognized scheme #{scheme}")
     end

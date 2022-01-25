@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'openldap::server::access_wrapper' do
@@ -38,6 +40,7 @@ describe 'openldap::server::access_wrapper' do
 
       it { is_expected.to compile.with_all_deps }
       it { is_expected.to have_openldap__server__access_resource_count(3) }
+
       it do
         is_expected.to contain_openldap_access('0 on dc=example,dc=com').with(
           position: 0,
@@ -51,6 +54,7 @@ describe 'openldap::server::access_wrapper' do
           suffix: 'dc=example,dc=com'
         )
       end
+
       it do
         is_expected.to contain_openldap_access('1 on dc=example,dc=com').with(
           position: 1,
@@ -63,6 +67,7 @@ describe 'openldap::server::access_wrapper' do
           suffix: 'dc=example,dc=com'
         )
       end
+
       it do
         is_expected.to contain_openldap_access('2 on dc=example,dc=com').with(
           position: 2,

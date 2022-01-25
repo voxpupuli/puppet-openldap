@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
 describe 'openldap::server' do
@@ -62,6 +64,7 @@ describe 'openldap::server' do
       idempotent_apply(pp)
     end
 
+    # rubocop:disable RSpec/RepeatedExampleGroupBody
     describe port(389) do
       it { is_expected.to be_listening }
     end
@@ -69,6 +72,7 @@ describe 'openldap::server' do
     describe port(636) do
       it { is_expected.to be_listening }
     end
+    # rubocop:enable RSpec/RepeatedExampleGroupBody
 
     it 'can connect with ldapsearch using ldaps:///' do
       skip

@@ -50,6 +50,7 @@ define openldap::server::access_wrapper (
   String[1] $suffix = $name,
 ) {
   # Parse ACL
+  # lint:ignore:strict_indent
   $acl_yaml = inline_template(@("RUBY"))
     <%=
       position = -1
@@ -68,6 +69,7 @@ define openldap::server::access_wrapper (
       end.flatten.reduce({}, :update).to_yaml
     %>
     | RUBY
+  # lint:endignore
 
   $hash = parseyaml($acl_yaml)
   $hash_keys = keys($hash)

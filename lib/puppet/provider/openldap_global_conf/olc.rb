@@ -1,13 +1,14 @@
+# frozen_string_literal: true
+
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. openldap]))
 
 # rubocop:disable Lint/RescueException
 Puppet::Type.
   type(:openldap_global_conf).
   provide(:olc, parent: Puppet::Provider::Openldap) do
-
   # TODO: Use ruby bindings (can't find one that support IPC)
 
-  defaultfor osfamily: [:debian, :freebsd, :redhat, :suse]
+  defaultfor osfamily: %i[debian freebsd redhat suse]
 
   mk_resource_methods
 
@@ -17,7 +18,7 @@ Puppet::Type.
 
     # iterate olc options and removes any keys when it found any duplications
     # such as olcServerID
-    items.gsub("\n ", '').split("\n").select { |e| e =~ %r{^olc} }.map do |line|
+    items.gsub("\n ", '').split("\n").grep(%r{^olc}).map do |line|
       name, value = line.split(': ')
       name = name[3, name.length]
       if options[name] && !options[name].is_a?(Array)
@@ -45,7 +46,7 @@ Puppet::Type.
 
   def self.prefetch(resources)
     items = instances
-    resources.keys.each do |name|
+    resources.each_key do |name|
       if (provider = items.find { |item| item.name.casecmp(name.downcase).zero? })
         resources[name].provider = provider
       end
@@ -78,11 +79,11 @@ Puppet::Type.
       t << "olc#{resource[:name]}: #{resource[:value]}\n"
     end
     t.close
-    Puppet.debug(IO.read(t.path))
+    Puppet.debug(File.read(t.path))
     begin
       ldapmodify(t.path)
     rescue Exception => e
-      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+      raise Puppet::Error, "LDIF content:\n#{File.read t.path}\nError message: #{e.message}"
     end
     @property_hash[:ensure] = :present
   end
@@ -91,7 +92,7 @@ Puppet::Type.
     t = Tempfile.new('openldap_global_conf')
     t << "dn: cn=config\n"
     if resource[:value].is_a? Hash
-      resource[:value].keys.each do |k|
+      resource[:value].each_key do |k|
         t << "delete: olc#{k}\n"
         t << "-\n"
       end
@@ -99,11 +100,11 @@ Puppet::Type.
       t << "delete: olc#{name}\n"
     end
     t.close
-    Puppet.debug(IO.read(t.path))
+    Puppet.debug(File.read(t.path))
     begin
       ldapmodify(t.path)
     rescue Exception => e
-      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+      raise Puppet::Error, "LDIF content:\n#{File.read t.path}\nError message: #{e.message}"
     end
     @property_hash.clear
   end
@@ -115,7 +116,7 @@ Puppet::Type.
         found = instances.find { |item| item.name == k }
         [k, found.get(:value)] unless found.nil?
       end
-      Hash[values]
+      values.to_h
     else
       @property_hash[:value]
     end
@@ -139,12 +140,13 @@ Puppet::Type.
       t << "olc#{name}: #{value}\n"
     end
     t.close
-    Puppet.debug(IO.read(t.path))
+    Puppet.debug(File.read(t.path))
     begin
       ldapmodify(t.path)
     rescue Exception => e
-      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+      raise Puppet::Error, "LDIF content:\n#{File.read t.path}\nError message: #{e.message}"
     end
     @property_hash[:value] = value
   end
 end
+# rubocop:enable Lint/RescueException

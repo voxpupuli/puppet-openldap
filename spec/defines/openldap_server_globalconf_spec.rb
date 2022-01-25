@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'openldap::server::globalconf' do
@@ -17,6 +19,7 @@ describe 'openldap::server::globalconf' do
         let(:params) { { value: 'bar' } }
 
         it { is_expected.to compile.with_all_deps }
+
         it {
           is_expected.to contain_openldap_global_conf('foo').with(value: 'bar')
         }

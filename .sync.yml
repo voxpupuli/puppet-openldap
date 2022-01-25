@@ -1,5 +1,9 @@
 ---
 .github/workflows/ci.yml:
   pidfile_workaround: CentOS
+.rubocop.yml:
+  extra:
+    Naming/MethodParameterName:
+      AllowedNames: [at, by, db, id, in, io, ip, of, "on", os, pp, to, dn, is, t]
 spec/spec_helper_acceptance.rb:
   unmanaged: false

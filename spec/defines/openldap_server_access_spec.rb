@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'openldap::server::access' do
@@ -43,6 +45,7 @@ describe 'openldap::server::access' do
         end
 
         it { is_expected.to compile.with_all_deps }
+
         it {
           is_expected.to contain_openldap_access('0 on dc=example,dc=com').
             with_what('attrs=userPassword,shadowLastChange').

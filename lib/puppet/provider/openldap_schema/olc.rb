@@ -1,17 +1,18 @@
+# frozen_string_literal: true
+
 require 'time'
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. openldap]))
 
-# rubocop:disable Style/VariableName
-# rubocop:disable Style/MethodName
+# rubocop:disable Naming/VariableName
+# rubocop:disable Naming/MethodName
 # rubocop:disable Lint/AssignmentInCondition
 # rubocop:disable Style/IfInsideElse
 Puppet::Type.
   type(:openldap_schema).
   provide(:olc, parent: Puppet::Provider::Openldap) do
-
   # TODO: Use ruby bindings (can't find one that support IPC)
 
-  defaultfor osfamily: [:debian, :freebsd, :redhat, :suse]
+  defaultfor osfamily: %i[debian freebsd redhat suse]
 
   mk_resource_methods
 
@@ -81,9 +82,7 @@ Puppet::Type.
 
     schema.split("\n").each do |line|
       case line
-      when %r{^\s*#}
-        next
-      when %r{^$}
+      when %r{^\s*#}, %r{^$}
         next
       when %r{^objectidentifier(.*)$}i
         current = objId
@@ -95,7 +94,7 @@ Puppet::Type.
         current = objClass
         current.push("olcObjectClasses:#{Regexp.last_match(1)}")
       when %r{^\s+(.*)}
-        current.push("  #{Regexp.last_match(1)}") unless current.nil?
+        current&.push("  #{Regexp.last_match(1)}")
       else
         raise Puppet::Error, "Failed to parse schema line in schemaToLdifReplace: '#{line}'"
       end
@@ -131,15 +130,7 @@ Puppet::Type.
 
     ldif.split("\n").each do |line|
       case line
-      when %r{^\s*#}
-        next
-      when %r{^$}
-        next
-      when %r{^dn:}i
-        next
-      when %r{^cn:}i
-        next
-      when %r{objectClass:}i
+      when %r{^\s*#}, %r{^$}, %r{^dn:}i, %r{^cn:}i, %r{objectClass:}i
         next
       when %r{^olcObjectIdentifier:\s+(.*)$}i
         current = objId
@@ -151,7 +142,7 @@ Puppet::Type.
         current = objClass
         current.push("olcObjectClasses:#{Regexp.last_match(1)}")
       when %r{^\s+(.*)}
-        current.push("  #{Regexp.last_match(1)}") unless current.nil?
+        current&.push("  #{Regexp.last_match(1)}")
       else
         raise Puppet::Error, "Failed to parse LDIF line in ldifReplace: '#{line}'"
       end
@@ -176,7 +167,7 @@ Puppet::Type.
 
   def self.prefetch(resources)
     existing = instances
-    resources.keys.each do |name|
+    resources.each_key do |name|
       if provider = existing.find { |r| r.name == name }
         resources[name].provider = provider
       end
@@ -205,7 +196,7 @@ Puppet::Type.
       t.close
       ldapadd(t.path)
     rescue StandardError => e
-      raise Puppet::Error, "LDIF content:\n#{IO.read t.path}\nError message: #{e.message}"
+      raise Puppet::Error, "LDIF content:\n#{File.read t.path}\nError message: #{e.message}"
     end
     @property_hash[:ensure] = :present
   end
@@ -226,3 +217,7 @@ Puppet::Type.
     raise Puppet::Error, 'Removing schemas is not supported by this provider. Slapd needs to be stopped and the schema must be removed manually.'
   end
 end
+# rubocop:enable Naming/VariableName
+# rubocop:enable Naming/MethodName
+# rubocop:enable Lint/AssignmentInCondition
+# rubocop:enable Style/IfInsideElse
