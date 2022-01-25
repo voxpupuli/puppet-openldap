@@ -10,35 +10,64 @@
 #
 # [*acl*]
 #   Default:
-#   Mandatory. Hash in the form { <what> => <access>, ... }
+#   Mandatory. Array of Hash in the form { <what> => <access>, ... }
 #
 #   example:
-#     $acl = {
-#       'to *' => [
-#         'by self write',
-#         'by anonymous read',
-#       ],
-#     }
+#     $acl = [
+#       {
+#         'to *'                       => [
+#           'by dn.base="cn=replicator,dc=suretecsystems,dc=com" write',
+#           'by * break'
+#         ],
+#       },
+#       {
+#         'to dn.base=""'              => [
+#           'by * read',
+#         ],
+#       },
+#       {
+#         'to dn.base="cn=Subschema"'  => [
+#           'by * read',
+#         ],
+#       },
+#       {
+#         'to dn.subtree="cn=Monitor"' => [
+#           'by dn.exact="uid=admin,dc=suretecsystems,dc=com" write',
+#           'by users read',
+#           'by * none',
+#         ],
+#       },
+#       {
+#         'to *'                       => [
+#           'by self write',
+#           'by * none',
+#         ]
+#       },
+#     ]
 #
 define openldap::server::access_wrapper (
-  Hash[String[1],Array[String[1]]] $acl,
+  Array[Hash[Pattern[/\Ato\s/], Array[Openldap::Access_rule], 1, 1]] $acl,
   String[1] $suffix = $name,
 ) {
   # Parse ACL
-$acl_yaml = inline_template('<%=
-    position = -1
-    @acl.map { |to,access|
-      position = position + 1
-      {
-        "#{position} on #{@suffix}" => {
-          "position" => position,
-          "what"     => to[/.*\bto (.*)/,1],
-          "access"   => access,
-          "suffix"   => "#{@suffix}",
-        }
-      }
-  }.flatten.reduce({}, :update).to_yaml
-  %>')
+  $acl_yaml = inline_template(@("RUBY"))
+    <%=
+      position = -1
+      @acl.map do |acl|
+        acl.map do |to, access|
+          position = position + 1
+          {
+            "#{position} on #{@suffix}" => {
+              "position" => position,
+              "what"     => to[/\Ato (.*)/, 1],
+              "access"   => access,
+              "suffix"   => "#{@suffix}",
+            }
+          }
+        end
+      end.flatten.reduce({}, :update).to_yaml
+    %>
+    | RUBY
 
   $hash = parseyaml($acl_yaml)
   $hash_keys = keys($hash)
