@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v5.0.1](https://github.com/voxpupuli/puppet-openldap/tree/v5.0.1) (2022-02-01)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v5.0.0...v5.0.1)
+
+**Fixed bugs:**
+
+- Fix `$openldap::server::database::dboptions` data type [\#350](https://github.com/voxpupuli/puppet-openldap/pull/350) ([smortex](https://github.com/smortex))
+
 ## [v5.0.0](https://github.com/voxpupuli/puppet-openldap/tree/v5.0.0) (2022-01-25)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v4.0.0...v5.0.0)
