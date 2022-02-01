@@ -42,12 +42,14 @@ describe 'openldap::server::database' do
                   'dn.exact="cn=personnel,dc=example,dc=org" size=unlimited',
                   'dn.exact="cn=dirsync,dc=example,dc=org" size=100000'
                 ],
-                dboptions: [
-                  'set_cachesize 0 10485760 0',
-                  'set_lg_bsize 2097512',
-                  'set_lg_dir /var/tmp/bdb-log',
-                  'set_flags DB_LOG_AUTOREMOVE',
-                ],
+                dboptions: {
+                  config: [
+                    'set_cachesize 0 10485760 0',
+                    'set_lg_bsize 2097512',
+                    'set_lg_dir /var/tmp/bdb-log',
+                    'set_flags DB_LOG_AUTOREMOVE',
+                  ],
+                },
                 synctype: 'inclusive',
                 mirrormode: true,
                 syncusesubentry: 'wxw',
