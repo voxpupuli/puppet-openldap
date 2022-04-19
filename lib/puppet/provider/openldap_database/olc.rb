@@ -95,7 +95,7 @@ Puppet::Type.
         when %r{^olcSecurity: }
           line.split(': ')[1].split.each do |variable|
             values = variable.split('=')
-            security[values[0]] = values[1]
+            security[values[0]] = values[1].to_i
           end
         end
       end
