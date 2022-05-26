@@ -98,6 +98,8 @@ Puppet::Type.
       t << "objectClass: olcSmbK5PwdConfig\n"
     when 'sssvlv'
       t << "objectClass: olcSssVlvConfig\n"
+    when 'lastbind'
+      t << "objectClass: olcLastBindConfig\n"
     end
     t << "olcOverlay: #{resource[:overlay]}\n"
     resource[:options]&.each do |k, v|
