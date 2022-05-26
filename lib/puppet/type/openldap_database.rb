@@ -3,7 +3,6 @@
 require 'puppet/property/boolean'
 
 # rubocop:disable Style/RegexpLiteral
-# rubocop:disable Naming/PredicateName
 Puppet::Type.newtype(:openldap_database) do
   @doc = 'Manages OpenLDAP BDB and HDB databases.'
 
@@ -236,4 +235,3 @@ Puppet::Type.newtype(:openldap_database) do
   end
 end
 # rubocop:enable Style/RegexpLiteral
-# rubocop:enable Naming/PredicateName

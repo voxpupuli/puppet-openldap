@@ -101,6 +101,7 @@ Puppet::Type.
       end
       suffix = "cn=#{backend}" if backend.match(%r{monitor}i) && !suffix
       suffix = "cn=#{backend}" if backend.match(%r{config}i) && !suffix
+      suffix = "cn=#{backend}" if backend.match(%r{ldap}i) && !suffix
       new(
         ensure: :present,
         name: suffix,
