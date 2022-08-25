@@ -49,7 +49,7 @@ Puppet::Type.
         when %r{^olcRelay: }
           relay = line.split[1]
         when %r{^olcReadOnly: }i
-          readonly = line.split[1]
+          readonly = line.split[1] == 'TRUE' ? :true : :false
         when %r{^olcSizeLimit: }i
           sizelimit = line.split[1]
         when %r{^olcDbMaxSize: }i
