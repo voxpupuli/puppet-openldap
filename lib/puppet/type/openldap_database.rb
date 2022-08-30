@@ -159,6 +159,8 @@ Puppet::Type.newtype(:openldap_database) do
 
   newproperty(:readonly) do
     desc 'Puts the database into read-only mode.'
+    newvalues(:true, :false)
+    defaultto(:false)
   end
 
   newproperty(:sizelimit) do
