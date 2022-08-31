@@ -26,6 +26,8 @@ describe Puppet::Type.type(:openldap_database).provider(:olc) do
       olcDatabase: {1}mdb
       olcReadOnly: FALSE
     SLAPCAT
+    allow(provider).to receive(:slapcat)
+    allow(provider).to receive(:ldapmodify)
   end
 
   describe '::instances' do
