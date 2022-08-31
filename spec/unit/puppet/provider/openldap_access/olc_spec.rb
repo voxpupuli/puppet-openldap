@@ -5,8 +5,8 @@ require 'spec_helper'
 describe Puppet::Type.type(:openldap_access).provider(:olc) do
   describe '::instances' do
     context 'with Debian defaults' do
-      before do
-        expect(described_class).to receive(:slapcat).with('(olcAccess=*)').and_return(<<~SLAPCAT)
+      it do
+        allow(described_class).to receive(:slapcat).with('(olcAccess=*)').and_return(<<~SLAPCAT)
           # Debian defaults
           dn: olcDatabase={-1}frontend,cn=config
           olcAccess: {0}to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break
@@ -24,20 +24,20 @@ describe Puppet::Type.type(:openldap_access).provider(:olc) do
       end
 
       it 'parses olcAccess' do
-        expect(described_class.instances.size).to eq(7)
+        allow(described_class.instances.size).to eq(7)
       end
     end
 
     context 'with spaces' do
-      before do
-        expect(described_class).to receive(:slapcat).with('(olcAccess=*)').and_return(<<~SLAPCAT)
+      it do
+        allow(described_class).to receive(:slapcat).with('(olcAccess=*)').and_return(<<~SLAPCAT)
           dn: olcDatabase={-1}frontend,cn=config
           olcAccess: {0}to dn.base="cn=Sub Schema" by * read
         SLAPCAT
       end
 
       it 'parses olcAccess' do
-        expect(described_class.instances.size).to eq(1)
+        allow(described_class.instances.size).to eq(1)
       end
     end
   end
