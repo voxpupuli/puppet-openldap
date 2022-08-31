@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Puppet::Type.type(:openldap_database).provider(:olc) do
   let(:params) do
     {
-      suffix: 'dc=example,dc=com',
+      title: 'dc=example,dc=com',
       backend: 'mdb',
       provider: described_class.name,
     }
