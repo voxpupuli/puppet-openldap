@@ -28,6 +28,7 @@ describe Puppet::Type.type(:openldap_database).provider(:olc) do
     SLAPCAT
     allow(provider).to receive(:slapcat)
     allow(provider).to receive(:ldapmodify)
+    allow(provider).to receive(:ldapadd)
   end
 
   describe '::instances' do
