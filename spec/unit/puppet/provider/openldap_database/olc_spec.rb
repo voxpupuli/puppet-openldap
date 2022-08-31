@@ -21,11 +21,11 @@ describe Puppet::Type.type(:openldap_database).provider(:olc) do
   end
 
   before do
-    allow(described_class).to receive(:slapcat).with('(|(olcDatabase=monitor)(olcDatabase={0}config)(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)(objectClass=olcMonitorConfig)(objectClass=olcRelayConfig)(objectClass=olcLDAPConfig))))').and_return(<<~SLAPCAT)
-      dn: olcDatabase={1}mdb,cn=config
-      olcDatabase: {1}mdb
-      olcReadOnly: FALSE
-    SLAPCAT
+    # allow(described_class).to receive(:slapcat).with('(|(olcDatabase=monitor)(olcDatabase={0}config)(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)(objectClass=olcMonitorConfig)(objectClass=olcRelayConfig)(objectClass=olcLDAPConfig))))').and_return(<<~SLAPCAT)
+    #   dn: olcDatabase={1}mdb,cn=config
+    #   olcDatabase: {1}mdb
+    #   olcReadOnly: FALSE
+    # SLAPCAT
     allow(provider).to receive(:slapcat)
     allow(provider).to receive(:ldapmodify)
     allow(provider).to receive(:ldapadd)
@@ -41,7 +41,7 @@ describe Puppet::Type.type(:openldap_database).provider(:olc) do
     context 'with readonly set to true' do
       let(:params) do
         {
-          suffix: 'dc=example,dc=com',
+          suffix: 'dc=example,dc=net',
           backend: 'mdb',
           readonly: true,
           provider: described_class.name,
