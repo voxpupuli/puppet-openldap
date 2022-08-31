@@ -5,8 +5,9 @@ require 'spec_helper'
 describe Puppet::Type.type(:openldap_database).provider(:olc) do
   let(:params) do
     {
-      title: 'dc=example,dc=com',
+      suffix: 'dc=example,dc=com',
       backend: 'mdb',
+      readonly: false,
       provider: described_class.name,
     }
   end
@@ -37,7 +38,10 @@ describe Puppet::Type.type(:openldap_database).provider(:olc) do
     context 'with readonly set to true' do
       let(:params) do
         {
+          suffix: 'dc=example,dc=com',
+          backend: 'mdb',
           readonly: true
+          provider: described_class.name,
         }
       end
 
