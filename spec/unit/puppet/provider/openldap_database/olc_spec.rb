@@ -40,7 +40,7 @@ describe Puppet::Type.type(:openldap_database).provider(:olc) do
         {
           suffix: 'dc=example,dc=com',
           backend: 'mdb',
-          readonly: true
+          readonly: true,
           provider: described_class.name,
         }
       end
