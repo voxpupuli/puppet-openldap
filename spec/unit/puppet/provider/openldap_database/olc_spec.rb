@@ -8,17 +8,17 @@ describe Puppet::Type.type(:openldap_database).provider(:olc) do
       suffix: 'dc=example,dc=com',
       backend: 'mdb',
       readonly: false,
-      provider: described_class.name,
+      # provider: described_class.name,
     }
   end
 
-  let(:resource) do
-    Puppet::Type.type(:openldap_database).new(params)
-  end
+#   let(:resource) do
+#     Puppet::Type.type(:openldap_database).new(params)
+#   end
 
-  let(:provider) do
-    resource.provider
-  end
+#   let(:provider) do
+#     resource.provider
+#   end
 
   before do
     # allow(described_class).to receive(:slapcat).with('(|(olcDatabase=monitor)(olcDatabase={0}config)(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)(objectClass=olcMonitorConfig)(objectClass=olcRelayConfig)(objectClass=olcLDAPConfig))))').and_return(<<~SLAPCAT)
@@ -26,9 +26,12 @@ describe Puppet::Type.type(:openldap_database).provider(:olc) do
     #   olcDatabase: {1}mdb
     #   olcReadOnly: FALSE
     # SLAPCAT
-    allow(provider).to receive(:slapcat)
-    allow(provider).to receive(:ldapmodify)
-    allow(provider).to receive(:ldapadd)
+    # allow(provider).to receive(:slapcat)
+    # allow(provider).to receive(:ldapmodify)
+    # allow(provider).to receive(:ldapadd)
+    allow(described_class).to receive(:slapcat)
+    allow(described_class).to receive(:ldapmodify)
+    allow(described_class).to receive(:ldapadd)
   end
 
   describe '::instances' do
@@ -48,7 +51,6 @@ describe Puppet::Type.type(:openldap_database).provider(:olc) do
       end
 
       it 'parses olcReadonly' do
-        provider.create
         expect(described_class.instances.first.readonly).to eq(:true)
       end
     end
