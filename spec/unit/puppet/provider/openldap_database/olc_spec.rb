@@ -12,12 +12,12 @@ describe Puppet::Type.type(:openldap_database).provider(:olc) do
     }
   end
 
-  #   let(:resource) do
-  #     Puppet::Type.type(:openldap_database).new(params)
-  #   end
-  #   let(:provider) do
-  #     resource.provider
-  #   end
+  let(:resource) do
+    Puppet::Type.type(:openldap_database).new(params)
+  end
+  let(:provider) do
+    resource.provider
+  end
 
   before do
     # allow(described_class).to receive(:slapcat).with('(|(olcDatabase=monitor)(olcDatabase={0}config)(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)(objectClass=olcMonitorConfig)(objectClass=olcRelayConfig)(objectClass=olcLDAPConfig))))').and_return(<<~SLAPCAT)
@@ -25,28 +25,28 @@ describe Puppet::Type.type(:openldap_database).provider(:olc) do
     #   olcDatabase: {1}mdb
     #   olcReadOnly: FALSE
     # SLAPCAT
-    # allow(provider).to receive(:slapcat)
-    # allow(provider).to receive(:ldapmodify)
-    # allow(provider).to receive(:ldapadd)
-    allow(described_class).to receive(:slapcat)
-    allow(described_class).to receive(:ldapmodify)
-    allow(described_class).to receive(:ldapadd)
+    allow(provider).to receive(:slapcat)
+    allow(provider).to receive(:ldapmodify)
+    allow(provider).to receive(:ldapadd)
+    # allow(described_class).to receive(:slapcat)
+    # allow(described_class).to receive(:ldapmodify)
+    # allow(described_class).to receive(:ldapadd)
   end
 
-  describe '::instances' do
-    context 'with all parameters' do
-      it 'parses olcReadOnly' do
-        expect(described_class.instances.first.readonly).to eq(:false)
+  describe 'when creating' do
+    context 'with readonly set to false' do
+      it 'parses olcReadOnly as false' do
+        expect {
+          described_class.new(:params)
+        }[:readonly].to eq :false
+        # is_expected.to 
+        # expect(described_class.instances.first.readonly).to eq(:false)
       end
     end
 
     context 'with readonly set to true' do
       let(:params) do
-        {
-          suffix: 'dc=example,dc=net',
-          backend: 'mdb',
-          readonly: true,
-        }
+        super().merge({ readonly: true })
       end
 
       it 'parses olcReadonly' do
