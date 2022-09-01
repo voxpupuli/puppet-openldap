@@ -36,6 +36,7 @@ describe Puppet::Type.type(:openldap_database).provider(:olc) do
   describe 'when creating' do
     context 'with readonly set to false' do
       it 'parses olcReadOnly as false' do
+        provider.create
         expect(described_class.instances.first.readonly).to eq :false
         # expect(described_class.instances.first.readonly).to eq(:false)
       end
