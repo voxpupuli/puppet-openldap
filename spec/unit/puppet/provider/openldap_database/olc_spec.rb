@@ -12,13 +12,12 @@ describe Puppet::Type.type(:openldap_database).provider(:olc) do
     }
   end
 
-#   let(:resource) do
-#     Puppet::Type.type(:openldap_database).new(params)
-#   end
-
-#   let(:provider) do
-#     resource.provider
-#   end
+  #   let(:resource) do
+  #     Puppet::Type.type(:openldap_database).new(params)
+  #   end
+  #   let(:provider) do
+  #     resource.provider
+  #   end
 
   before do
     # allow(described_class).to receive(:slapcat).with('(|(olcDatabase=monitor)(olcDatabase={0}config)(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)(objectClass=olcMonitorConfig)(objectClass=olcRelayConfig)(objectClass=olcLDAPConfig))))').and_return(<<~SLAPCAT)
