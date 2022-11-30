@@ -261,15 +261,20 @@ Puppet::Type.
     t << "#{resource[:limits].map { |x| "olcLimits: #{x}" }.join("\n")}\n" if resource[:limits] && !resource[:limits].empty?
     t << "#{resource[:security].map { |k, v| "olcSecurity: #{k}=#{v}" }.join("\n")}\n" if resource[:security] && !resource[:security].empty?
     t << "olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break\n"
+    if resource[:rootdn]
+      admin=resource[:rootdn]
+    else
+      admin="cn=admin,#{resource[:suffix]}"
+    end
     t << "olcAccess: to attrs=userPassword\n"
     t << "  by self write\n"
     t << "  by anonymous auth\n"
-    t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
+    t << "  by dn=\"#{admin}\" write\n"
     t << "  by * none\n"
     t << "olcAccess: to dn.base=\"\" by * read\n"
     t << "olcAccess: to *\n"
     t << "  by self write\n"
-    t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
+    t << "  by dn=\"#{admin}\" write\n"
     t << "  by * read\n"
     t.close
     Puppet.debug(File.read(t.path))
