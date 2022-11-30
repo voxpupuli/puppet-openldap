@@ -262,9 +262,9 @@ Puppet::Type.
     t << "#{resource[:security].map { |k, v| "olcSecurity: #{k}=#{v}" }.join("\n")}\n" if resource[:security] && !resource[:security].empty?
     t << "olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break\n"
     if resource[:rootdn]
-      admin=resource[:rootdn]
+      admin = resource[:rootdn]
     else
-      admin="cn=admin,#{resource[:suffix]}"
+      admin = "cn=admin,#{resource[:suffix]}"
     end
     t << "olcAccess: to attrs=userPassword\n"
     t << "  by self write\n"
