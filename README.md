@@ -269,6 +269,36 @@ openldap::server::overlay { "rwm on relay":
 }
 ```
 
+### Configuring Dbindex
+
+```puppet
+# Configuration suffix
+Openldap::Server::Dbindex {
+  suffix => 'dc=example,dc=com',
+}
+
+# The module only sets "objectClass eq" by default
+openldap::server::dbindex {
+  'cn':
+    attribute => 'cn',
+    indices   => 'eq,pres,sub';
+  'uid':
+    attribute => 'uid',
+    indices   => 'eq,pres,sub';
+  'uidNumber':
+    attribute => 'uidNumber',
+    indices   => 'eq,pres';
+  'gidNumber':
+    attribute => 'gidNumber',
+    indices   => 'eq,pres';
+  'member':
+    attribute => 'member',
+    indices   => 'eq,pres';
+  'memberUid':
+    attribute => 'memberUid',
+    indices   => 'eq,pres';
+}
+```
 
 ## Transfer Notice
 
