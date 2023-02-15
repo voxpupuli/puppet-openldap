@@ -4,7 +4,20 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v6.0.0](https://github.com/voxpupuli/puppet-openldap/tree/v6.0.0) (2022-11-21)
+## [v6.0.1](https://github.com/voxpupuli/puppet-openldap/tree/v6.0.1) (2023-03-01)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v6.0.0...v6.0.1)
+
+**Fixed bugs:**
+
+- Rename former herculesteam dependencies to reflect transfer to Vox [\#367](https://github.com/voxpupuli/puppet-openldap/pull/367) ([gcoxmoz](https://github.com/gcoxmoz))
+
+**Merged pull requests:**
+
+- Document `openldap::server::dbindex` in the README [\#365](https://github.com/voxpupuli/puppet-openldap/pull/365) ([phaedriel](https://github.com/phaedriel))
+- Remove legacy facts from hiera configuration [\#364](https://github.com/voxpupuli/puppet-openldap/pull/364) ([smortex](https://github.com/smortex))
+
+## [v6.0.0](https://github.com/voxpupuli/puppet-openldap/tree/v6.0.0) (2022-11-22)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v5.0.1...v6.0.0)
 
