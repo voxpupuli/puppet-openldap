@@ -64,43 +64,30 @@ Puppet::Type.
   end
 
   def create
+    overlay_object_class = {
+      'accesslog'  => 'olcAccessLogConfig',
+      'auditlog'   => 'olcAuditLogConfig',
+      'constraint' => 'olcConstraintConfig',
+      'dynlist'    => 'olcDynamicList',
+      'lastbind'   => 'olcLastBindConfig',
+      'memberof'   => 'olcMemberOf',
+      'pcache'     => 'olcPcacheConfig',
+      'ppolicy'    => 'olcPPolicyConfig',
+      'refint'     => 'olcRefintConfig',
+      'rwm'        => 'olcRwmConfig',
+      'smbk5pwd'   => 'olcSmbK5PwdConfig',
+      'sock'       => 'olcOvSocketConfig',
+      'sssvlv'     => 'olcSssVlvConfig',
+      'syncprov'   => 'olcSyncProvConfig',
+      'unique'     => 'olcUniqueConfig',
+    }.freeze
+
     t = Tempfile.new('openldap_overlay')
     t << "dn: olcOverlay=#{resource[:overlay]},#{getDn(resource[:suffix])}\n"
     t << "changetype: add\n"
     t << "objectClass: olcConfig\n"
     t << "objectClass: olcOverlayConfig\n"
-    case resource[:overlay]
-    when 'memberof'
-      t << "objectClass: olcMemberOf\n"
-    when 'sock'
-      t << "objectClass: olcOvSocketConfig\n"
-    when 'ppolicy'
-      t << "objectClass: olcPPolicyConfig\n"
-    when 'dynlist'
-      t << "objectClass: olcDynamicList\n"
-    when 'auditlog'
-      t << "objectClass: olcAuditLogConfig\n"
-    when 'constraint'
-      t << "objectClass: olcConstraintConfig\n"
-    when 'pcache'
-      t << "objectClass: olcPcacheConfig\n"
-    when 'accesslog'
-      t << "objectClass: olcAccessLogConfig\n"
-    when 'syncprov'
-      t << "objectClass: olcSyncProvConfig\n"
-    when 'refint'
-      t << "objectClass: olcRefintConfig\n"
-    when 'unique'
-      t << "objectClass: olcUniqueConfig\n"
-    when 'rwm'
-      t << "objectClass: olcRwmConfig\n"
-    when 'smbk5pwd'
-      t << "objectClass: olcSmbK5PwdConfig\n"
-    when 'sssvlv'
-      t << "objectClass: olcSssVlvConfig\n"
-    when 'lastbind'
-      t << "objectClass: olcLastBindConfig\n"
-    end
+    t << "objectClass: #{overlay_object_class.fetch(resource[:overlay])}\n"
     t << "olcOverlay: #{resource[:overlay]}\n"
     resource[:options]&.each do |k, v|
       t << if v.is_a?(Array)
