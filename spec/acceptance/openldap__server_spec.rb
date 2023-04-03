@@ -43,7 +43,6 @@ describe 'openldap::server' do
     end
 
     it 'can connect with ldapsearch using StartTLS' do
-      skip
       ldapsearch('-LLL -x -b dc=example,dc=com -ZZ') do |r|
         expect(r.stdout).to match(%r{dn: dc=example,dc=com})
       end
@@ -75,7 +74,6 @@ describe 'openldap::server' do
     # rubocop:enable RSpec/RepeatedExampleGroupBody
 
     it 'can connect with ldapsearch using ldaps:///' do
-      skip
       ldapsearch('-LLL -x -b dc=example,dc=com -H ldaps:///') do |r|
         expect(r.stdout).to match(%r{dn: dc=example,dc=com})
       end

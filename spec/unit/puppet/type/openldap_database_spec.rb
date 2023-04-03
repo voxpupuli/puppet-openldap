@@ -16,7 +16,6 @@ describe Puppet::Type.type(:openldap_database) do
     end
 
     it 'does not invalid suffixes' do
-      skip('must implement validation')
       expect { described_class.new(name: 'foo bar') }.to raise_error(Puppet::Error, %r{Invalid value})
       expect { described_class.new(name: 'cn=admin,dc=example,dc=com') }.to raise_error(Puppet::Error, %r{Invalid value})
       expect { described_class.new(name: 'dc=example, dc=com') }.to raise_error(Puppet::Error, %r{Invalid value})
@@ -45,48 +44,47 @@ describe Puppet::Type.type(:openldap_database) do
   describe 'when validating values' do
     describe 'ensure' do
       it 'supports present as a value for ensure' do
-        expect { described_class.new(name: 'foo', ensure: :present) }.not_to raise_error
+        expect { described_class.new(name: 'dc=foo', ensure: :present) }.not_to raise_error
       end
 
       it 'supports absent as a value for ensure' do
-        expect { described_class.new(name: 'foo', ensure: :absent) }.not_to raise_error
+        expect { described_class.new(name: 'dc=foo', ensure: :absent) }.not_to raise_error
       end
 
       it 'does not support other values' do
-        expect { described_class.new(name: 'foo', ensure: :foo) }.to raise_error(Puppet::Error, %r{Invalid value})
+        expect { described_class.new(name: 'dc=foo', ensure: :foo) }.to raise_error(Puppet::Error, %r{Invalid value})
       end
     end
 
     describe 'backend' do
       %w[bdb hdb mdb monitor config relay ldap].each do |b|
         it "supports #{b} as a value for backend" do
-          expect { described_class.new(name: 'foo', backend: b) }.not_to raise_error
+          expect { described_class.new(name: 'dc=foo', backend: b) }.not_to raise_error
         end
       end
       it 'supports config as a value for backend' do
-        expect { described_class.new(name: 'foo', backend: 'config') }.not_to raise_error
+        expect { described_class.new(name: 'dc=foo', backend: 'config') }.not_to raise_error
       end
 
       it 'does not support other values' do
-        expect { described_class.new(name: 'foo', backend: 'bar') }.to raise_error(Puppet::Error, %r{Invalid value})
+        expect { described_class.new(name: 'dc=foo', backend: 'bar') }.to raise_error(Puppet::Error, %r{Invalid value})
       end
     end
 
     describe 'directory' do
       it 'supports an absolute path as a value for directory' do
-        expect { described_class.new(name: 'foo', directory: '/bar/baz') }.not_to raise_error
+        expect { described_class.new(name: 'dc=foo', directory: '/bar/baz') }.not_to raise_error
       end
 
       it 'does not support other values' do
-        skip('Must implement validation')
-        expect { described_class.new(name: 'foo', directory: 'bar/baz') }.to raise_error(Puppet::Error, %r{kjsflkjdsflk})
+        expect { described_class.new(name: 'dc=foo', directory: 'bar/baz') }.to raise_error(Puppet::Error, %r{Invalid value})
       end
     end
   end
 
   describe 'rootpw' do
     before do
-      @resource = described_class.new(name: 'foo')
+      @resource = described_class.new(name: 'dc=foo')
       @password = described_class.attrclass(:rootpw).new(resource: @resource, should: 'secret')
     end
 
@@ -114,7 +112,7 @@ describe Puppet::Type.type(:openldap_database) do
     end
 
     it 'is nil when suffix is not using dc' do
-      @resource = described_class.new(name: 'foo', suffix: 'ou=foo,dc=bar')
+      @resource = described_class.new(name: 'foo', suffix: 'o=foo,dc=bar')
       expect(@resource[:organization]).to be_nil
     end
   end

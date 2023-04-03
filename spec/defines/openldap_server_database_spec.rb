@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe 'openldap::server::database' do
-  let(:title) { 'foo' }
+  let(:title) { 'dc=foo' }
 
   on_supported_os.each do |os, facts|
     context "on #{os}" do
@@ -19,7 +19,7 @@ describe 'openldap::server::database' do
             it { is_expected.to compile.with_all_deps }
 
             it {
-              is_expected.to contain_openldap__server__database('foo').with(directory: '/foo/bar')
+              is_expected.to contain_openldap__server__database('dc=foo').with(directory: '/foo/bar')
             }
           end
 
