@@ -10,6 +10,15 @@ Puppet::Type.newtype(:openldap_database) do
 
   newparam(:suffix, namevar: true) do
     desc 'The default namevar.'
+    validate do |value|
+      raise ArgumentError, 'Invalid value' unless [
+        /\Acn=config\z/,
+        /\Acn=monitor\z/,
+        %r{\A(dc|o)=[[:alnum:].-]+(,(dc|o)=[[:alnum:].-]+)*\z},
+      ].any? do |pattern|
+        pattern.match?(value)
+      end
+    end
   end
 
   newparam(:relay) do
@@ -60,6 +69,9 @@ Puppet::Type.newtype(:openldap_database) do
     desc 'The directory where the BDB files containing this database and associated indexes live.'
     defaultto do
       '/var/lib/ldap' unless %w[monitor config relay ldap].include? (@resource[:backend]).to_s
+    end
+    validate do |value|
+      raise ArgumentError, 'Invalid value' unless value.start_with?('/')
     end
   end
 
