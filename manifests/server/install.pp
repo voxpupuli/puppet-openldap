@@ -5,20 +5,22 @@ class openldap::server::install {
   contain openldap::utils
 
   if $facts['os']['family'] == 'Debian' {
-    $policy_rc_d = @(POLICY)
-      #!/bin/sh
-      if [ "$1" = "slapd" ]; then
-        exit 101
-      fi
-      exit 0
-      | POLICY
-    file { '/usr/sbin/policy-rc.d':
-      ensure  => 'file',
-      mode    => '0755',
-      owner   => 'root',
-      group   => 'root',
-      content => $policy_rc_d,
-      before  => Package[$openldap::server::package],
+    if $openldap::server::manage_policy_rc_d {
+      $policy_rc_d = @(POLICY)
+        #!/bin/sh
+        if [ "$1" = "slapd" ]; then
+          exit 101
+        fi
+        exit 0
+        | POLICY
+      file { '/usr/sbin/policy-rc.d':
+        ensure  => 'file',
+        mode    => '0755',
+        owner   => 'root',
+        group   => 'root',
+        content => $policy_rc_d,
+        before  => Package[$openldap::server::package],
+      }
     }
     file { '/var/cache/debconf/slapd.preseed':
       ensure  => file,
