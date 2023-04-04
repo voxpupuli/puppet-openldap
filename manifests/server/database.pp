@@ -49,7 +49,7 @@ define openldap::server::database (
   Class['openldap::server::service']
   -> Openldap::Server::Database[$title]
   -> Class['openldap::server']
-  if $title != 'dc=my-domain,dc=com' and fact('os.family') == 'Debian' {
+  if $title != 'dc=my-domain,dc=com' and fact('os.family') == 'RedHat' {
     Openldap::Server::Database['dc=my-domain,dc=com'] -> Openldap::Server::Database[$title]
   }
 
