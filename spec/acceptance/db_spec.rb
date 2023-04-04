@@ -37,6 +37,13 @@ describe 'openldap::server::database' do
 
   context 'without parameters' do
     let(:datadir) { '/var/lib/ldap' }
+    let(:user) do
+      if fact('os.family') == 'Debian'
+        'openldap'
+      else
+        'ldap'
+      end
+    end
     let(:pp) do
       <<-EOS
         class { 'openldap::server': }
@@ -63,7 +70,7 @@ describe 'openldap::server::database' do
       on default, "rm -r #{datadir}"
       on default, "mkdir #{datadir}"
       on default, 'slapadd -l /tmp/data.ldif'
-      on default, "chown -R ldap:ldap #{datadir}"
+      on default, "chown -R #{user}:#{user} #{datadir}"
       on default, puppet('resource service slapd ensure=running')
     end
 
