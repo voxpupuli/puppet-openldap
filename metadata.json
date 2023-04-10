@@ -23,6 +23,10 @@
     {
       "name": "puppet/augeasproviders_shellvar",
       "version_requirement": ">= 2.0.0 < 6.0.0"
+    },
+    {
+      "name": "puppet/systemd",
+      "version_requirement": ">= 3.0.0 < 5.0.0"
     }
   ],
   "operatingsystem_support": [
@@ -56,7 +60,20 @@
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "7"
+        "7",
+        "8"
+      ]
+    },
+    {
+      "operatingsystem": "AlmaLinux",
+      "operatingsystemrelease": [
+        "8"
+      ]
+    },
+    {
+      "operatingsystem": "Rocky",
+      "operatingsystemrelease": [
+        "8"
       ]
     },
     {
