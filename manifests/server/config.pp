@@ -50,6 +50,18 @@ class openldap::server::config {
         variable => 'SLAPD_SERVICES',
         value    => $slapd_ldap_urls,
       }
+
+      # Debian configuration include database creation. We skip this with
+      # preseeding files so we need to manualy bootstrap cn=config (but not the
+      # databases).
+      exec { 'bootstrap cn=config':
+        command  => "/bin/sed -e 's/@BACKEND@/mdb/g' -e '/^# The database definition.$/q' /usr/share/slapd/slapd.init.ldif | /usr/sbin/slapadd -F ${openldap::server::confdir} -b cn=config",
+        provider => 'shell',
+        creates  => "${openldap::server::confdir}/cn=config.ldif",
+        user     => $openldap::server::owner,
+        group    => $openldap::server::group,
+        require  => File[$openldap::server::confdir],
+      }
     }
     'RedHat': {
       if versioncmp($facts['os']['release']['major'], '6') <= 0 {

@@ -1,4 +1,7 @@
 # See README.md for details.
+# @param manage_policy_rc_d
+#   If set, manage /usr/sbin/policy-rc.d on Debian based operating systems to not automatically start the LDAP server
+#   when installing slapd.  This is required when preseeding the package with the no_configuration flag as we have to.
 class openldap::server (
   String[1] $package,
   String[1] $confdir,
@@ -30,6 +33,7 @@ class openldap::server (
   Optional[Stdlib::Absolutepath] $krb5_keytab_file  = undef,
   Optional[String] $ldap_config_backend             = undef,
   Optional[Boolean] $enable_memory_limit            = undef,
+  Boolean $manage_policy_rc_d                       = true,
 ) {
   include openldap::server::install
   include openldap::server::config

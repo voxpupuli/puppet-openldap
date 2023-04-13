@@ -17,7 +17,9 @@ describe 'openldap::server::access' do
   after :all do
     pp = <<-EOS
       class { 'openldap::server': }
-      openldap::server::database { 'dc=example,dc=com': ensure => absent, }
+      openldap::server::database { 'dc=example,dc=com':
+        ensure => absent,
+      }
     EOS
 
     idempotent_apply(pp)
