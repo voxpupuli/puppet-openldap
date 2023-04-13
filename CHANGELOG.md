@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v6.1.0](https://github.com/voxpupuli/puppet-openldap/tree/v6.1.0) (2023-04-13)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v6.0.1...v6.1.0)
+
+**Implemented enhancements:**
+
+- Support Ubuntu 22.04 [\#376](https://github.com/voxpupuli/puppet-openldap/pull/376) ([chrisongthb](https://github.com/chrisongthb))
+- Add EL9 support [\#375](https://github.com/voxpupuli/puppet-openldap/pull/375) ([treydock](https://github.com/treydock))
+- Add EL8 support [\#373](https://github.com/voxpupuli/puppet-openldap/pull/373) ([treydock](https://github.com/treydock))
+- Allow to configure more overlays [\#370](https://github.com/voxpupuli/puppet-openldap/pull/370) ([smortex](https://github.com/smortex))
+
+**Closed issues:**
+
+- dc=my-domain,dc=com entry in Database [\#366](https://github.com/voxpupuli/puppet-openldap/issues/366)
+
+**Merged pull requests:**
+
+- Rework default database lifecycle on Debian [\#372](https://github.com/voxpupuli/puppet-openldap/pull/372) ([smortex](https://github.com/smortex))
+- Update tests to remove skips [\#371](https://github.com/voxpupuli/puppet-openldap/pull/371) ([smortex](https://github.com/smortex))
+
 ## [v6.0.1](https://github.com/voxpupuli/puppet-openldap/tree/v6.0.1) (2023-03-01)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v6.0.0...v6.0.1)
