@@ -9,6 +9,7 @@ class openldap::server (
   Boolean $escape_ldapi_ifs,
   Array[String[1]] $ldapi_ifs,
   Stdlib::Absolutepath $default_directory,
+  Boolean $manage_epel = true,
   Optional[Boolean] $enable_chown                   = undef,
   Optional[Boolean] $service_hasstatus              = undef,
   Boolean $enable                                   = true,

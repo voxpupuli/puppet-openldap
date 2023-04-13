@@ -18,6 +18,13 @@ class openldap::server::install {
     $responsefile = undef
   }
 
+  if $facts['os']['family'] == 'RedHat' and versioncmp($facts['os']['release']['major'], '9') >= 0 {
+    if $openldap::server::manage_epel {
+      include epel
+      Class['epel'] -> Package[$openldap::server::package]
+    }
+  }
+
   package { $openldap::server::package:
     ensure       => present,
     responsefile => $responsefile,

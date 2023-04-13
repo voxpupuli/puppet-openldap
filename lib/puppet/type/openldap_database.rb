@@ -56,6 +56,8 @@ Puppet::Type.newtype(:openldap_database) do
       when 'RedHat'
         if Facter.value(:operatingsystemmajrelease).to_i <= 6
           'bdb'
+        elsif Facter.value(:os).dig('release', 'major').to_i >= 9
+          'mdb'
         else
           'hdb'
         end

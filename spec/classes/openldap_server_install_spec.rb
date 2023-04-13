@@ -23,6 +23,20 @@ describe 'openldap::server::install' do
             is_expected.to contain_package('openldap-servers').with(ensure: :present)
           }
         end
+
+        if (facts[:os]['family'] == 'RedHat') && (facts[:os]['release']['major'].to_s == '9')
+          it { is_expected.to contain_class('epel').that_comes_before('Package[openldap-servers]') }
+        else
+          it { is_expected.not_to contain_class('epel') }
+        end
+
+        context 'when manage_epel => false' do
+          let(:pre_condition) do
+            "class { 'openldap::server': manage_epel => false }"
+          end
+
+          it { is_expected.not_to contain_class('epel') } if (facts[:os]['family'] == 'RedHat') && (facts[:os]['release']['major'].to_s == '9')
+        end
       end
     end
   end

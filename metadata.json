@@ -27,6 +27,10 @@
     {
       "name": "puppet/systemd",
       "version_requirement": ">= 3.0.0 < 5.0.0"
+    },
+    {
+      "name": "puppet/epel",
+      "version_requirement": ">= 4.1.0 < 5.0.0"
     }
   ],
   "operatingsystem_support": [
@@ -61,25 +65,30 @@
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
         "7",
-        "8"
+        "8",
+        "9"
       ]
     },
     {
       "operatingsystem": "AlmaLinux",
       "operatingsystemrelease": [
-        "8"
+        "8",
+        "9"
       ]
     },
     {
       "operatingsystem": "Rocky",
       "operatingsystemrelease": [
-        "8"
+        "8",
+        "9"
       ]
     },
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
-        "7"
+        "7",
+        "8",
+        "9"
       ]
     },
     {
