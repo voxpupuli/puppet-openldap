@@ -10,10 +10,6 @@ define openldap::server::iterate_access (
 
   $count    = count($hash)-1
 
-  if ! is_array($access) {
-    fail('$access variable must be an array')
-  }
-
   $previous_position = $position - 1
 
   if $previous_position < 0 {
