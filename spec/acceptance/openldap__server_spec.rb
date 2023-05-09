@@ -25,8 +25,8 @@ describe 'openldap::server' do
     it 'with cert, key and ca' do
       pp = <<-EOS
         class { 'openldap::server':
-          ssl_key   => "/etc/ldap/ssl/${::fqdn}.key",
-          ssl_cert  => "/etc/ldap/ssl/${::fqdn}.crt",
+          ssl_key   => "/etc/ldap/ssl/${facts['networking']['fqdn']}.key",
+          ssl_cert  => "/etc/ldap/ssl/${facts['networking']['fqdn']}.crt",
           ssl_ca    => '/etc/ldap/ssl/ca.pem',
         }
       EOS
@@ -54,8 +54,8 @@ describe 'openldap::server' do
       pp = <<-EOS
         class { 'openldap::server':
           ldaps_ifs => ['/'],
-          ssl_key   => "/etc/ldap/ssl/${::fqdn}.key",
-          ssl_cert  => "/etc/ldap/ssl/${::fqdn}.crt",
+          ssl_key   => "/etc/ldap/ssl/${facts['networking']['fqdn']}.key",
+          ssl_cert  => "/etc/ldap/ssl/${facts['networking']['fqdn']}.crt",
           ssl_ca    => '/etc/ldap/ssl/ca.pem',
         }
       EOS
