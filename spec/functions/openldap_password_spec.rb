@@ -18,9 +18,9 @@ describe :openldap_password do
 
   context 'when given a secret and a scheme' do
     it 'generates CRYPT password' do
-      allow(scope).to receive(:function_fqdn_rand_string).with([2]).and_return('ab')
+      allow(subject.func).to receive(:call_function).with(:fqdn_rand_string, 2).and_return('ab')
       is_expected.to run.with_params('foo', 'CRYPT').and_return('{CRYPT}abQ9KY.KfrYrc')
-      expect(scope).to have_received(:function_fqdn_rand_string).with([2])
+      expect(subject.func).to have_received(:call_function).with(:fqdn_rand_string, 2)
     end
 
     it 'generates MD5 password' do
@@ -28,15 +28,15 @@ describe :openldap_password do
     end
 
     it 'generates SMD5 password' do
-      allow(scope).to receive(:function_fqdn_rand_string).with([8]).and_return('abcdefgh')
+      allow(subject.func).to receive(:call_function).with(:fqdn_rand_string, 8).and_return('abcdefgh')
       is_expected.to run.with_params('foo', 'SMD5').and_return('{SMD5}NAYSvQYSIRYBLCM8U6MUc2FiY2RlZmdo')
-      expect(scope).to have_received(:function_fqdn_rand_string).with([8])
+      expect(subject.func).to have_received(:call_function).with(:fqdn_rand_string, 8)
     end
 
     it 'generates SSHA password' do
-      allow(scope).to receive(:function_fqdn_rand_string).with([8]).and_return('abcdefgh')
+      allow(subject.func).to receive(:call_function).with(:fqdn_rand_string, 8).and_return('abcdefgh')
       is_expected.to run.with_params('foo', 'SSHA').and_return('{SSHA}3RXLE64s+3ytIRdJYu9eoU8O/alhYmNkZWZnaA==')
-      expect(scope).to have_received(:function_fqdn_rand_string).with([8])
+      expect(subject.func).to have_received(:call_function).with(:fqdn_rand_string, 8)
     end
 
     it 'generates SHA password' do

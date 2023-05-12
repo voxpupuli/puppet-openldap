@@ -66,12 +66,12 @@ describe 'openldap::server::database' do
     end
 
     it 'can restore the database' do
-      on default, puppet('resource service slapd ensure=stopped')
+      on default, 'puppet resource service slapd ensure=stopped'
       on default, "rm -r #{datadir}"
       on default, "mkdir #{datadir}"
       on default, 'slapadd -l /tmp/data.ldif'
       on default, "chown -R #{user}:#{user} #{datadir}"
-      on default, puppet('resource service slapd ensure=running')
+      on default, 'puppet resource service slapd ensure=running'
     end
 
     it 'has no change' do
