@@ -215,7 +215,12 @@ Puppet::Type.newtype(:openldap_database) do
   end
 
   newproperty(:mirrormode, boolean: true) do
-    desc 'This option puts a replica database into "mirror" mode'
+    desc 'This option puts a replica database into "mirror" mode, deprecated as of 2.5'
+    newvalues(:true, :false)
+  end
+
+  newproperty(:multiprovider, boolean: true) do
+    desc 'This option puts a replica database into "multiprovider" mode'
     newvalues(:true, :false)
   end
 

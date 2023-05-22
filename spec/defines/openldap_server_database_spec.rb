@@ -52,6 +52,7 @@ describe 'openldap::server::database' do
                 },
                 synctype: 'inclusive',
                 mirrormode: true,
+                multiprovider: true,
                 syncusesubentry: 'wxw',
                 syncrepl: [
                   'rid=1 provider=ldap://localhost searchbase="dc=foo,dc=example,dc=com"',
