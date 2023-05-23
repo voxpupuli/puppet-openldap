@@ -30,6 +30,7 @@ Puppet::Type.
       updateref = nil
       dboptions = {}
       mirrormode = nil
+      multiprovider = nil
       syncusesubentry = nil
       syncrepl = nil
       limits = []
@@ -83,6 +84,8 @@ Puppet::Type.
           end
         when %r{^olcMirrorMode: }
           mirrormode = line.split[1] == 'TRUE' ? :true : :false
+        when %r{^olcMultiProvider: }
+          multiprovider = line.split[1] == 'TRUE' ? :true : :false
         when %r{^olcSyncUseSubentry: }
           syncusesubentry = line.split(' ', 2)[1]
         when %r{^olcSyncrepl: }
@@ -119,6 +122,7 @@ Puppet::Type.
         updateref: updateref,
         dboptions: dboptions,
         mirrormode: mirrormode,
+        multiprovider: multiprovider,
         syncusesubentry: syncusesubentry,
         syncrepl: syncrepl,
         limits: limits,
@@ -257,6 +261,7 @@ Puppet::Type.
     end
     t << (resource[:syncrepl].map { |x| "olcSyncrepl: #{x}\n" }.join) if resource[:syncrepl]
     t << "olcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:mirrormode]
+    t << "olcMultiProvider: #{resource[:multiprovider] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:multiprovider]
     t << "olcSyncUseSubentry: #{resource[:syncusesubentry]}\n" if resource[:syncusesubentry]
     t << "#{resource[:limits].map { |x| "olcLimits: #{x}" }.join("\n")}\n" if resource[:limits] && !resource[:limits].empty?
     t << "#{resource[:security].map { |k, v| "olcSecurity: #{k}=#{v}" }.join("\n")}\n" if resource[:security] && !resource[:security].empty?
@@ -341,6 +346,10 @@ Puppet::Type.
     @property_flush[:mirrormode] = value
   end
 
+  def multiprovider=(value)
+    @property_flush[:multiprovider] = value
+  end
+
   def syncusesubentry=(value)
     @property_flush[:syncusesubentry] = value
   end
@@ -408,6 +417,7 @@ Puppet::Type.
       t << "replace: olcSyncrepl\n#{resource[:syncrepl].map { |x| "olcSyncrepl: #{x}" }.join("\n")}\n-\n" if @property_flush[:syncrepl]
       t << "replace: olcUpdateref\nolcUpdateref: #{resource[:updateref]}\n-\n" if @property_flush[:updateref]
       t << "replace: olcMirrorMode\nolcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n-\n" if @property_flush[:mirrormode]
+      t << "replace: olcMultiProvider\nolcMultiProvider: #{resource[:multiprovider] == :true ? 'TRUE' : 'FALSE'}\n-\n" if @property_flush[:multiprovider]
       t << "replace: olcSyncUseSubentry\nolcSyncUseSubentry: #{resource[:syncusesubentry]}\n-\n" if @property_flush[:syncusesubentry]
       t << "replace: olcLimits\n#{@property_flush[:limits].map { |x| "olcLimits: #{x}" }.join("\n")}\n-\n" if @property_flush[:limits]
       t << "replace: olcSecurity\n#{@property_flush[:security].map { |k, v| "olcSecurity: #{k}=#{v}" }.join("\n")}\n-\n" if @property_flush[:security]

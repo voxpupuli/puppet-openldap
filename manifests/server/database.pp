@@ -19,6 +19,7 @@ define openldap::server::database (
   Optional[String[1]]                           $synctype        = undef,
   # Synchronization options
   Optional[Boolean]                             $mirrormode      = undef,
+  Optional[Boolean]                             $multiprovider   = undef,
   Optional[String[1]]                           $syncusesubentry = undef,
   Optional[Variant[String[1],Array[String[1]]]] $syncrepl        = undef,
   Hash[
@@ -37,6 +38,10 @@ define openldap::server::database (
   ]                                             $security        = {},
 ) {
   include openldap::server
+
+  if $mirrormode != undef and $multiprovider != undef {
+    warning('multiprovider is an openldap2.5+ replacement for mirrormode.')
+  }
 
   $manage_directory = $backend ? {
     'monitor' => undef,
@@ -80,6 +85,7 @@ define openldap::server::database (
     dboptions       => $dboptions,
     synctype        => $synctype,
     mirrormode      => $mirrormode,
+    multiprovider   => $multiprovider,
     syncusesubentry => $syncusesubentry,
     syncrepl        => $syncrepl,
     limits          => $limits,

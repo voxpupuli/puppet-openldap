@@ -166,6 +166,7 @@ class Puppet::Provider::Openldap < Puppet::Provider
       MirrorMode
       ModulePath
       Monitoring
+      MultiProvider
       Overlay
       PasswordCryptSaltFormat
       PidFile
