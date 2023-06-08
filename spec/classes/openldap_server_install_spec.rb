@@ -16,11 +16,11 @@ describe 'openldap::server::install' do
         case facts[:osfamily]
         when 'Debian'
           it {
-            is_expected.to contain_package('slapd').with(ensure: :present)
+            is_expected.to contain_package('slapd').with(ensure: :installed)
           }
         when 'RedHat'
           it {
-            is_expected.to contain_package('openldap-servers').with(ensure: :present)
+            is_expected.to contain_package('openldap-servers').with(ensure: :installed)
           }
         end
 
@@ -48,7 +48,7 @@ describe 'openldap::server::install' do
         it { is_expected.to contain_class('openldap::server::install') }
 
         it {
-          is_expected.to contain_package('foo').with(ensure: :present)
+          is_expected.to contain_package('foo').with(ensure: :installed)
         }
       end
 

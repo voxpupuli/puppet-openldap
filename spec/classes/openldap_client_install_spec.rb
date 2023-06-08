@@ -22,16 +22,16 @@ describe 'openldap::client::install' do
           case facts[:os]['release']['major']
           when '22.04'
             it {
-              is_expected.to contain_package('libldap-2.5-0').with(ensure: :present)
+              is_expected.to contain_package('libldap-2.5-0').with(ensure: :installed)
             }
           else
             it {
-              is_expected.to contain_package('libldap-2.4-2').with(ensure: :present)
+              is_expected.to contain_package('libldap-2.4-2').with(ensure: :installed)
             }
           end
         when 'RedHat'
           it {
-            is_expected.to contain_package('openldap').with(ensure: :present)
+            is_expected.to contain_package('openldap').with(ensure: :installed)
           }
         end
       end
@@ -45,7 +45,7 @@ describe 'openldap::client::install' do
         it { is_expected.to contain_class('openldap::client::install') }
 
         it {
-          is_expected.to contain_package('foo').with(ensure: :present)
+          is_expected.to contain_package('foo').with(ensure: :installed)
         }
       end
 

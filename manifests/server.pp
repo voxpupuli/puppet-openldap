@@ -13,7 +13,7 @@ class openldap::server (
   Array[String[1]] $ldapi_ifs,
   Stdlib::Absolutepath $default_directory,
   Boolean $manage_epel                              = true,
-  String[1] $package_version                        = present,
+  String[1] $package_version                        = installed,
   Optional[Boolean] $enable_chown                   = undef,
   Optional[Boolean] $service_hasstatus              = undef,
   Boolean $enable                                   = true,

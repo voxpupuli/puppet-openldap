@@ -15,11 +15,11 @@ describe 'openldap::utils' do
         case facts[:osfamily]
         when 'Debian'
           it {
-            is_expected.to contain_package('ldap-utils').with(ensure: :present)
+            is_expected.to contain_package('ldap-utils').with(ensure: :installed)
           }
         when 'RedHat'
           it {
-            is_expected.to contain_package('openldap-clients').with(ensure: :present)
+            is_expected.to contain_package('openldap-clients').with(ensure: :installed)
           }
         end
       end
@@ -32,7 +32,7 @@ describe 'openldap::utils' do
         it { is_expected.to compile.with_all_deps }
 
         it {
-          is_expected.to contain_package('foo').with(ensure: :present)
+          is_expected.to contain_package('foo').with(ensure: :installed)
         }
       end
 
