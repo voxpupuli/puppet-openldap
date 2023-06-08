@@ -43,7 +43,7 @@ class openldap::server::install {
   }
 
   package { $openldap::server::package:
-    ensure       => present,
+    ensure       => $openldap::server::package_version,
     responsefile => $responsefile,
   }
 }

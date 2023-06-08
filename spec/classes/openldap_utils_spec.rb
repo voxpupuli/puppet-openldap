@@ -35,6 +35,18 @@ describe 'openldap::utils' do
           is_expected.to contain_package('foo').with(ensure: :present)
         }
       end
+
+      context 'when overriding package version' do
+        let :pre_condition do
+          "class {'openldap::utils': package => 'bar', package_version => '3.6.9-12', }"
+        end
+
+        it { is_expected.to compile.with_all_deps }
+
+        it {
+          is_expected.to contain_package('bar').with(ensure: '3.6.9-12')
+        }
+      end
     end
   end
 end

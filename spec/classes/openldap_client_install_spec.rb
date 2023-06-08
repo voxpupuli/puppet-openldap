@@ -48,6 +48,19 @@ describe 'openldap::client::install' do
           is_expected.to contain_package('foo').with(ensure: :present)
         }
       end
+
+      context 'when overriding package version' do
+        let :pre_condition do
+          "class {'openldap::client': package => 'bar', package_version => '2.3.4-1' }"
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('openldap::client::install') }
+
+        it {
+          is_expected.to contain_package('bar').with(ensure: '2.3.4-1')
+        }
+      end
     end
   end
 end
