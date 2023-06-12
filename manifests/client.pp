@@ -4,6 +4,7 @@ class openldap::client (
   Stdlib::Absolutepath                          $file,
 
   # Options
+  String[1]                                     $package_version               = installed,
   Optional[String[1]]                           $base                          = undef,
   Optional[String[1]]                           $bind_policy                   = undef,
   Optional[String[1]]                           $bind_timelimit                = undef,

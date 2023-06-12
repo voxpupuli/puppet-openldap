@@ -16,11 +16,11 @@ describe 'openldap::server::install' do
         case facts[:osfamily]
         when 'Debian'
           it {
-            is_expected.to contain_package('slapd').with(ensure: :present)
+            is_expected.to contain_package('slapd').with(ensure: :installed)
           }
         when 'RedHat'
           it {
-            is_expected.to contain_package('openldap-servers').with(ensure: :present)
+            is_expected.to contain_package('openldap-servers').with(ensure: :installed)
           }
         end
 
@@ -37,6 +37,32 @@ describe 'openldap::server::install' do
 
           it { is_expected.not_to contain_class('epel') } if (facts[:os]['family'] == 'RedHat') && (facts[:os]['release']['major'].to_s == '9')
         end
+      end
+
+      context 'when overriding package name' do
+        let :pre_condition do
+          "class {'openldap::server': package => 'foo', }"
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('openldap::server::install') }
+
+        it {
+          is_expected.to contain_package('foo').with(ensure: :installed)
+        }
+      end
+
+      context 'when overriding package version' do
+        let :pre_condition do
+          "class {'openldap::server': package => 'bar', package_version => '2.4.6-1', }"
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('openldap::server::install') }
+
+        it {
+          is_expected.to contain_package('bar').with(ensure: '2.4.6-1')
+        }
       end
     end
   end
