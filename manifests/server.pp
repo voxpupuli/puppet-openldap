@@ -5,9 +5,6 @@
 # @param krb5_client_keytab_file
 #   if set, manage the env variable KRB5_CLIENT_KTNAME on Debian based operating systems. This is required when
 #   configuring sasl with backend GSSAPI
-# @param manage_policy_rc_d
-#   If set, manage /usr/sbin/policy-rc.d on Debian based operating systems to not automatically start the LDAP server
-#   when installing slapd.  This is required when preseeding the package with the no_configuration flag as we have to.
 class openldap::server (
   String[1] $package,
   String[1] $confdir,
@@ -41,16 +38,11 @@ class openldap::server (
   Optional[Stdlib::Absolutepath] $krb5_client_keytab_file  = undef,
   Optional[String] $ldap_config_backend             = undef,
   Optional[Boolean] $enable_memory_limit            = undef,
-  Optional[Boolean] $manage_policy_rc_d             = undef,
 ) {
   include openldap::server::install
   include openldap::server::config
   include openldap::server::service
   include openldap::server::slapdconf
-
-  unless $manage_policy_rc_d =~ Undef {
-    deprecation('manage_policy_rc_d', 'The manage_policy_rc_d parameter is deprecated and unused. It will be removed in a future version.')
-  }
 
   Class['openldap::server::install']
   -> Class['openldap::server::config']
