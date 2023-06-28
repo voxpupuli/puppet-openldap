@@ -5,22 +5,17 @@ class openldap::server::install {
   contain openldap::utils
 
   if $facts['os']['family'] == 'Debian' {
-    if $openldap::server::manage_policy_rc_d {
-      $policy_rc_d = @(POLICY)
-        #!/bin/sh
-        if [ "$1" = "slapd" ]; then
-          exit 101
-        fi
-        exit 0
-        | POLICY
-      file { '/usr/sbin/policy-rc.d':
-        ensure  => 'file',
-        mode    => '0755',
-        owner   => 'root',
-        group   => 'root',
-        content => $policy_rc_d,
-        before  => Package[$openldap::server::package],
-      }
+    # When preseeding request to skip the configuration, the service will not
+    # start and the installation will return an error. To avoid this, we mask
+    # the unit. The installer will not attempt to start slapd and the
+    # installation will succed. The module will then be able to tune slapd
+    # accoding to the user needs and finally start (and unmak) the service.
+    exec { 'mask-before-openldap-install':
+      command => "systemctl mask ${openldap::server::service}",
+      unless  => 'test -x /usr/sbin/slapd',
+      creates => "/etc/systemd/system/${openldap::server::service}.service",
+      path    => '/bin:/usr/bin',
+      before  => Package[$openldap::server::package],
     }
     file { '/var/cache/debconf/slapd.preseed':
       ensure  => file,
