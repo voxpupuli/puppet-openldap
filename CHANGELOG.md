@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v7.0.0](https://github.com/voxpupuli/puppet-openldap/tree/v7.0.0) (2023-06-28)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v6.1.0...v7.0.0)
+
+**Breaking changes:**
+
+- Drop Puppet 6 support [\#379](https://github.com/voxpupuli/puppet-openldap/pull/379) ([bastelfreak](https://github.com/bastelfreak))
+- Grant access to the specified RootDN if one is given [\#362](https://github.com/voxpupuli/puppet-openldap/pull/362) ([VictorPavlushin](https://github.com/VictorPavlushin))
+
+**Implemented enhancements:**
+
+- Improve service bootstraping on Debian [\#387](https://github.com/voxpupuli/puppet-openldap/pull/387) ([smortex](https://github.com/smortex))
+- Relax dependencies version requirements [\#385](https://github.com/voxpupuli/puppet-openldap/pull/385) ([smortex](https://github.com/smortex))
+- Allow management of the package versions installed [\#384](https://github.com/voxpupuli/puppet-openldap/pull/384) ([gcoxmoz](https://github.com/gcoxmoz))
+- Add olcMultiProvider as a database config parameter [\#383](https://github.com/voxpupuli/puppet-openldap/pull/383) ([gcoxmoz](https://github.com/gcoxmoz))
+- Add support for Puppet 8 [\#381](https://github.com/voxpupuli/puppet-openldap/pull/381) ([smortex](https://github.com/smortex))
+
+**Closed issues:**
+
+- Version 6.1.0 breaks disabling nonexistent services [\#386](https://github.com/voxpupuli/puppet-openldap/issues/386)
+
+**Merged pull requests:**
+
+- Remove unage of legacy stdlib function [\#380](https://github.com/voxpupuli/puppet-openldap/pull/380) ([smortex](https://github.com/smortex))
+
 ## [v6.1.0](https://github.com/voxpupuli/puppet-openldap/tree/v6.1.0) (2023-04-13)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v6.0.1...v6.1.0)
