@@ -4,7 +4,7 @@ require 'spec_helper'
 
 # rubocop:disable RSpec/DescribeSymbol
 describe :openldap_password do
-  it { is_expected.not_to eq(nil) }
+  it { is_expected.not_to be_nil }
 
   it 'fails with wrong number of arguments' do
     is_expected.to run.with_params.and_raise_error(StandardError)

@@ -94,17 +94,17 @@ Puppet::Type.newtype(:openldap_database) do
         when %r{^\{MD5\}.+}
           "{MD5}#{Digest::MD5.hexdigest(should)}" == is
         when %r{^\{SMD5\}.+}
-          salt = is[16..-1]
+          salt = is[16..]
           md5_hash_with_salt = "#{Digest::MD5.digest(should + salt)}#{salt}"
           is == "{SMD5}#{[md5_hash_with_salt].pack('m').delete("\n")}"
         when %r{^\{SSHA\}.+}
           decoded = Base64.decode64(is.gsub(%r{^\{SSHA\}}, ''))
-          salt = decoded[20..-1]
+          salt = decoded[20..]
           "{SSHA}#{Base64.encode64("#{Digest::SHA1.digest("#{should}#{salt}")}#{salt}").chomp}" == is
         when %r{^\{SHA\}.+}
           "{SHA}#{Digest::SHA1.hexdigest(should)}" == is
         when %r{^\{(SHA(256|384|512))\}}
-          matches = is.match("^\{(SHA[\\d]{,3})\}")
+          matches = is.match('^{(SHA[\\d]{,3})}')
           raise ArgumentError, "Invalid password format: #{is}" if matches.nil?
 
           crypto = matches[1]
