@@ -106,9 +106,11 @@ Puppet::Type.
       ldif.push('-')
     end
 
-    ldif.push('replace: olcAttributeTypes')
-    ldif.push(*attrType)
-    ldif.push('-')
+    unless attrType.empty?
+      ldif.push('replace: olcAttributeTypes')
+      ldif.push(*attrType)
+      ldif.push('-')
+    end
 
     ldif.push('replace: olcObjectClasses')
     ldif.push(*objClass)
@@ -154,9 +156,11 @@ Puppet::Type.
       new_ldif.push('-')
     end
 
-    new_ldif.push('replace: olcAttributeTypes')
-    new_ldif.push(*attrType)
-    new_ldif.push('-')
+    unless attrType.empty?
+      new_ldif.push('replace: olcAttributeTypes')
+      new_ldif.push(*attrType)
+      new_ldif.push('-')
+    end
 
     new_ldif.push('replace: olcObjectClasses')
     new_ldif.push(*objClass)
