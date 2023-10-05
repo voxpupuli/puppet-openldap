@@ -1,6 +1,4 @@
 ---
-.github/workflows/ci.yml:
-  pidfile_workaround: CentOS
 .rubocop.yml:
   extra:
     Naming/MethodParameterName:
