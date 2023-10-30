@@ -21,6 +21,24 @@ describe 'openldap::server::database' do
             it {
               is_expected.to contain_openldap__server__database('dc=foo').with(directory: '/foo/bar')
             }
+
+            it {
+              # The slapd service must be started before we can make a database:
+              is_expected.to contain_class('openldap::server::service').
+                that_comes_before('Openldap_database[dc=foo]')
+            }
+
+            it {
+              # The containing directory for a database must exist before the database that it will contain:
+              is_expected.to contain_file('/foo/bar').
+                that_comes_before('Openldap_database[dc=foo]')
+            }
+
+            it {
+              # ... and "the specified olcDbDirectory must exist prior to starting slapd(8)":
+              is_expected.to contain_file('/foo/bar').
+                that_comes_before('Class[openldap::server::service]')
+            }
           end
 
           context 'with all parameters set' do
