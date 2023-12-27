@@ -4,7 +4,20 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v7.0.0](https://github.com/voxpupuli/puppet-openldap/tree/v7.0.0) (2023-06-28)
+## [v7.0.1](https://github.com/voxpupuli/puppet-openldap/tree/v7.0.1) (2023-12-27)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v7.0.0...v7.0.1)
+
+**Fixed bugs:**
+
+- Fix openldap\_password function to avoid errors with latest Puppet 7 [\#398](https://github.com/voxpupuli/puppet-openldap/pull/398) ([treydock](https://github.com/treydock))
+- Fix openldap\_schema replace without attribute types [\#393](https://github.com/voxpupuli/puppet-openldap/pull/393) ([dmaes](https://github.com/dmaes))
+
+**Merged pull requests:**
+
+- Drop pidfile\_workaround from Beaker testing [\#395](https://github.com/voxpupuli/puppet-openldap/pull/395) ([ekohl](https://github.com/ekohl))
+
+## [v7.0.0](https://github.com/voxpupuli/puppet-openldap/tree/v7.0.0) (2023-07-10)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v6.1.0...v7.0.0)
 
