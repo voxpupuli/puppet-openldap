@@ -17,13 +17,20 @@ describe Puppet::Type.type(:openldap_database) do
 
     it 'does not invalid suffixes' do
       expect { described_class.new(name: 'foo bar') }.to raise_error(Puppet::Error, %r{Invalid value})
-      expect { described_class.new(name: 'cn=admin,dc=example,dc=com') }.to raise_error(Puppet::Error, %r{Invalid value})
-      expect { described_class.new(name: 'dc=example, dc=com') }.to raise_error(Puppet::Error, %r{Invalid value})
+      expect { described_class.new(name: 'cn=foo,bar') }.to raise_error(Puppet::Error, %r{Invalid value})
+      expect { described_class.new(name: 'foo,cn=bar') }.to raise_error(Puppet::Error, %r{Invalid value})
+      expect { described_class.new(name: 'cn=foo,,cn=bar') }.to raise_error(Puppet::Error, %r{Invalid value})
     end
 
     it 'allows valid suffix' do
       expect { described_class.new(name: 'dc=example,dc=com') }.not_to raise_error
+      expect { described_class.new(name: 'dc=foo;dc=bar') }.not_to raise_error
       expect { described_class.new(name: 'cn=config') }.not_to raise_error
+    end
+
+    it 'allows more valid suffix', skip: 'These are valid DNs, but we need a proper parser to match them, not a regexp' do
+      expect { described_class.new(name: 'OU=Sales+CN=J. Smith,O=Widget Inc.,C=US') }.not_to raise_error
+      expect { described_class.new(name: 'CN=R. Smith,O=Big Company\\, Inc.,C=US') }.not_to raise_error
     end
   end
 

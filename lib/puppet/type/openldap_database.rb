@@ -11,13 +11,7 @@ Puppet::Type.newtype(:openldap_database) do
   newparam(:suffix, namevar: true) do
     desc 'The default namevar.'
     validate do |value|
-      raise ArgumentError, 'Invalid value' unless [
-        /\Acn=config\z/,
-        /\Acn=monitor\z/,
-        %r{\A(dc|o)=[[:alnum:].-]+(,(dc|o)=[[:alnum:].-]+)*\z},
-      ].any? do |pattern|
-        pattern.match?(value)
-      end
+      raise ArgumentError, 'Invalid value' unless value.match?(%r{\A[[:alnum:]]+=[^,;]+([,;][[:alnum:]]+=[^,;]+)*\z})
     end
   end
 
