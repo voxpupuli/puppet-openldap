@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v7.0.2](https://github.com/voxpupuli/puppet-openldap/tree/v7.0.2) (2024-01-06)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v7.0.1...v7.0.2)
+
+**Fixed bugs:**
+
+- Relax validation of `openldap_database`'s `suffix` parameter [\#402](https://github.com/voxpupuli/puppet-openldap/pull/402) ([smortex](https://github.com/smortex))
+
+**Closed issues:**
+
+- Parameter suffix failed, because of too restrictive patterns in openldap/lib/puppet/type/openldap\_database.rb [\#396](https://github.com/voxpupuli/puppet-openldap/issues/396)
+- cn=accesslog database: Parameter suffix failed [\#391](https://github.com/voxpupuli/puppet-openldap/issues/391)
+
 ## [v7.0.1](https://github.com/voxpupuli/puppet-openldap/tree/v7.0.1) (2023-12-27)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v7.0.0...v7.0.1)
