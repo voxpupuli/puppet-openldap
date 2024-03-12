@@ -67,6 +67,13 @@ define openldap::server::database (
     }
   }
 
+  # Flatten syncrepl if passed as an Array
+  if $syncrepl {
+    $_final_syncrepl = Array($syncrepl).join(' ')
+  } else {
+    $_final_syncrepl = undef
+  }
+
   openldap_database { $title:
     ensure          => $ensure,
     suffix          => $suffix,
@@ -87,7 +94,7 @@ define openldap::server::database (
     mirrormode      => $mirrormode,
     multiprovider   => $multiprovider,
     syncusesubentry => $syncusesubentry,
-    syncrepl        => $syncrepl,
+    syncrepl        => $_final_syncrepl,
     limits          => $limits,
     security        => $security,
   }
