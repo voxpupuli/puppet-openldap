@@ -16,7 +16,7 @@ describe 'openldap::client' do
         case facts[:osfamily]
         when 'Debian'
           case facts[:os]['release']['major']
-          when '22.04'
+          when '12', '22.04'
             it {
               is_expected.to contain_class('openldap::client').with(package: 'libldap-2.5-0',
                                                                     file: '/etc/ldap/ldap.conf',
