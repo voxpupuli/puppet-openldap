@@ -13,6 +13,7 @@ class openldap::server::config {
   $ldapi_socket_path   = $openldap::server::ldapi_socket_path
   $register_slp        = $openldap::server::register_slp
   $krb5_keytab_file    = $openldap::server::krb5_keytab_file
+  $krb5_client_keytab_file = $openldap::server::krb5_client_keytab_file
   $ldap_config_backend = $openldap::server::ldap_config_backend
   $enable_memory_limit = $openldap::server::enable_memory_limit
 
@@ -50,7 +51,22 @@ class openldap::server::config {
         variable => 'SLAPD_SERVICES',
         value    => $slapd_ldap_urls,
       }
-
+      if $krb5_keytab_file {
+        shellvar { 'krb5_ktname':
+          ensure   => exported,
+          target   => '/etc/default/slapd',
+          variable => 'KRB5_KTNAME',
+          value    => $krb5_keytab_file,
+        }
+      }
+      if $krb5_client_keytab_file {
+        shellvar { 'krb5_client_ktname':
+          ensure   => exported,
+          target   => '/etc/default/slapd',
+          variable => 'KRB5_CLIENT_KTNAME',
+          value    => $krb5_client_keytab_file,
+        }
+      }
       # Debian configuration include database creation. We skip this with
       # preseeding files so we need to manualy bootstrap cn=config (but not the
       # databases).
