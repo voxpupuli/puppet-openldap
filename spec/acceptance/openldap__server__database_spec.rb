@@ -12,8 +12,16 @@ describe 'openldap::server::database' do
               directory => '/var/lib/ldap',
               rootdn    => 'cn=admin,dc=foo,dc=example,dc=com',
               syncrepl => [
-                'rid=1 provider=ldap://localhost searchbase="dc=foo,dc=example,dc=com"',
-                'rid=2 provider=ldap://localhost searchbase="dc=foo,dc=example,dc=com"',
+                {
+                  rid        => 1,
+                  provider   => 'ldap://localhost',
+                  searchbase => 'dc=foo,dc=example,dc=com',
+                },
+                {
+                  rid        => 2,
+                  provider   => 'ldap://localhost',
+                  searchbase => 'dc=foo,dc=example,dc=com',
+                },
               ]
             }
           }

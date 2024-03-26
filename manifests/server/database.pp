@@ -21,7 +21,7 @@ define openldap::server::database (
   Optional[Boolean]                             $mirrormode      = undef,
   Optional[Boolean]                             $multiprovider   = undef,
   Optional[String[1]]                           $syncusesubentry = undef,
-  Optional[Variant[String[1],Array[String[1]]]] $syncrepl        = undef,
+  Array[Openldap::Syncrepl]                     $syncrepl        = [],
   Hash[
     Enum[
       'transport',
@@ -87,7 +87,7 @@ define openldap::server::database (
     mirrormode      => $mirrormode,
     multiprovider   => $multiprovider,
     syncusesubentry => $syncusesubentry,
-    syncrepl        => $syncrepl,
+    syncrepl        => $syncrepl.map |$item| { $item.map |$k, $v| { "${k}=${String($v, '%#p')}" }.join(' ') },
     limits          => $limits,
     security        => $security,
   }

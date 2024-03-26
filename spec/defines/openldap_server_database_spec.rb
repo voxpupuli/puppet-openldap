@@ -55,8 +55,16 @@ describe 'openldap::server::database' do
                 multiprovider: true,
                 syncusesubentry: 'wxw',
                 syncrepl: [
-                  'rid=1 provider=ldap://localhost searchbase="dc=foo,dc=example,dc=com"',
-                  'rid=2 provider=ldap://localhost searchbase="dc=foo,dc=example,dc=com"',
+                  {
+                    rid: 1,
+                    provider: 'ldap://localhost',
+                    searchbase: 'dc=foo,dc=example,dc=com',
+                  },
+                  {
+                    rid: 2,
+                    provider: 'ldap://localhost',
+                    searchbase: 'dc=foo,dc=example,dc=com',
+                  },
                 ],
                 security: {
                   tls: 1,
@@ -65,6 +73,10 @@ describe 'openldap::server::database' do
             end
 
             it { is_expected.to compile.with_all_deps }
+
+            it {
+              is_expected.to contain_openldap_database('dc=foo').with(syncrepl: ['rid=1 provider="ldap://localhost" searchbase="dc=foo,dc=example,dc=com"', 'rid=2 provider="ldap://localhost" searchbase="dc=foo,dc=example,dc=com"'])
+            }
           end
         end
       end

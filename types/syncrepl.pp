@@ -1,0 +1,25 @@
+type Openldap::Syncrepl = Struct[
+  {
+    rid                      => Integer[0],
+    provider                 => Pattern['\Aldaps?://[^/]+\z'],
+    Optional['type']         => Enum['refreshOnly', 'refreshAndPersist'],
+    Optional[interval]       => Pattern['\A\d{2}:\d{2}:\d{2}:\d{2}\z'],
+    Optional[searchbase]     => String[1],
+    Optional[filter]         => String[1],
+    Optional[scope]          => Enum['sub', 'one','base'],
+    Optional[attrs]          => String[1],
+    Optional[attrsonly]      => Boolean[true],
+    Optional[sizelimit]      => Integer[0],
+    Optional[timelimit]      => Integer[0],
+    Optional[schemachecking] => Enum['on', 'off'],
+    Optional[updatedn]       => String[1],
+    Optional[bindmethod]     => Enum['simple', 'sasl'],
+    Optional[binddn]         => String[1],
+    Optional[saslmech]       => String[1],
+    Optional[authcid]        => String[1],
+    Optional[authzid]        => String[1],
+    Optional[credentials]    => Variant[String[1], Sensitive[String[1]]],
+    Optional[realm]          => String[1],
+    Optional[secprops]       => String[1],
+  }
+]
