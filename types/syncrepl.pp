@@ -1,8 +1,11 @@
+# @summary Parameters for database replication consumers
+#
+# @see https://www.openldap.org/doc/admin24/slapdconfig.html#syncrepl
 type Openldap::Syncrepl = Struct[
   {
-    rid                        => Integer[0],
-    provider                   => Pattern['\Aldaps?://[^/]+\z'],
-    Optional[searchbase]       => String[1],
+    rid                        => Integer[0, 999],
+    provider                   => Pattern['\Aldaps?://[^/:]+(:\d+)?\z'],
+    searchbase                 => String[1],
     Optional['type']           => Enum['refreshOnly', 'refreshAndPersist'],
     Optional[interval]         => Pattern['\A\d{2}:\d{2}:\d{2}:\d{2}\z'],
     Optional[retry]            => String[1],
@@ -10,7 +13,7 @@ type Openldap::Syncrepl = Struct[
     Optional[scope]            => Enum['sub', 'one','base'],
     Optional[attrs]            => String[1],
     Optional[exattrs]          => String[1],
-    Optional[attrsonly]        => Boolean[true],
+    Optional[attrsonly]        => Boolean,
     Optional[sizelimit]        => Integer[0],
     Optional[timelimit]        => Integer[0],
     Optional[schemachecking]   => Enum['on', 'off'],

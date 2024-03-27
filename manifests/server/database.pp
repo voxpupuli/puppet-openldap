@@ -87,7 +87,15 @@ define openldap::server::database (
     mirrormode      => $mirrormode,
     multiprovider   => $multiprovider,
     syncusesubentry => $syncusesubentry,
-    syncrepl        => $syncrepl.map |$item| { $item.map |$k, $v| { "${k}=${String($v, '%#p')}" }.join(' ') },
+    syncrepl        => $syncrepl.map |$item| {
+      $item.map |$k, $v| {
+        $v ? {
+          true    => $k,
+          false   => undef,
+          default => "${k}=${String($v, '%#p')}",
+        }
+      }.flatten.join(' ')
+    },
     limits          => $limits,
     security        => $security,
   }
