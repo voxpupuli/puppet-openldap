@@ -71,7 +71,7 @@ class openldap::server::config {
       # preseeding files so we need to manualy bootstrap cn=config (but not the
       # databases).
       exec { 'bootstrap cn=config':
-        command  => "/bin/sed -e 's/@BACKEND@/mdb/g' -e '/^# The database definition.$/q' /usr/share/slapd/slapd.init.ldif | /usr/sbin/slapadd -F ${openldap::server::confdir} -b cn=config",
+        command  => "/bin/sed -e 's/@BACKEND@/mdb/g' -e '/^# The database definition.$/q' /usr/share/slapd/slapd.init.ldif | /usr/sbin/slapadd -F ${openldap::server::confdir.shell_escape} -b cn=config", # lint:ignore:check_unsafe_interpolations
         provider => 'shell',
         creates  => "${openldap::server::confdir}/cn=config.ldif",
         user     => $openldap::server::owner,
@@ -162,7 +162,7 @@ class openldap::server::config {
       $ldif = file('openldap/cn-config.ldif')
       exec { 'bootstrap cn=config':
         path     => '/usr/local/sbin',
-        command  => "echo '${ldif}' | slapadd -n 0 -F ${openldap::server::confdir}",
+        command  => "echo ${ldif.shell_escape} | slapadd -n 0 -F ${openldap::server::confdir.shell_escape}", # lint:ignore:check_unsafe_interpolations
         creates  => "${openldap::server::confdir}/cn=config.ldif",
         provider => 'shell',
         user     => $openldap::server::owner,

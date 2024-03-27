@@ -11,7 +11,7 @@ class openldap::server::install {
     # installation will succed. The module will then be able to tune slapd
     # accoding to the user needs and finally start (and unmak) the service.
     exec { 'mask-before-openldap-install':
-      command => "systemctl mask ${openldap::server::service}",
+      command => "systemctl mask ${openldap::server::service.shell_escape}", # lint:ignore:check_unsafe_interpolations
       unless  => 'test -x /usr/sbin/slapd',
       creates => "/etc/systemd/system/${openldap::server::service}.service",
       path    => '/bin:/usr/bin',
