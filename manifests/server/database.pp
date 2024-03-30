@@ -13,7 +13,7 @@ define openldap::server::database (
   Optional[String[1]]                           $dbmaxsize       = undef,
   Optional[String[1]]                           $timelimit       = undef,
   Optional[String[1]]                           $updateref       = undef,
-  Array[String[1]]                              $limits          = [],
+  Openldap::Limits                              $limits          = {},
   # BDB/HDB options
   Hash[String[1],Variant[String[1],Array[String[1]]]] $dboptions = {},
   Optional[String[1]]                           $synctype        = undef,
@@ -96,7 +96,7 @@ define openldap::server::database (
         }
       }.flatten.join(' ')
     },
-    limits          => $limits,
+    limits          => $limits.map |$selector, $limits| { "${selector} ${limits.map |$k, $v| { "${k}=${v}" }.join(' ')}" },
     security        => $security,
   }
 }
