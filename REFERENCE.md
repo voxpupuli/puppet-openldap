@@ -1806,7 +1806,7 @@ Variant[Hash[
 Parameters for database replication consumers
 
 * **See also**
-  * https://www.openldap.org/doc/admin24/slapdconfig.html#syncrepl
+  * https://www.openldap.org/doc/admin26/slapdconfig.html#syncrepl
 
 Alias of
 

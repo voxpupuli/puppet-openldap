@@ -1,6 +1,6 @@
 # @summary Parameters for database replication consumers
 #
-# @see https://www.openldap.org/doc/admin24/slapdconfig.html#syncrepl
+# @see https://www.openldap.org/doc/admin26/slapdconfig.html#syncrepl
 type Openldap::Syncrepl = Struct[
   {
     rid                        => Variant[Integer[0, 999], Pattern['\A\d{1,3}\z']],
