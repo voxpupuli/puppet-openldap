@@ -1812,7 +1812,7 @@ Alias of
 
 ```puppet
 Struct[{
-    rid                        => Integer[0, 999],
+    rid                        => Variant[Integer[0, 999], Pattern['\A\d{1,3}\z']],
     provider                   => Pattern['\Aldaps?://[^/:]+(:\d+)?\z'],
     searchbase                 => String[1],
     Optional['type']           => Enum['refreshOnly', 'refreshAndPersist'],

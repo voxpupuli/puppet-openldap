@@ -3,7 +3,7 @@
 # @see https://www.openldap.org/doc/admin24/slapdconfig.html#syncrepl
 type Openldap::Syncrepl = Struct[
   {
-    rid                        => Integer[0, 999],
+    rid                        => Variant[Integer[0, 999], Pattern['\A\d{1,3}\z']],
     provider                   => Pattern['\Aldaps?://[^/:]+(:\d+)?\z'],
     searchbase                 => String[1],
     Optional['type']           => Enum['refreshOnly', 'refreshAndPersist'],
