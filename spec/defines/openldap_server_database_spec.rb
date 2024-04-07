@@ -37,11 +37,11 @@ describe 'openldap::server::database' do
                 dbmaxsize: '10000',
                 timelimit: '10000',
                 updateref: 'default_updateref',
-                limits: [
-                  'dn.exact="cn=anyuser,dc=example,dc=org" size=100000',
-                  'dn.exact="cn=personnel,dc=example,dc=org" size=unlimited',
-                  'dn.exact="cn=dirsync,dc=example,dc=org" size=100000'
-                ],
+                limits: {
+                  'dn.exact="cn=anyuser,dc=example,dc=org"'   => { size: 100_000 },
+                  'dn.exact="cn=personnel,dc=example,dc=org"' => { size: 'unlimited' },
+                  'dn.exact="cn=dirsync,dc=example,dc=org"'   => { size: 100_000 }
+                },
                 dboptions: {
                   config: [
                     'set_cachesize 0 10485760 0',

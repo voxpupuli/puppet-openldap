@@ -51,6 +51,7 @@
 * [`Openldap::Access_title`](#Openldap--Access_title): A valid title for an openldap::server::access resource
 * [`Openldap::Attribute`](#Openldap--Attribute): An LDAP attribute in the form "key: value"
 * [`Openldap::Attributes`](#Openldap--Attributes): A set of LDAP attributes
+* [`Openldap::Limits`](#Openldap--Limits): Limits for clients
 * [`Openldap::Syncrepl`](#Openldap--Syncrepl): Parameters for database replication consumers
 * [`Openldap::Tls_moznss_compatibility`](#Openldap--Tls_moznss_compatibility): The list of possible values TLS_MOZNSS_COMPATIBILITY can have (based on the man page), and an 'absent' (a puppet directive to remove an exist
 
@@ -1016,11 +1017,11 @@ Default value: `undef`
 
 ##### <a name="-openldap--server--database--limits"></a>`limits`
 
-Data type: `Array[String[1]]`
+Data type: `Openldap::Limits`
 
 
 
-Default value: `[]`
+Default value: `{}`
 
 ##### <a name="-openldap--server--database--dboptions"></a>`dboptions`
 
@@ -1799,6 +1800,34 @@ Variant[Hash[
     Openldap::Attribute,
     1,
   ], Openldap::Attribute]
+```
+
+### <a name="Openldap--Limits"></a>`Openldap::Limits`
+
+Limits for clients
+
+* **See also**
+  * https://www.openldap.org/doc/admin26/limits.html
+
+Alias of
+
+```puppet
+Hash[String[1], Struct[
+    {
+      # Specify time limits
+      Optional['time']           => Variant[Integer[0], Enum['unlimited']],
+      Optional['time.soft']      => Variant[Integer[0], Enum['unlimited']],
+      Optional['time.hard']      => Variant[Integer[0], Enum['unlimited']],
+      # Specifying size limits
+      Optional['size']           => Variant[Integer[0], Enum['unlimited']],
+      Optional['size.soft']      => Variant[Integer[0], Enum['unlimited']],
+      Optional['size.hard']      => Variant[Integer[0], Enum['unlimited']],
+      Optional['size.unchecked'] => Variant[Integer[0], Enum['disabled', 'unlimited']],
+      # Size limits and Paged Results
+      Optional['size.pr']        => Variant[Integer[0], Enum['noEstimate', 'unlimited']],
+      Optional['size.prtotal']   => Variant[Integer[0], Enum['disabled', 'unlimited']],
+    },
+  ]]
 ```
 
 ### <a name="Openldap--Syncrepl"></a>`Openldap::Syncrepl`
