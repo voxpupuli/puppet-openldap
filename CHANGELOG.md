@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v8.0.0](https://github.com/voxpupuli/puppet-openldap/tree/v8.0.0) (2024-06-09)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v7.0.2...v8.0.0)
+
+**Breaking changes:**
+
+- Rework `openldap::server::database` interface for the `limits` parameter [\#414](https://github.com/voxpupuli/puppet-openldap/pull/414) ([smortex](https://github.com/smortex))
+- Rework `openldap::server::database` interface for the `syncrepl` parameter [\#412](https://github.com/voxpupuli/puppet-openldap/pull/412) ([smortex](https://github.com/smortex))
+- Remove deprecated code [\#388](https://github.com/voxpupuli/puppet-openldap/pull/388) ([smortex](https://github.com/smortex))
+
+**Implemented enhancements:**
+
+- Loosen restrictive regex on syncrepl keepalive [\#421](https://github.com/voxpupuli/puppet-openldap/pull/421) ([gcoxmoz](https://github.com/gcoxmoz))
+- update puppet-systemd upper bound to 8.0.0 [\#419](https://github.com/voxpupuli/puppet-openldap/pull/419) ([TheMeier](https://github.com/TheMeier))
+- Bump puppet-epel version [\#415](https://github.com/voxpupuli/puppet-openldap/pull/415) ([Valantin](https://github.com/Valantin))
+- Add krb5 client keytab var [\#411](https://github.com/voxpupuli/puppet-openldap/pull/411) ([Valantin](https://github.com/Valantin))
+- puppet/epel: Allow 5.x [\#410](https://github.com/voxpupuli/puppet-openldap/pull/410) ([zilchms](https://github.com/zilchms))
+- Add support for Debian 12 [\#408](https://github.com/voxpupuli/puppet-openldap/pull/408) ([smortex](https://github.com/smortex))
+- Allow systemd 6.x [\#405](https://github.com/voxpupuli/puppet-openldap/pull/405) ([gcoxmoz](https://github.com/gcoxmoz))
+
+**Closed issues:**
+
+- Syncrepl needs a better documentation [\#221](https://github.com/voxpupuli/puppet-openldap/issues/221)
+
 ## [v7.0.2](https://github.com/voxpupuli/puppet-openldap/tree/v7.0.2) (2024-01-06)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v7.0.1...v7.0.2)
