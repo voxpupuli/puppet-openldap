@@ -1856,7 +1856,7 @@ Struct[{
     Optional[credentials]      => Variant[String[1], Sensitive[String[1]]],
     Optional[realm]            => String[1],
     Optional[secprops]         => String[1],
-    Optional[keepalive]        => Pattern['\A\d{2}:\d{2}:\d{2}\z'],
+    Optional[keepalive]        => Pattern['\A\d+:\d+:\d+\z'],
     Optional[starttls]         => Enum['yes', 'critical'],
     Optional[tls_cert]         => Stdlib::Absolutepath,
     Optional[tls_key]          => Stdlib::Absolutepath,
