@@ -1,6 +1,6 @@
 {
   "name": "puppet-openldap",
-  "version": "7.0.3-rc0",
+  "version": "8.0.0",
   "author": "Vox Pupuli",
   "summary": "Puppet OpenLDAP module",
   "license": "Apache-2.0",
