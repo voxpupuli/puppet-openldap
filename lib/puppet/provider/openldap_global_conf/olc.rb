@@ -78,12 +78,13 @@ Puppet::Type.
       t << "add: olc#{resource[:name]}\n"
       t << "olc#{resource[:name]}: #{resource[:value]}\n"
     end
-    t.close
     Puppet.debug(File.read(t.path))
     begin
       ldapmodify(t.path)
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{File.read t.path}\nError message: #{e.message}"
+    ensure
+      t.close
     end
     @property_hash[:ensure] = :present
   end
@@ -99,12 +100,13 @@ Puppet::Type.
     else
       t << "delete: olc#{name}\n"
     end
-    t.close
     Puppet.debug(File.read(t.path))
     begin
       ldapmodify(t.path)
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{File.read t.path}\nError message: #{e.message}"
+    ensure
+      t.close
     end
     @property_hash.clear
   end
@@ -139,12 +141,13 @@ Puppet::Type.
       t << "replace: olc#{name}\n"
       t << "olc#{name}: #{value}\n"
     end
-    t.close
     Puppet.debug(File.read(t.path))
     begin
       ldapmodify(t.path)
     rescue Exception => e
       raise Puppet::Error, "LDIF content:\n#{File.read t.path}\nError message: #{e.message}"
+    ensure
+      t.close
     end
     @property_hash[:value] = value
   end
