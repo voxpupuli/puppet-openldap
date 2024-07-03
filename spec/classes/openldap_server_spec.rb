@@ -24,11 +24,6 @@ describe 'openldap::server' do
           }
 
           it {
-            is_expected.to contain_class('openldap::server::service').
-              that_comes_before('Class[openldap::server::slapdconf]')
-          }
-
-          it {
             is_expected.to contain_class('openldap::server::slapdconf').
               that_comes_before('Class[openldap::server]')
           }
