@@ -13,7 +13,7 @@ describe 'openldap::server::install' do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::server::install') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_package('slapd').with(ensure: :installed)

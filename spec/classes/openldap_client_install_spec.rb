@@ -17,7 +17,7 @@ describe 'openldap::client::install' do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::install') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           case facts[:os]['release']['major']
           when '12', '22.04'
