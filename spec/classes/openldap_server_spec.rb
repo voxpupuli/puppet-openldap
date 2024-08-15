@@ -33,7 +33,7 @@ describe 'openldap::server' do
               that_comes_before('Class[openldap::server]')
           }
 
-          case facts[:osfamily]
+          case facts[:os]['family']
           when 'Debian'
             it {
               is_expected.to contain_class('openldap::server').with(package: 'slapd',

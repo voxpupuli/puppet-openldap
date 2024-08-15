@@ -13,7 +13,7 @@ describe 'openldap::server::slapdconf' do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::server::slapdconf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'RedHat'
           it { is_expected.to contain_openldap__server__database('dc=my-domain,dc=com').with(ensure: :absent) }
         else

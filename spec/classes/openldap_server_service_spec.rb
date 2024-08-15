@@ -14,7 +14,7 @@ describe 'openldap::server::service' do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::server::service') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_service('slapd').with(ensure: :running,

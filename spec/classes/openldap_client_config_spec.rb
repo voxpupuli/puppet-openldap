@@ -28,7 +28,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -51,7 +51,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -74,7 +74,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -97,7 +97,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -120,7 +120,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -143,7 +143,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -166,7 +166,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -189,7 +189,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -212,7 +212,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -235,7 +235,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -258,7 +258,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -281,7 +281,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -304,7 +304,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -327,7 +327,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -350,7 +350,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -373,7 +373,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -396,7 +396,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -419,7 +419,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -442,7 +442,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -465,7 +465,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with({
@@ -492,7 +492,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -515,7 +515,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -538,7 +538,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -561,7 +561,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -583,7 +583,7 @@ describe 'openldap::client::config' do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::client::config') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -606,7 +606,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -629,7 +629,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -652,7 +652,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -675,7 +675,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -698,7 +698,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -727,7 +727,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -762,7 +762,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',
@@ -789,7 +789,7 @@ describe 'openldap::client::config' do
         it { is_expected.to contain_class('openldap::client::config') }
         it { is_expected.to contain_augeas('ldap.conf') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_augeas('ldap.conf').with(incl: '/etc/ldap/ldap.conf',

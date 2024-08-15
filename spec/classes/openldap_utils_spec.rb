@@ -12,7 +12,7 @@ describe 'openldap::utils' do
       context 'with no parameters' do
         it { is_expected.to compile.with_all_deps }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it {
             is_expected.to contain_package('ldap-utils').with(ensure: :installed)

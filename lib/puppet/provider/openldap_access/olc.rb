@@ -11,7 +11,7 @@ Puppet::Type.
   provide(:olc, parent: Puppet::Provider::Openldap) do
   # TODO: Use ruby bindings (can't find one that support IPC)
 
-  defaultfor osfamily: %i[debian freebsd redhat suse]
+  defaultfor 'os.family' => %i[debian freebsd redhat suse]
 
   mk_resource_methods
 

@@ -18,7 +18,7 @@ describe 'openldap::server::config' do
       end
     end
 
-    next if facts[:osfamily] != 'Debian'
+    next if facts[:os]['family'] != 'Debian'
 
     context "on #{os} with KRB5 conf" do
       let(:facts) do
