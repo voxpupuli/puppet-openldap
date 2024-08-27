@@ -52,10 +52,10 @@ define openldap::server::database (
   }
 
   Class['openldap::server::service']
-  -> Openldap::Server::Database[$title]
+  -> Openldap_database[$title]
   -> Class['openldap::server']
   if $title != 'dc=my-domain,dc=com' and fact('os.family') == 'RedHat' {
-    Openldap::Server::Database['dc=my-domain,dc=com'] -> Openldap::Server::Database[$title]
+    Openldap_database['dc=my-domain,dc=com'] -> Openldap_database[$title]
   }
 
   if $ensure == present and $backend != 'monitor' and $backend != 'config' and $backend != 'relay' and $backend != 'ldap' {
@@ -63,7 +63,7 @@ define openldap::server::database (
       ensure => directory,
       owner  => $openldap::server::owner,
       group  => $openldap::server::group,
-      before => Openldap_database[$title],
+      before => [Class['openldap::server::service'], Openldap_database[$title]],
     }
   }
 
