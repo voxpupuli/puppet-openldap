@@ -47,6 +47,6 @@ class openldap::server (
   Class['openldap::server::install']
   -> Class['openldap::server::config']
   ~> Class['openldap::server::service']
-  -> Class['openldap::server::slapdconf']
+  Class['openldap::server::slapdconf']
   -> Class['openldap::server']
 }
