@@ -55,7 +55,7 @@ describe 'openldap::server::config' do
 
       case facts[:os]['family']
       when 'RedHat'
-        if (facts[:os]['release']['major'].to_i >= 8)
+        if facts[:os]['release']['major'].to_i >= 8
           it {
             is_expected.to contain_systemd__dropin_file('puppet.conf').with_content('^ExecStart=/some/odd/path')
           }
