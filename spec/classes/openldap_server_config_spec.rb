@@ -15,6 +15,12 @@ describe 'openldap::server::config' do
         it { is_expected.not_to contain_openldap__globalconf('TLSCertificateFile') }
         it { is_expected.not_to contain_openldap__globalconf('TLSCertificateKeyFile') }
         it { is_expected.not_to contain_openldap__globalconf('TLSCACertificateFile') }
+
+        if (facts[:os]['family'] == 'RedHat') && (facts[:os]['release']['major'].to_i >= 8)
+          it { is_expected.to contain_systemd__dropin_file('puppet.conf') }
+        else
+          it { is_expected.not_to contain_systemd__dropin_file('puppet.conf') }
+        end
       end
     end
 
@@ -33,6 +39,27 @@ describe 'openldap::server::config' do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('openldap::server::config') }
         it { is_expected.to contain_shellvar('krb5_client_ktname').with(value: '/etc/krb5.keytab') }
+      end
+    end
+
+    context 'with a server binary set' do
+      let(:facts) do
+        facts
+      end
+
+      let :pre_condition do
+        "class {'openldap::server': slapd_path => '/some/odd/path', }"
+      end
+
+      it { is_expected.to compile.with_all_deps }
+
+      case facts[:os]['family']
+      when 'RedHat'
+        if (facts[:os]['release']['major'].to_i >= 8)
+          it {
+            is_expected.to contain_systemd__dropin_file('puppet.conf').with_content('^ExecStart=/some/odd/path')
+          }
+        end
       end
     end
   end

@@ -474,6 +474,7 @@ The following parameters are available in the `openldap::server` class:
 * [`databases`](#-openldap--server--databases)
 * [`ldap_ifs`](#-openldap--server--ldap_ifs)
 * [`ldaps_ifs`](#-openldap--server--ldaps_ifs)
+* [`slapd_path`](#-openldap--server--slapd_path)
 * [`slapd_params`](#-openldap--server--slapd_params)
 * [`ldap_port`](#-openldap--server--ldap_port)
 * [`ldap_address`](#-openldap--server--ldap_address)
@@ -651,6 +652,14 @@ Data type: `Array[String[1]]`
 
 
 Default value: `[]`
+
+##### <a name="-openldap--server--slapd_path"></a>`slapd_path`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+
+
+Default value: `undef`
 
 ##### <a name="-openldap--server--slapd_params"></a>`slapd_params`
 
