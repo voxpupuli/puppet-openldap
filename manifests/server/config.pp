@@ -126,14 +126,15 @@ class openldap::server::config {
         } else {
           $real_slapd_path = '/usr/sbin/slapd'
         }
-        systemd::dropin_file { 'puppet.conf':
-          unit    => "${openldap::server::service}.service",
-          content => join([
-              '[Service]',
-              'EnvironmentFile=/etc/sysconfig/slapd',
-              'ExecStart=',
-              "ExecStart=${real_slapd_path} -u ${openldap::server::owner} -h \${SLAPD_URLS} \$SLAPD_OPTIONS",
-          ], "\n"),
+        systemd::manage_dropin { 'puppet.conf':
+          unit          => "${openldap::server::service}.service",
+          service_entry => {
+            'EnvironmentFile' => '/etc/sysconfig/slapd',
+            'ExecStart'       => [
+              '',
+              "${real_slapd_path} -u ${openldap::server::owner} -h \${SLAPD_URLS} \$SLAPD_OPTIONS",
+            ],
+          },
         }
       }
     }
