@@ -2,6 +2,7 @@
 class openldap::server::config {
   include openldap::server
 
+  $slapd_path          = $openldap::server::slapd_path
   $slapd_params        = $openldap::server::slapd_params
   $owner               = $openldap::server::owner
   $group               = $openldap::server::group
@@ -120,14 +121,20 @@ class openldap::server::config {
         }
       }
       if versioncmp($facts['os']['release']['major'], '8') >= 0 {
-        systemd::dropin_file { 'puppet.conf':
-          unit    => "${openldap::server::service}.service",
-          content => join([
-              '[Service]',
-              'EnvironmentFile=/etc/sysconfig/slapd',
-              'ExecStart=',
-              "ExecStart=/usr/sbin/slapd -u ${openldap::server::owner} -h \${SLAPD_URLS} \$SLAPD_OPTIONS",
-          ], "\n"),
+        if $slapd_path != undef {
+          $real_slapd_path = $slapd_path
+        } else {
+          $real_slapd_path = '/usr/sbin/slapd'
+        }
+        systemd::manage_dropin { 'puppet.conf':
+          unit          => "${openldap::server::service}.service",
+          service_entry => {
+            'EnvironmentFile' => '/etc/sysconfig/slapd',
+            'ExecStart'       => [
+              '',
+              "${real_slapd_path} -u ${openldap::server::owner} -h \${SLAPD_URLS} \$SLAPD_OPTIONS",
+            ],
+          },
         }
       }
     }

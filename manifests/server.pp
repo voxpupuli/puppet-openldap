@@ -27,6 +27,7 @@ class openldap::server (
   Hash $databases                                   = {},
   Array[String[1]] $ldap_ifs                        = ['/'],
   Array[String[1]] $ldaps_ifs                       = [],
+  Optional[Stdlib::Absolutepath] $slapd_path        = undef,
   Optional[String] $slapd_params                    = undef,
   Optional[Stdlib::Port] $ldap_port                 = undef,
   Optional[Stdlib::IP::Address] $ldap_address       = undef,
