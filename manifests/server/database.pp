@@ -1,27 +1,27 @@
 # See README.md for details.
 define openldap::server::database (
-  Enum['present', 'absent']                     $ensure          = present,
-  Optional[Stdlib::Absolutepath]                $directory       = undef,
-  String[1]                                     $suffix          = $title,
-  Optional[String[1]]                           $relay           = undef,
-  Optional[String[1]]                           $backend         = undef,
-  Optional[String[1]]                           $rootdn          = undef,
-  Optional[String[1]]                           $rootpw          = undef,
-  Optional[Boolean]                             $initdb          = undef,
-  Boolean                                       $readonly        = false,
-  Optional[String[1]]                           $sizelimit       = undef,
-  Optional[String[1]]                           $dbmaxsize       = undef,
-  Optional[String[1]]                           $timelimit       = undef,
-  Optional[String[1]]                           $updateref       = undef,
-  Openldap::Limits                              $limits          = {},
+  Enum['present', 'absent']                           $ensure          = present,
+  Optional[Stdlib::Absolutepath]                      $directory       = undef,
+  String[1]                                           $suffix          = $title,
+  Optional[String[1]]                                 $relay           = undef,
+  Optional[String[1]]                                 $backend         = undef,
+  Optional[String[1]]                                 $rootdn          = undef,
+  Optional[Variant[Sensitive[String[1]],String[1]]]   $rootpw          = undef,
+  Optional[Boolean]                                   $initdb          = undef,
+  Boolean                                             $readonly        = false,
+  Optional[String[1]]                                 $sizelimit       = undef,
+  Optional[String[1]]                                 $dbmaxsize       = undef,
+  Optional[String[1]]                                 $timelimit       = undef,
+  Optional[String[1]]                                 $updateref       = undef,
+  Openldap::Limits                                    $limits          = {},
   # BDB/HDB options
-  Hash[String[1],Variant[String[1],Array[String[1]]]] $dboptions = {},
-  Optional[String[1]]                           $synctype        = undef,
+  Hash[String[1],Variant[String[1],Array[String[1]]]] $dboptions       = {},
+  Optional[String[1]]                                 $synctype        = undef,
   # Synchronization options
-  Optional[Boolean]                             $mirrormode      = undef,
-  Optional[Boolean]                             $multiprovider   = undef,
-  Optional[String[1]]                           $syncusesubentry = undef,
-  Array[Openldap::Syncrepl]                     $syncrepl        = [],
+  Optional[Boolean]                                   $mirrormode      = undef,
+  Optional[Boolean]                                   $multiprovider   = undef,
+  Optional[String[1]]                                 $syncusesubentry = undef,
+  Array[Openldap::Syncrepl]                           $syncrepl        = [],
   Hash[
     Enum[
       'transport',
@@ -35,7 +35,7 @@ define openldap::server::database (
       'update_transport',
     ],
     Integer[0]
-  ]                                             $security        = {},
+  ]                                                   $security        = {},
 ) {
   include openldap::server
 
