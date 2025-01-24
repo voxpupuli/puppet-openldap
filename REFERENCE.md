@@ -951,7 +951,7 @@ Default value: `undef`
 
 ##### <a name="-openldap--server--database--rootpw"></a>`rootpw`
 
-Data type: `Optional[String[1]]`
+Data type: `Optional[Variant[Sensitive[String[1]],String[1]]]`
 
 
 
