@@ -4,7 +4,21 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v8.0.0](https://github.com/voxpupuli/puppet-openldap/tree/v8.0.0) (2024-06-09)
+## [v8.1.0](https://github.com/voxpupuli/puppet-openldap/tree/v8.1.0) (2025-01-24)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v8.0.0...v8.1.0)
+
+**Implemented enhancements:**
+
+- Add `PPolicyCheckModule` as a valid database/overlay option [\#440](https://github.com/voxpupuli/puppet-openldap/pull/440) ([gcoxmoz](https://github.com/gcoxmoz))
+- Allow Sensitive\[String\[1\]\] for rootpw [\#439](https://github.com/voxpupuli/puppet-openldap/pull/439) ([WoutResseler](https://github.com/WoutResseler))
+- Add support for FreeBSD 14 [\#427](https://github.com/voxpupuli/puppet-openldap/pull/427) ([smortex](https://github.com/smortex))
+
+**Merged pull requests:**
+
+- puppet/systemd: allow 8.x [\#438](https://github.com/voxpupuli/puppet-openldap/pull/438) ([jay7x](https://github.com/jay7x))
+
+## [v8.0.0](https://github.com/voxpupuli/puppet-openldap/tree/v8.0.0) (2024-06-10)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v7.0.2...v8.0.0)
 
