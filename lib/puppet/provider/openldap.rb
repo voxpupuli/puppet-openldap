@@ -212,6 +212,7 @@ class Puppet::Provider::Openldap < Puppet::Provider
       DbMaxSize
       DbMode
       DbSearchStack
+      PPolicyCheckModule
       PPolicyDefault
       PPolicyHashCleartext
       PPolicyForwardUpdates
