@@ -892,6 +892,8 @@ The following parameters are available in the `openldap::server::database` defin
 * [`dbmaxsize`](#-openldap--server--database--dbmaxsize)
 * [`timelimit`](#-openldap--server--database--timelimit)
 * [`updateref`](#-openldap--server--database--updateref)
+* [`lastbind`](#-openldap--server--database--lastbind)
+* [`lastbindprecision`](#-openldap--server--database--lastbindprecision)
 * [`limits`](#-openldap--server--database--limits)
 * [`dboptions`](#-openldap--server--database--dboptions)
 * [`synctype`](#-openldap--server--database--synctype)
@@ -1000,6 +1002,22 @@ Default value: `undef`
 ##### <a name="-openldap--server--database--updateref"></a>`updateref`
 
 Data type: `Optional[String[1]]`
+
+
+
+Default value: `undef`
+
+##### <a name="-openldap--server--database--lastbind"></a>`lastbind`
+
+Data type: `Optional[Boolean]`
+
+
+
+Default value: `undef`
+
+##### <a name="-openldap--server--database--lastbindprecision"></a>`lastbindprecision`
+
+Data type: `Optional[Integer[0]]`
 
 
 
@@ -1367,6 +1385,16 @@ Default value: `present`
 ##### `index`
 
 The index of the database.
+
+##### `lastbind`
+
+Valid values: `true`, `false`
+
+This option controls whether slapd will automatically maintain the pwdLastSuccess attribute for entries
+
+##### `lastbindprecision`
+
+specifies how frequently pwdLastSuccess will be updated
 
 ##### `limits`
 
