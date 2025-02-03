@@ -158,6 +158,8 @@ class Puppet::Provider::Openldap < Puppet::Provider
       IndexSubstrAnyLen
       IndexSubstrAnyStep
       IndexIntLen
+      LastBind
+      LastBindPrecision
       LastMod
       ListenerThreads
       LocalSSF

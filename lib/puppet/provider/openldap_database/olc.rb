@@ -28,6 +28,8 @@ Puppet::Type.
       dbmaxsize = nil
       timelimit = nil
       updateref = nil
+      lastbind = nil
+      lastbindprecision = nil
       dboptions = {}
       mirrormode = nil
       multiprovider = nil
@@ -59,6 +61,10 @@ Puppet::Type.
           timelimit = line.split[1]
         when %r{^olcUpdateref: }i
           updateref = line.split[1]
+        when %r{^olcLastBind: }
+          lastbind = line.split[1] == 'TRUE' ? :true : :false
+        when %r{^olcLastBindPrecision: }
+          lastbindprecision = line.split[1]
         when %r{^olcDb\S+: }i
           optname, optvalue = line.split(': ', 2)
           optname.downcase!
@@ -120,6 +126,8 @@ Puppet::Type.
         timelimit: timelimit,
         dbmaxsize: dbmaxsize,
         updateref: updateref,
+        lastbind: lastbind,
+        lastbindprecision: lastbindprecision,
         dboptions: dboptions,
         mirrormode: mirrormode,
         multiprovider: multiprovider,
@@ -243,6 +251,8 @@ Puppet::Type.
     t << "olcDbMaxSize: #{resource[:dbmaxsize]}\n" if resource[:dbmaxsize]
     t << "olcTimeLimit: #{resource[:timelimit]}\n" if resource[:timelimit]
     t << "olcUpdateref: #{resource[:updateref]}\n" if resource[:updateref]
+    t << "olcLastBind: #{resource[:lastbind] == :true ? 'TRUE' : 'FALSE'}\n" if resource[:lastbind]
+    t << "olcLastBindPrecision: #{resource[:lastbindprecision]}\n" if resource[:lastbindprecision]
     resource[:dboptions]&.each do |k, v|
       t << case k
            when 'dbnosync'
@@ -338,6 +348,14 @@ Puppet::Type.
     @property_flush[:updateref] = value
   end
 
+  def lastbind=(value)
+    @property_flush[:lastbind] = value
+  end
+
+  def lastbindprecision=(value)
+    @property_flush[:lastbindprecision] = value
+  end
+
   def dboptions=(value)
     @property_flush[:dboptions] = value
   end
@@ -416,6 +434,8 @@ Puppet::Type.
       end
       t << "replace: olcSyncrepl\n#{resource[:syncrepl].map { |x| "olcSyncrepl: #{x}" }.join("\n")}\n-\n" if @property_flush[:syncrepl]
       t << "replace: olcUpdateref\nolcUpdateref: #{resource[:updateref]}\n-\n" if @property_flush[:updateref]
+      t << "replace: olcLastBind\nolcLastBind: #{resource[:lastbind] == :true ? 'TRUE' : 'FALSE'}\n-\n" if @property_flush[:lastbind]
+      t << "replace: olcLastBindPrecision\nolcLastBindPrecision: #{resource[:lastbindprecision]}\n" if @property_flush[:lastbindprecision]
       t << "replace: olcMirrorMode\nolcMirrorMode: #{resource[:mirrormode] == :true ? 'TRUE' : 'FALSE'}\n-\n" if @property_flush[:mirrormode]
       t << "replace: olcMultiProvider\nolcMultiProvider: #{resource[:multiprovider] == :true ? 'TRUE' : 'FALSE'}\n-\n" if @property_flush[:multiprovider]
       t << "replace: olcSyncUseSubentry\nolcSyncUseSubentry: #{resource[:syncusesubentry]}\n-\n" if @property_flush[:syncusesubentry]
