@@ -37,6 +37,8 @@ describe 'openldap::server::database' do
                 dbmaxsize: '10000',
                 timelimit: '10000',
                 updateref: 'default_updateref',
+                lastbind: true,
+                lastbindprecision: 3600,
                 limits: {
                   'dn.exact="cn=anyuser,dc=example,dc=org"'   => { size: 100_000 },
                   'dn.exact="cn=personnel,dc=example,dc=org"' => { size: 'unlimited' },

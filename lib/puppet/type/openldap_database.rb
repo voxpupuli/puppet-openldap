@@ -185,6 +185,15 @@ Puppet::Type.newtype(:openldap_database) do
     desc 'This directive is only applicable in a slave slapd. It specifies the URL to return to clients which submit update requests upon the replica.'
   end
 
+  newproperty(:lastbind, boolean: true) do
+    desc 'This option controls whether slapd will automatically maintain the pwdLastSuccess attribute for entries'
+    newvalues(:true, :false)
+  end
+
+  newproperty(:lastbindprecision) do
+    desc 'specifies how frequently pwdLastSuccess will be updated'
+  end
+
   newproperty(:dboptions) do
     desc 'Hash to pass specific HDB/BDB options for the database'
 
