@@ -69,6 +69,7 @@ Puppet::Type.
       'auditlog'    => 'olcAuditLogConfig',
       'autoca'      => 'olcAutoCAConfig',
       'autogroup'   => 'olcAutomaticGroups',
+      'chain'       => 'olcChainConfig',
       'collect'     => 'olcCollectConfig',
       'constraint'  => 'olcConstraintConfig',
       'dds'         => 'olcDDSConfig',
@@ -115,7 +116,10 @@ Puppet::Type.
   end
 
   def getDn(suffix)
-    if suffix == 'cn=config'
+    case suffix
+    when 'cn=frontend'
+      'olcDatabase={-1}frontend,cn=config'
+    when 'cn=config'
       if resource[:overlay].to_s == 'rwm'
         slapcat('(olcDatabase=relay)').split("\n").map do |line|
           return line.split[1] if line =~ %r{^dn: }
@@ -134,6 +138,7 @@ Puppet::Type.
     found = false
     slapcat("(olcDatabase=#{database})").split("\n").map do |line|
       found = true if line =~ %r{^dn: olcDatabase=#{database.gsub('{', '\{').gsub('}', '\}')},}
+      return 'cn=frontend' if database == '{-1}frontend'
       return 'cn=config' if database == '{0}config'
       return 'cn=config' if database =~ %r{\{\d+\}relay$}
       return line.split[1] if line =~ %r{^olcSuffix: } && found
