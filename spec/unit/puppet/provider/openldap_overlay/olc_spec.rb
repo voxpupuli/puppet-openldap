@@ -4,6 +4,60 @@ require 'spec_helper'
 
 # rubocop:disable RSpec/MultipleMemoizedHelpers
 describe Puppet::Type.type(:openldap_overlay).provider(:olc) do
+  describe 'instances' do
+    describe 'ppolicy' do
+      before do
+        slapcat_overlay_output = <<~OUTPUT
+          dn: olcOverlay={1}ppolicy,olcDatabase={2}mdb,cn=config
+          objectClass: olcConfig
+          objectClass: olcOverlayConfig
+          objectClass: olcPPolicyConfig
+          olcOverlay: {1}ppolicy
+          olcPPolicyDefault: cn=default_password_policy,ou=policies,dc=example,dc=com
+          olcPPolicyHashCleartext: FALSE
+          olcPPolicyUseLockout: FALSE
+          olcPPolicyForwardUpdates: FALSE
+          structuralObjectClass: olcPPolicyConfig
+          entryUUID: db7e0900-7457-103f-9aab-a3df2413523b
+          creatorsName: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
+          createTimestamp: 20250131194650Z
+          entryCSN: 20250131194650.121815Z#000000#000#000000
+          modifiersName: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
+          modifyTimestamp: 20250131194650Z
+        OUTPUT
+        slapcat_db_output = <<~OUTPUT
+          dn: olcDatabase={2}mdb,cn=config
+          objectClass: olcDatabaseConfig
+          objectClass: olcMdbConfig
+          olcDatabase: {2}mdb
+          olcSuffix: dc=example,dc=com
+        OUTPUT
+        allow(described_class).to receive(:slapcat).with(
+          '(olcOverlay=*)'
+        ).and_return(slapcat_overlay_output)
+        allow(described_class).to receive(:slapcat).with(
+          '(olcDatabase={2}mdb)'
+        ).and_return(slapcat_db_output)
+      end
+
+      it 'reads a ppolicy object' do
+        expect(described_class.instances.size).to eq(1)
+        expect(described_class.instances[0].name).to eq('ppolicy on dc=example,dc=com')
+        expect(described_class.instances[0].overlay).to eq('ppolicy')
+        expect(described_class.instances[0].suffix).to eq('dc=example,dc=com')
+        expect(described_class.instances[0].index).to eq(1)
+        expect(described_class.instances[0].options).to eq(
+          {
+            'olcPPolicyDefault'        => 'cn=default_password_policy,ou=policies,dc=example,dc=com',
+            'olcPPolicyHashCleartext'  => 'FALSE',
+            'olcPPolicyUseLockout'     => 'FALSE',
+            'olcPPolicyForwardUpdates' => 'FALSE',
+          }
+        )
+      end
+    end
+  end
+
   describe 'creating overlay' do
     let(:params) do
       {
