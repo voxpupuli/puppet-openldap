@@ -9,6 +9,6 @@ define openldap::server::module (
   -> Class['openldap::server']
 
   openldap_module { $title:
-    ensure   => $ensure,
+    ensure => $ensure,
   }
 }
