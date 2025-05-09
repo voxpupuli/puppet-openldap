@@ -23,6 +23,21 @@ describe 'openldap::server::database' do
             }
           end
 
+          context 'with sensitive parameters set' do
+            let(:params) do
+              {
+                rootdn: sensitive('cn=admin,dc=example,dc=com'),
+                rootpw: sensitive('secret'),
+              }
+            end
+
+            it { is_expected.to compile.with_all_deps }
+
+            it {
+              is_expected.to contain_openldap_database('dc=foo').with(rootdn: sensitive('cn=admin,dc=example,dc=com'), rootpw: sensitive('secret'))
+            }
+          end
+
           context 'with all parameters set' do
             let(:params) do
               {
