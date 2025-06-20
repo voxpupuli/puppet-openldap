@@ -1,12 +1,13 @@
+---
 fixtures:
   repositories:
-    stdlib: 'https://github.com/puppetlabs/puppetlabs-stdlib.git'
-    augeasproviders_shellvar: 'https://github.com/voxpupuli/puppet-augeasproviders_shellvar.git'
-    augeasproviders_core: 'https://github.com/voxpupuli/puppet-augeasproviders_core.git'
-    systemd: 'https://github.com/voxpupuli/puppet-systemd.git'
-    epel: 'https://github.com/voxpupuli/puppet-epel.git'
-    yumrepo_core: 'https://github.com/puppetlabs/puppetlabs-yumrepo_core.git'
-    augeas_core: 'https://github.com/puppetlabs/puppetlabs-augeas_core.git'
-    facts: 'https://github.com/puppetlabs/puppetlabs-facts.git'
-    puppet_agent: 'https://github.com/puppetlabs/puppetlabs-puppet_agent.git'
-    provision: 'https://github.com/puppetlabs/provision.git'
+    augeas_core: https://github.com/puppetlabs/puppetlabs-augeas_core.git
+    augeasproviders_core: https://github.com/voxpupuli/puppet-augeasproviders_core.git
+    augeasproviders_shellvar: https://github.com/voxpupuli/puppet-augeasproviders_shellvar.git
+    epel: https://github.com/voxpupuli/puppet-epel.git
+    facts: https://github.com/puppetlabs/puppetlabs-facts.git
+    provision: https://github.com/puppetlabs/provision.git
+    puppet_agent: https://github.com/puppetlabs/puppetlabs-puppet_agent.git
+    stdlib: https://github.com/puppetlabs/puppetlabs-stdlib.git
+    systemd: https://github.com/voxpupuli/puppet-systemd.git
+    yumrepo_core: https://github.com/puppetlabs/puppetlabs-yumrepo_core.git
