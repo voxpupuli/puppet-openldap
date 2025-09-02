@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v9.0.0](https://github.com/voxpupuli/puppet-openldap/tree/v9.0.0) (2025-09-02)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v8.1.0...v9.0.0)
+
+**Breaking changes:**
+
+- Drop puppet, update openvox minimum version to 8.19 [\#456](https://github.com/voxpupuli/puppet-openldap/pull/456) ([TheMeier](https://github.com/TheMeier))
+
+**Implemented enhancements:**
+
+- Allow matchingRule and attrstyle in olcAccess [\#452](https://github.com/voxpupuli/puppet-openldap/pull/452) ([cbergmann](https://github.com/cbergmann))
+- Also allow to have Sensitive\[String\[1\]\] for rootdn [\#451](https://github.com/voxpupuli/puppet-openldap/pull/451) ([dabelenda](https://github.com/dabelenda))
+- metadata.json: Add OpenVox [\#448](https://github.com/voxpupuli/puppet-openldap/pull/448) ([jstraw](https://github.com/jstraw))
+- Add olcChainConfig overlay [\#445](https://github.com/voxpupuli/puppet-openldap/pull/445) ([gcoxmoz](https://github.com/gcoxmoz))
+- Add LastBind and LastBindPrecision to database options [\#443](https://github.com/voxpupuli/puppet-openldap/pull/443) ([gcoxmoz](https://github.com/gcoxmoz))
+
 ## [v8.1.0](https://github.com/voxpupuli/puppet-openldap/tree/v8.1.0) (2025-01-24)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v8.0.0...v8.1.0)
