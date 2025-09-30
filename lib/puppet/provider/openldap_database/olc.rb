@@ -232,7 +232,7 @@ Puppet::Type.
 
     case resource[:backend].to_s
     when 'relay'
-      t << "olcRelay: #{resource[:relay]}\n" unless resource[:relay].empty?
+      t << "olcRelay: #{resource[:relay]}\n" if resource[:relay]
       t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
     when 'monitor'
       # WRITE HERE FOR MONITOR ONLY
