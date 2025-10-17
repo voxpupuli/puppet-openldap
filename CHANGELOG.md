@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v9.1.0](https://github.com/voxpupuli/puppet-openldap/tree/v9.1.0) (2025-10-16)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v9.0.0...v9.1.0)
+
+**Implemented enhancements:**
+
+- Update metadata to allow systemd 9+ [\#463](https://github.com/voxpupuli/puppet-openldap/pull/463) ([gcoxmoz](https://github.com/gcoxmoz))
+
 ## [v9.0.0](https://github.com/voxpupuli/puppet-openldap/tree/v9.0.0) (2025-09-02)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v8.1.0...v9.0.0)
