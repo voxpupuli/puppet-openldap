@@ -24,6 +24,10 @@ describe 'openldap::client::install' do
             it {
               is_expected.to contain_package('libldap-2.5-0').with(ensure: :installed)
             }
+          when '24.04'
+            it {
+              is_expected.to contain_package('libldap2').with(ensure: :installed)
+            }
           else
             it {
               is_expected.to contain_package('libldap-2.4-2').with(ensure: :installed)
