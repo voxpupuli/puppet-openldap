@@ -1,0 +1,2 @@
+---
+openldap::client::package: 'libldap2'
