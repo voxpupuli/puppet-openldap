@@ -17,6 +17,10 @@ class openldap::server::config {
   $ldap_config_backend = $openldap::server::ldap_config_backend
   $enable_memory_limit = $openldap::server::enable_memory_limit
 
+  $slapd_pldap_ifs = empty($openldap::server::pldap_ifs) ? {
+    false => join(prefix($openldap::server::pldap_ifs, 'pldap://'), ' '),
+    true  => '',
+  }
   $slapd_ldap_ifs = empty($openldap::server::ldap_ifs) ? {
     false => join(prefix($openldap::server::ldap_ifs, 'ldap://'), ' '),
     true  => '',
@@ -29,11 +33,15 @@ class openldap::server::config {
     false => join(prefix($escaped_ldapi_ifs, 'ldapi://'), ' '),
     true  => '',
   }
+  $slapd_pldaps_ifs = empty($openldap::server::pldaps_ifs) ? {
+    false => join(prefix($openldap::server::pldaps_ifs, 'pldaps://'), ' '),
+    true  => '',
+  }
   $slapd_ldaps_ifs = empty($openldap::server::ldaps_ifs) ? {
     false  => join(prefix($openldap::server::ldaps_ifs, 'ldaps://'), ' '),
     true => '',
   }
-  $slapd_ldap_urls = "${slapd_ldap_ifs} ${slapd_ldapi_ifs} ${slapd_ldaps_ifs}"
+  $slapd_ldap_urls = "${slapd_ldap_ifs} ${slapd_pldap_ifs} ${slapd_ldapi_ifs} ${slapd_ldaps_ifs} ${slapd_pldaps_ifs}"
 
   file { $openldap::server::confdir:
     ensure => directory,

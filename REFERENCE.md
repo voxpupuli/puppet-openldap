@@ -453,6 +453,8 @@ The following parameters are available in the `openldap::server` class:
 
 * [`krb5_keytab_file`](#-openldap--server--krb5_keytab_file)
 * [`krb5_client_keytab_file`](#-openldap--server--krb5_client_keytab_file)
+* [`pldap_ifs`](#-openldap--server--pldap_ifs)
+* [`pldaps_ifs`](#-openldap--server--pldaps_ifs)
 * [`package`](#-openldap--server--package)
 * [`confdir`](#-openldap--server--confdir)
 * [`conffile`](#-openldap--server--conffile)
@@ -501,6 +503,26 @@ if set, manage the env variable KRB5_CLIENT_KTNAME on Debian based operating sys
 configuring sasl with backend GSSAPI
 
 Default value: `undef`
+
+##### <a name="-openldap--server--pldap_ifs"></a>`pldap_ifs`
+
+Data type: `Array[String[1]]`
+
+Allows to configure the HAProxy PROXY protol handling of openldap.
+This allows to get IPs of clients through a load-balancer for logging or filtering.
+Must not use the same ports as the native listeners.
+
+Default value: `[]`
+
+##### <a name="-openldap--server--pldaps_ifs"></a>`pldaps_ifs`
+
+Data type: `Array[String[1]]`
+
+Allows to configure the HAProxy PROXY protol handling of openldap.
+This allows to get IPs of clients through a load-balancer for logging or filtering.
+Must not use the same ports as the native listeners.
+
+Default value: `[]`
 
 ##### <a name="-openldap--server--package"></a>`package`
 
