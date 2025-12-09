@@ -1,9 +1,6 @@
 ---
 fixtures:
   repositories:
-    augeas_core: https://github.com/puppetlabs/puppetlabs-augeas_core.git
-    augeasproviders_core: https://github.com/voxpupuli/puppet-augeasproviders_core.git
-    augeasproviders_shellvar: https://github.com/voxpupuli/puppet-augeasproviders_shellvar.git
     epel: https://github.com/voxpupuli/puppet-epel.git
     facts: https://github.com/puppetlabs/puppetlabs-facts.git
     provision: https://github.com/puppetlabs/provision.git

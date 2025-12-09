@@ -1,0 +1,59 @@
+# This file is managed by Puppet
+
+<%- [
+  'base',
+  'bind_policy',
+  'bind_timelimit',
+  'binddn',
+  'bindpw',
+  'ldap_version',
+  'network_timeout',
+  'scope',
+  'ssl',
+  'suffix',
+  'timelimit',
+  'timeout',
+  'uri',
+
+  'nss_base_group',
+  'nss_base_hosts',
+  'nss_base_passwd',
+  'nss_base_shadow',
+  'nss_initgroups_ignoreusers',
+
+  'pam_filter',
+  'pam_login_attribute',
+  'pam_member_attribute',
+  'pam_password',
+
+  'tls_cacert',
+  'tls_cacertdir',
+  'tls_checkpeer',
+  'tls_reqcert',
+  'tls_moznss_compatibility',
+
+  'sasl_mech',
+  'sasl_realm',
+  'sasl_authcid',
+  'sasl_secprops',
+  'sasl_nocanon',
+
+  'gssapi_sign',
+  'gssapi_encrypt',
+  'gssapi_allow_remote_principal',
+
+  'sudoers_base',
+].each |$setting| { -%>
+  <%- $value = getvar("openldap::client::${setting}") -%>
+  <%- if $value !~ Undef and $value != 'absent' { -%>
+    <%- if $value =~ Array { -%>
+      <%- if $setting == 'sasl_secprops' { -%>
+<%= $setting.upcase %> <%= $value.join(',') %>
+      <%- } else { -%>
+<%= $setting.upcase %> <%= $value.join(' ') %>
+      <%- } -%>
+    <%- } else { -%>
+<%= $setting.upcase %> <%= $value %>
+    <%- } -%>
+  <%- } -%>
+<%- } -%>
