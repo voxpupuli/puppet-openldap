@@ -79,4 +79,33 @@ describe 'openldap::server' do
       end
     end
   end
+
+  skip('Does not work on openldap 2.4') if (fact('os.family') == 'Debian' && fact('os.release.major') == 11) ||
+                                           (fact('os.family') == 'RedHat' && fact('os.release.major') == 8)
+  context 'when enabling PROXY Protocol' do
+    it 'idempotentlies run' do
+      pp = <<-EOS
+        class { 'openldap::server':
+          ldaps_ifs  => ['/'],
+          ssl_key    => "/etc/ldap/ssl/${facts['networking']['fqdn']}.key",
+          ssl_cert   => "/etc/ldap/ssl/${facts['networking']['fqdn']}.crt",
+          ssl_ca     => '/etc/ldap/ssl/ca.pem',
+          pldaps_ifs => ['[::]:3269/'],
+          pldap_ifs  => ['[::]:7389/'],
+        }
+      EOS
+
+      idempotent_apply(pp)
+    end
+
+    # rubocop:disable RSpec/RepeatedExampleGroupBody
+    describe port(7389) do
+      it { is_expected.to be_listening }
+    end
+
+    describe port(3269) do
+      it { is_expected.to be_listening }
+    end
+    # rubocop:enable RSpec/RepeatedExampleGroupBody
+  end
 end

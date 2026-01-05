@@ -5,6 +5,14 @@
 # @param krb5_client_keytab_file
 #   if set, manage the env variable KRB5_CLIENT_KTNAME on Debian based operating systems. This is required when
 #   configuring sasl with backend GSSAPI
+# @param pldap_ifs
+#   Allows to configure the HAProxy PROXY protol handling of openldap.
+#   This allows to get IPs of clients through a load-balancer for logging or filtering.
+#   Must not use the same ports as the native listeners.
+# @param pldaps_ifs
+#   Allows to configure the HAProxy PROXY protol handling of openldap.
+#   This allows to get IPs of clients through a load-balancer for logging or filtering.
+#   Must not use the same ports as the native listeners.
 class openldap::server (
   String[1] $package,
   String[1] $confdir,
@@ -27,6 +35,8 @@ class openldap::server (
   Hash $databases                                   = {},
   Array[String[1]] $ldap_ifs                        = ['/'],
   Array[String[1]] $ldaps_ifs                       = [],
+  Array[String[1]] $pldaps_ifs                      = [],
+  Array[String[1]] $pldap_ifs                       = [],
   Optional[String] $slapd_params                    = undef,
   Optional[Stdlib::Port] $ldap_port                 = undef,
   Optional[Stdlib::IP::Address] $ldap_address       = undef,
