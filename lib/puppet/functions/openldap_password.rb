@@ -29,7 +29,7 @@ Puppet::Functions.create_function(:openldap_password) do
     required_param 'String', :secret
     optional_param 'Enum["PBKDF2","CRYPT","MD5","SMD5","SSHA","SHA"]', :scheme
     optional_param 'Integer', :iterations
-    optional_param 'Integer', :key_length
+    optional_param 'Enum[32, 64]', :key_length
 
     return_type 'String'
   end
@@ -38,14 +38,21 @@ Puppet::Functions.create_function(:openldap_password) do
     case scheme[%r{([A-Z,0-9]+)}, 1]
     when 'PBKDF2'
       salt = OpenSSL::Random.random_bytes(16)
-      dk_len = 64
+
+      digest_map = {
+        32 => { name: 'SHA256', obj: OpenSSL::Digest::SHA256.new },
+        64 => { name: 'SHA512', obj: OpenSSL::Digest::SHA512.new }
+      }
+
+      config = digest_map[key_length] || { name: 'SHA512', obj: OpenSSL::Digest::SHA512.new }
+
 
       derived_key = OpenSSL::PKCS5.pbkdf2_hmac(
         secret,
         salt,
         iterations,
         key_length,
-        OpenSSL::Digest::SHA512.new
+        config[:obj]
       )
 
       value = [
@@ -54,7 +61,7 @@ Puppet::Functions.create_function(:openldap_password) do
         derived_key
       ].join('$')
 
-      password = "{PBKDF2-SHA512}#{Base64.strict_encode64(value)}"
+      password = "{PBKDF2-#{config[:name]}}#{Base64.strict_encode64(value)}"
     when 'CRYPT'
       salt = call_function('fqdn_rand_string', 2)
       password = "{CRYPT}#{secret.crypt(salt)}"
