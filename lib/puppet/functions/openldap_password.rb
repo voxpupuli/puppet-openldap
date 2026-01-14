@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-
+require 'openssl'
+require 'digest'
 require 'base64'
 #
 # @summary
@@ -18,13 +19,33 @@ Puppet::Functions.create_function(:openldap_password) do
   #
   dispatch :generate_password do
     required_param 'String', :secret
-    optional_param 'Enum["CRYPT","MD5","SMD5","SSHA","SHA"]', :scheme
+    optional_param 'Enum["PBKDF2","CRYPT","MD5","SMD5","SSHA","SHA"]', :scheme
+    optional_param 'Integer', :iterations
 
     return_type 'String'
   end
 
-  def generate_password(secret, scheme = 'SSHA')
+  def generate_password(secret, scheme = 'SSHA', iterations = 60_000)
     case scheme[%r{([A-Z,0-9]+)}, 1]
+    when 'PBKDF2'
+      salt = OpenSSL::Random.random_bytes(16)
+      dk_len = 64
+
+      derived_key = OpenSSL::PKCS5.pbkdf2_hmac(
+        secret,
+        salt,
+        iterations,
+        dk_len,
+        OpenSSL::Digest::SHA512.new
+      )
+
+      value = [
+        salt,
+        iterations.to_s,
+        derived_key
+      ].join('$')
+
+      password = "{PBKDF2-SHA512}#{Base64.strict_encode64(value)}"
     when 'CRYPT'
       salt = call_function('fqdn_rand_string', 2)
       password = "{CRYPT}#{secret.crypt(salt)}"
