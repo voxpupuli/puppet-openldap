@@ -14,6 +14,14 @@ Puppet::Functions.create_function(:openldap_password) do
   # @param scheme
   #   The optional scheme to use (defaults to SSHA).
   #
+  # @param iterations
+  #   The number of iterations to use for the hashing (defaults to 60000).
+  #   Only applicable for PBKDF2.
+  #
+  # @param key_length
+  #   The length of the derived key in bytes (defaults to 64, which is 512 bits).
+  #   Only applicable for PBKDF2.
+  #
   # @return [String]
   #   The hashed secret.
   #
@@ -21,11 +29,12 @@ Puppet::Functions.create_function(:openldap_password) do
     required_param 'String', :secret
     optional_param 'Enum["PBKDF2","CRYPT","MD5","SMD5","SSHA","SHA"]', :scheme
     optional_param 'Integer', :iterations
+    optional_param 'Integer', :key_length
 
     return_type 'String'
   end
 
-  def generate_password(secret, scheme = 'SSHA', iterations = 60_000)
+  def generate_password(secret, scheme = 'SSHA', iterations = 60_000, key_length = 64)
     case scheme[%r{([A-Z,0-9]+)}, 1]
     when 'PBKDF2'
       salt = OpenSSL::Random.random_bytes(16)
@@ -35,7 +44,7 @@ Puppet::Functions.create_function(:openldap_password) do
         secret,
         salt,
         iterations,
-        dk_len,
+        key_length,
         OpenSSL::Digest::SHA512.new
       )
 
