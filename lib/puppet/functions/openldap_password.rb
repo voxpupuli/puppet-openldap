@@ -18,9 +18,9 @@ Puppet::Functions.create_function(:openldap_password) do
   #   The number of iterations to use for the hashing (defaults to 60000).
   #   Only applicable for PBKDF2.
   #
-  # @param key_length
-  #   The length of the derived key in bytes (defaults to 64, which is 512 bits).
-  #   Only applicable for PBKDF2.
+  # @param hash_type
+  #    The hash algorithm to use: 'SHA256' (32 bytes) or 'SHA512' (64 bytes).
+  #    Defaults to 'SHA512'. Only applicable for PBKDF2.
   #
   # @return [String]
   #   The hashed secret.
@@ -29,29 +29,28 @@ Puppet::Functions.create_function(:openldap_password) do
     required_param 'String', :secret
     optional_param 'Enum["PBKDF2","CRYPT","MD5","SMD5","SSHA","SHA"]', :scheme
     optional_param 'Integer', :iterations
-    optional_param 'Enum[32, 64]', :key_length
+    optional_param 'Enum["SHA256", "SHA512"]', :hash_type
 
     return_type 'String'
   end
 
-  def generate_password(secret, scheme = 'SSHA', iterations = 60_000, key_length = 64)
+  def generate_password(secret, scheme = 'SSHA', iterations = 60_000, hash_type = 'SHA512')
     case scheme[%r{([A-Z,0-9]+)}, 1]
     when 'PBKDF2'
       salt = OpenSSL::Random.random_bytes(16)
 
       digest_map = {
-        32 => { name: 'SHA256', obj: OpenSSL::Digest::SHA256.new },
-        64 => { name: 'SHA512', obj: OpenSSL::Digest::SHA512.new }
+        'SHA256' => { name: 'SHA256', length: 32, obj: OpenSSL::Digest::SHA256.new },
+        'SHA512' => { name: 'SHA512', length: 64, obj: OpenSSL::Digest::SHA512.new }
       }
 
-      config = digest_map[key_length] || { name: 'SHA512', obj: OpenSSL::Digest::SHA512.new }
-
+      config = digest_map[hash_type]
 
       derived_key = OpenSSL::PKCS5.pbkdf2_hmac(
         secret,
         salt,
         iterations,
-        key_length,
+        config[:length],
         config[:obj]
       )
 
