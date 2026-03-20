@@ -43,7 +43,7 @@ For a more customized configuration:
 ```puppet
 class { 'openldap::client':
   base       => 'dc=example,dc=com',
-  uri        => ['ldap://ldap.example.com', 'ldap://ldap-master.example.com:666'],
+  uri        => ['ldap://ldap.example.com', 'ldap://ldap-provider.example.com:666'],
   tls_cacert => '/etc/ssl/certs/ca-certificates.crt',
 }
 ```
@@ -91,12 +91,12 @@ openldap::server::globalconf { 'security':
 }
 ```
 
-Configuring multiple olc serverIDs for multiple master or mirror mode
+Configuring multiple olc serverIDs for multiple provider or mirror mode
 
 ```puppet
 openldap::server::globalconf { 'ServerID':
   ensure  => present,
-  value   => { 'ServerID' => [ '1 ldap://master1.example.com', '2 ldap://master2.example.com' ] }
+  value   => { 'ServerID' => [ '1 ldap://provider1.example.com', '2 ldap://provider2.example.com' ] }
 }
 ```
 
