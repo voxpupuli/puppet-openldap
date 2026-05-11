@@ -182,7 +182,7 @@ Puppet::Type.newtype(:openldap_database) do
   end
 
   newproperty(:updateref) do
-    desc 'This directive is only applicable in a slave slapd. It specifies the URL to return to clients which submit update requests upon the replica.'
+    desc 'This directive is only applicable in a replica (or shadow) slapd. It specifies the URL to return to clients which submit update requests upon the replica.'
   end
 
   newproperty(:lastbind, boolean: true) do
@@ -232,7 +232,7 @@ Puppet::Type.newtype(:openldap_database) do
   end
 
   newproperty(:syncrepl, array_matching: :all) do
-    desc 'Specify the current database as a replica which is kept up-to-date with the master content by establishing the current slapd(8) as a replication consumer site running a syncrepl replication engine.'
+    desc 'Specify the current database as a consumer which is kept up-to-date with the provider content by establishing the current slapd(8) as a replication consumer site running a syncrepl replication engine.'
   end
 
   newproperty(:limits, array_matching: :all) do

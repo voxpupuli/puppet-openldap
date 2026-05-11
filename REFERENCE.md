@@ -1476,7 +1476,7 @@ Specifies the maximum number of entries to return from a search operation.
 
 ##### `syncrepl`
 
-Specify the current database as a replica which is kept up-to-date with the master content by establishing the current slapd(8) as a replication consumer site running a syncrepl replication engine.
+Specify the current database as a consumer which is kept up-to-date with the provider content by establishing the current slapd(8) as a replication consumer site running a syncrepl replication engine.
 
 ##### `syncusesubentry`
 
@@ -1488,7 +1488,7 @@ Specifies the maximum number of seconds (in real time) slapd will spend answerin
 
 ##### `updateref`
 
-This directive is only applicable in a slave slapd. It specifies the URL to return to clients which submit update requests upon the replica.
+This directive is only applicable in a replica (or shadow) slapd. It specifies the URL to return to clients which submit update requests upon the replica.
 
 #### Parameters
 
