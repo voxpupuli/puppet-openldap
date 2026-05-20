@@ -1456,7 +1456,11 @@ This option puts a replica database into "multiprovider" mode
 
 ##### `readonly`
 
+Valid values: `true`, `false`
+
 Puts the database into read-only mode.
+
+Default value: `false`
 
 ##### `rootdn`
 
