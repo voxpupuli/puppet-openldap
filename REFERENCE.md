@@ -21,7 +21,7 @@
 ### Defined types
 
 * [`openldap::server::access`](#openldap--server--access): See README.md for details.
-* [`openldap::server::access_wrapper`](#openldap--server--access_wrapper): == Define openldap::server::access_wrapper  Generate access from a given hash.  === Parameters  [*suffix*]   Default: $name   Mandatory. The 
+* [`openldap::server::access_wrapper`](#openldap--server--access_wrapper): == Define openldap::server::access_wrapper  Generate access from a given hash.  === Parameters  [*suffix*]   Default: $name   Mandatory. The
 * [`openldap::server::database`](#openldap--server--database): See README.md for details.
 * [`openldap::server::dbindex`](#openldap--server--dbindex): See README.md for details.
 * [`openldap::server::globalconf`](#openldap--server--globalconf): See README.md for details.
@@ -1962,4 +1962,3 @@ Struct[{
 The list of possible values TLS_MOZNSS_COMPATIBILITY can have (based on the man page), and an 'absent' (a puppet directive to remove an existing declaration).
 
 Alias of `Enum['on', 'true', 'yes', 'off', 'false', 'no', 'absent']`
-
