@@ -4,7 +4,29 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v9.1.0](https://github.com/voxpupuli/puppet-openldap/tree/v9.1.0) (2025-10-16)
+## [v9.2.0](https://github.com/voxpupuli/puppet-openldap/tree/v9.2.0) (2026-10-28)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v9.1.0...v9.2.0)
+
+**Implemented enhancements:**
+
+- Support Ubuntu 24.04 LTS [\#459](https://github.com/voxpupuli/puppet-openldap/issues/459)
+- puppet/systemd: Allow 11.x [\#484](https://github.com/voxpupuli/puppet-openldap/pull/484) ([bastelfreak](https://github.com/bastelfreak))
+- Update requirements to allow OpenVox 9 [\#483](https://github.com/voxpupuli/puppet-openldap/pull/483) ([sebastianrakel](https://github.com/sebastianrakel))
+- Add support for Debian 13 [\#473](https://github.com/voxpupuli/puppet-openldap/pull/473) ([jcharaoui](https://github.com/jcharaoui))
+- Add Support for PBKDF2 in openldap\_password function [\#472](https://github.com/voxpupuli/puppet-openldap/pull/472) ([a-courteille](https://github.com/a-courteille))
+- Add PROXY-protocol listener support to slapd [\#467](https://github.com/voxpupuli/puppet-openldap/pull/467) ([dabelenda](https://github.com/dabelenda))
+- Add ubuntu 24.04 support [\#466](https://github.com/voxpupuli/puppet-openldap/pull/466) ([bwitt](https://github.com/bwitt))
+
+**Fixed bugs:**
+
+- Fix PBKDF2 implementation to use Adapted Base64 encoding [\#474](https://github.com/voxpupuli/puppet-openldap/pull/474) ([a-courteille](https://github.com/a-courteille))
+
+**Merged pull requests:**
+
+- Fixup of problematic language relics [\#476](https://github.com/voxpupuli/puppet-openldap/pull/476) ([gcoxmoz](https://github.com/gcoxmoz))
+
+## [v9.1.0](https://github.com/voxpupuli/puppet-openldap/tree/v9.1.0) (2025-10-17)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-openldap/compare/v9.0.0...v9.1.0)
 
