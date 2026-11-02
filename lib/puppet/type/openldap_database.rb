@@ -27,7 +27,7 @@ Puppet::Type.newtype(:openldap_database) do
 
   newproperty(:backend) do
     desc 'The name of the backend.'
-    newvalues('bdb', 'hdb', 'mdb', 'monitor', 'config', 'relay', 'ldap')
+    newvalues('bdb', 'hdb', 'mdb', 'monitor', 'config', 'relay', 'ldap', 'frontend')
     defaultto do
       case Facter.value('os.family')
       when 'Debian'
@@ -64,7 +64,7 @@ Puppet::Type.newtype(:openldap_database) do
   newproperty(:directory) do
     desc 'The directory where the BDB files containing this database and associated indexes live.'
     defaultto do
-      '/var/lib/ldap' unless %w[monitor config relay ldap].include? @resource[:backend].to_s
+      '/var/lib/ldap' unless %w[monitor config relay ldap frontend].include? @resource[:backend].to_s
     end
     validate do |value|
       raise ArgumentError, 'Invalid value' unless value.start_with?('/')
@@ -145,11 +145,11 @@ Puppet::Type.newtype(:openldap_database) do
   end
 
   newparam(:initdb, boolean: true) do
-    desc 'When true it initiales the database with the top object. When false, it does not create any object in the database, so you have to create it by other mechanism. It defaults to false when the backend is one of config, ldap, monitor or relay, true otherwise.'
+    desc 'When true it initiales the database with the top object. When false, it does not create any object in the database, so you have to create it by other mechanism. It defaults to false when the backend is one of config, ldap, monitor, frontend or relay, true otherwise.'
 
     newvalues(:true, :false)
     defaultto do
-      if %w[monitor config relay ldap].include? @resource[:backend].to_s
+      if %w[monitor config relay ldap frontend].include? @resource[:backend].to_s
         :false
       else
         :true
@@ -254,6 +254,10 @@ Puppet::Type.newtype(:openldap_database) do
         raise ArgumentError, "Invalid security value: '#{v}' for key '#{k}'\nSecurity value must be a number\nSee olcSecurity in `man slapd-config`"
       end
     end
+  end
+
+  newproperty(:passwordhash) do
+    desc 'The olcPasswordHash configuration for the frontend database only.'
   end
 end
 # rubocop:enable Style/RegexpLiteral

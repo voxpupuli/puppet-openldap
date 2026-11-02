@@ -38,6 +38,7 @@ define openldap::server::database (
     ],
     Integer[0]
   ]                                                   $security        = {},
+  Optional[String[1]]                                 $passwordhash    = undef,
 ) {
   include openldap::server
 
@@ -46,11 +47,12 @@ define openldap::server::database (
   }
 
   $manage_directory = $backend ? {
-    'monitor' => undef,
-    'config'  => undef,
-    'relay'   => undef,
-    'ldap'    => undef,
-    default   => $directory.lest || { $openldap::server::default_directory },
+    'monitor'  => undef,
+    'config'   => undef,
+    'relay'    => undef,
+    'ldap'     => undef,
+    'frontend' => undef,
+    default    => $directory.lest || { $openldap::server::default_directory },
   }
 
   Class['openldap::server::service']
@@ -60,7 +62,7 @@ define openldap::server::database (
     Openldap::Server::Database['dc=my-domain,dc=com'] -> Openldap::Server::Database[$title]
   }
 
-  if $ensure == present and $backend != 'monitor' and $backend != 'config' and $backend != 'relay' and $backend != 'ldap' {
+  if $ensure == present and ! ($backend in ['monitor', 'config', 'relay', 'ldap', 'frontend']) {
     file { $manage_directory:
       ensure => directory,
       owner  => $openldap::server::owner,
@@ -102,5 +104,6 @@ define openldap::server::database (
     },
     limits            => $limits.map |$selector, $limits| { "${selector} ${limits.map |$k, $v| { "${k}=${v}" }.join(' ')}" },
     security          => $security,
+    passwordhash      => $passwordhash,
   }
 }

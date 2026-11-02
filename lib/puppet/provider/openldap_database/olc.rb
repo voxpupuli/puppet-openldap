@@ -13,7 +13,7 @@ Puppet::Type
   mk_resource_methods
 
   def self.instances
-    databases = slapcat('(|(olcDatabase=monitor)(olcDatabase={0}config)(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)(objectClass=olcMonitorConfig)(objectClass=olcRelayConfig)(objectClass=olcLDAPConfig))))')
+    databases = slapcat('(|(olcDatabase=monitor)(olcDatabase=frontend)(olcDatabase={0}config)(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)(objectClass=olcMonitorConfig)(objectClass=olcRelayConfig)(objectClass=olcLDAPConfig)(objectClass=olcFrontendConfig))))')
 
     databases.split("\n\n").map do |paragraph|
       suffix = nil
@@ -37,10 +37,11 @@ Puppet::Type
       syncrepl = nil
       limits = []
       security = {}
+      passwordhash = nil
       paragraph.gsub("\n ", '').split("\n").map do |line|
         case line
         when %r{^olcDatabase: }
-          index, backend = line.match(%r{^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor|config|relay|ldap)$}).captures
+          index, backend = line.match(%r{^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor|config|relay|ldap|frontend)$}).captures
         when %r{^olcDbDirectory: }
           directory = line.split[1]
         when %r{^olcRootDN: }
@@ -106,11 +107,14 @@ Puppet::Type
             values = variable.split('=')
             security[values[0]] = values[1].to_i
           end
+        when %r{^olcPasswordHash: }
+          passwordhash = line.split[1]
         end
       end
       suffix = "cn=#{backend}" if backend.match(%r{monitor}i) && !suffix
       suffix = "cn=#{backend}" if backend.match(%r{config}i) && !suffix
       suffix = "cn=#{backend}" if backend.match(%r{ldap}i) && !suffix
+      suffix = "cn=#{backend}" if backend.match(%r{frontend}i) && !suffix
       new(
         ensure: :present,
         name: suffix,
@@ -135,6 +139,7 @@ Puppet::Type
         syncrepl: syncrepl,
         limits: limits,
         security: security,
+        passwordhash: passwordhash,
       )
     end
   end
@@ -236,6 +241,8 @@ Puppet::Type
       t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
     when 'monitor'
       # WRITE HERE FOR MONITOR ONLY
+    when 'frontend'
+      t << "olcPasswordHash: #{resource[:passwordhash]}\n" if resource[:passwordhash]
     when 'ldap'
       # WRITE HERE FOR LDAP ONLY
       t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
@@ -384,6 +391,10 @@ Puppet::Type
     @property_flush[:security] = value
   end
 
+  def passwordhash=(value)
+    @property_flush[:passwordhash] = value
+  end
+
   def flush
     unless @property_flush.empty?
       t = Tempfile.new('openldap_database')
@@ -441,6 +452,7 @@ Puppet::Type
       t << "replace: olcSyncUseSubentry\nolcSyncUseSubentry: #{resource[:syncusesubentry]}\n-\n" if @property_flush[:syncusesubentry]
       t << "replace: olcLimits\n#{@property_flush[:limits].map { |x| "olcLimits: #{x}" }.join("\n")}\n-\n" if @property_flush[:limits]
       t << "replace: olcSecurity\n#{@property_flush[:security].map { |k, v| "olcSecurity: #{k}=#{v}" }.join("\n")}\n-\n" if @property_flush[:security]
+      t << "replace: olcPasswordHash\nolcPasswordHash: #{resource[:passwordhash]}\n-\n" if @property_flush[:passwordhash]
       t.close
       Puppet.debug(File.read(t.path))
       begin
