@@ -8,6 +8,10 @@ describe 'openldap::server::database' do
       pp = <<-EOS
         class { 'openldap::server':
           databases => {
+            'cn=frontend' => {
+              backend      => 'frontend',
+              passwordhash => '{SSHA}',
+            },
             'dc=foo,dc=example,dc=com' => {
               directory => '/var/lib/ldap',
               rootdn    => 'cn=admin,dc=foo,dc=example,dc=com',

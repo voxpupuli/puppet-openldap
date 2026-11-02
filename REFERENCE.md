@@ -944,6 +944,7 @@ The following parameters are available in the `openldap::server::database` defin
 * [`syncusesubentry`](#-openldap--server--database--syncusesubentry)
 * [`syncrepl`](#-openldap--server--database--syncrepl)
 * [`security`](#-openldap--server--database--security)
+* [`passwordhash`](#-openldap--server--database--passwordhash)
 
 ##### <a name="-openldap--server--database--ensure"></a>`ensure`
 
@@ -1145,6 +1146,14 @@ Hash[
 
 
 Default value: `{}`
+
+##### <a name="-openldap--server--database--passwordhash"></a>`passwordhash`
+
+Data type: `Optional[String[1]]`
+
+
+
+Default value: `undef`
 
 ### <a name="openldap--server--dbindex"></a>`openldap::server::dbindex`
 
@@ -1400,7 +1409,7 @@ The following properties are available in the `openldap_database` type.
 
 ##### `backend`
 
-Valid values: `bdb`, `hdb`, `mdb`, `monitor`, `config`, `relay`, `ldap`
+Valid values: `bdb`, `hdb`, `mdb`, `monitor`, `config`, `relay`, `ldap`, `frontend`
 
 The name of the backend.
 
@@ -1453,6 +1462,10 @@ This option puts a replica database into "mirror" mode, deprecated as of 2.5
 Valid values: `true`, `false`
 
 This option puts a replica database into "multiprovider" mode
+
+##### `passwordhash`
+
+The olcPasswordHash configuration for the frontend database only.
 
 ##### `readonly`
 
@@ -1507,8 +1520,8 @@ The following parameters are available in the `openldap_database` type.
 Valid values: `true`, `false`
 
 When true it initiales the database with the top object. When false, it does not create any object in the database, so
-you have to create it by other mechanism. It defaults to false when the backend is one of config, ldap, monitor or
-relay, true otherwise.
+you have to create it by other mechanism. It defaults to false when the backend is one of config, ldap, monitor,
+frontend or relay, true otherwise.
 
 ##### <a name="-openldap_database--organization"></a>`organization`
 

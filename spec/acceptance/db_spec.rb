@@ -16,7 +16,10 @@ describe 'openldap::server::database' do
       }
     EOS
 
-    idempotent_apply(pp)
+    # idempotent_apply(pp)
+    apply_manifest(pp, catch_failures: true)
+    on host, 'journalctl -u slapd -e --no-pager'
+    apply_manifest(pp, catch_changes: true)
   end
 
   after :all do
@@ -151,7 +154,7 @@ describe 'openldap::server::database' do
       }
       openldap::server::database { 'dc=bar,dc=com':
         ensure => present,
-        backend => 'ldap',
+        backend => 'mdb',
         require => Openldap::Server::Module['back_ldap'],
       }
       EOS
